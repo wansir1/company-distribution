@@ -1,0 +1,67 @@
+.wrapper{
+    position: relative;
+    width: 100%;
+    height: calc(100% - 0px);
+    overflow: auto;
+    // display: flex;
+    // background: red;
+    ::-webkit-scrollbar {
+            width: 0px;
+            height: 0px;
+        }
+}
+.search {
+    position: relative;
+    display: flex;
+    height: 53px;
+    width: calc(100% - 20px);
+    border-radius: 4px;
+    box-shadow: 0px 1px 4px rgba(48, 47, 47, 0.8);
+    top: 10px;
+    left: 10px;
+    background: #ffffff;
+    :global {
+.ant-btn-icon-only {
+        width: 50px !important;
+        border-radius: 6px !important;
+    }
+    }
+}
+
+    .middleBox{
+        height: 100%;
+        max-height: 569px;
+            width: calc(100% - 20px);
+            padding: 15px;
+            background: #ffffff;
+            position: absolute;
+            left: 15;
+            top: 4;
+            border-radius: 4px 4px 4px 4px;
+                opacity: 1;
+                box-shadow: 0px 1px 4px rgba(48, 47, 47, 0.8);
+                overflow: auto;
+    }
+    .lastBox{
+        overflow: auto;
+            height: 100%;
+            width: calc(100% - 20px);
+            max-height: 569px;
+            background: #ffffff;
+            position: absolute;
+            left: 10;
+            top: 4;
+            border-radius: 4px 4px 4px 4px;
+            opacity: 1;
+            box-shadow: 0px 1px 4px rgba(48, 47, 47, 0.8);
+    }
+.typeBox {
+        border-radius: 4px 4px 4px 4px;
+        box-shadow: 0px 1px 4px rgba(48, 47, 47, 0.8);
+        background: #ffffff;
+        padding: 0 16px;
+        top: 14px;
+        max-height: 200px;
+            overflow: auto;
+}
+

@@ -1,0 +1,76 @@
+.contentBox {
+    background: rgba(51, 70, 129, 0.04);
+    border-radius: 4px 4px 4px 4px;
+    opacity: 1;
+    height: 40px;
+    margin-top: 8px;
+    align-items: center;
+
+    .contentText {
+        height: 40px;
+        line-height: 40px;
+        overflow: hidden;
+        font-size: 12px;
+        padding: 0 16px;
+        color: #333333;
+        display: flex;
+
+        .contentValue {
+            font-size: 14px;
+            font-weight: 500;
+            text-align: right;
+            flex: 1;
+            margin-right: 5px;
+            font-family: Medium;
+        }
+
+        .imageBox {
+            margin-right: 8px;
+        }
+
+        .differenceBox {
+            margin-top: auto;
+            margin-bottom: auto;
+
+            .difference {
+                height: 19px;
+                padding-left: 4px;
+                padding-right: 4px;
+                line-height: 19px;
+                font-size: 12px;
+                font-weight: 400;
+                background: #e6edfa;
+                color: #1163ff;
+                border-radius: 4px 4px 4px 4px;
+
+                .triangle {
+                    display: inline-block;
+                    width: 0px;
+                    height: 0px;
+                    border-style: solid;
+                    border-color: transparent transparent #1163ff transparent;
+                    border-width: 5px;
+                    margin-bottom: 2px;
+                    margin-right: 4px;
+                }
+            }
+        }
+
+        .contentUnit {
+            font-size: 12px;
+            color: #999;
+        }
+    }
+}
+
+.imgBox {
+    margin-top: 20px;
+    width: 16px;
+    height: 16px;
+    opacity: 1;
+}
+
+.rightHeight {
+    color: #447df2;
+    cursor: pointer;
+}

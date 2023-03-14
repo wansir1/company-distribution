@@ -1,0 +1,128 @@
+.busRightBox {
+    position: absolute;
+    z-index: 20;
+    right: 24px;
+    top: 20px;
+    width: 466px;
+
+    ::-webkit-scrollbar {
+        width: 0px;
+        height: 0px;
+    }
+
+    border-radius: 4px 4px 4px 4px;
+    // min-height: 730px;
+
+    .busIcon {
+        width: 25px;
+        height: 40px;
+        position: absolute;
+        left: -36px;
+        top: 60;
+        cursor: pointer;
+    }
+
+    .busCharge {
+        /* 调用动画 */
+        animation-name: rightMove;
+        /* 持续时间 */
+        animation-duration: 0.3s;
+        left: 438px;
+    }
+
+    .busClosed {
+        /* 调用动画 */
+        animation-name: leftMove;
+        /* 持续时间 */
+        animation-duration: 0.3s;
+        left: -23px;
+    }
+
+    .drawerBox {
+        background: #ffffff;
+        box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.1);
+        width: 466px;
+        position: absolute;
+        border: 1px solid #e8ecef;
+        padding: 16px;
+        border-radius: 4px;
+        z-index: 99;
+        top: 55;
+    }
+
+    :global {
+        .ant-drawer-body {
+            padding: 0;
+            background: #ffffff;
+        }
+
+        .ant-drawer-content {
+            height: auto;
+            border-radius: 4px 4px 4px 4px;
+        }
+
+        .ant-drawer-mask {
+            display: none;
+        }
+
+        .ant-drawer-right>.ant-drawer-content-wrapper {
+            box-shadow: none;
+        }
+
+        .ant-collapse-ghost>.ant-collapse-item>.ant-collapse-content>.ant-collapse-content-box {
+            padding: 0 16px;
+        }
+    }
+}
+
+@keyframes rightMove {
+    0% {
+        left: -36px;
+    }
+
+    // 20% {
+    //   left: 78px;
+    // }
+
+    40% {
+        left: 160px;
+    }
+
+    60% {
+        left: 294px;
+    }
+
+    // 80% {
+    //   left: 392px;
+    // }
+
+    100% {
+        left: 438px;
+    }
+}
+
+@keyframes leftMove {
+    0% {
+        left: 438px;
+    }
+
+    // 20% {
+    //   left: 392px;
+    // }
+
+    40% {
+        left: 294px;
+    }
+
+    60% {
+        left: 160px;
+    }
+
+    // 80% {
+    //   left: 78px;
+    // }
+
+    100% {
+        left: -36px;
+    }
+}

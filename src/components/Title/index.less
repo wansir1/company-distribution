@@ -1,0 +1,35 @@
+.middleTitle {
+    font-size: 14px;
+    font-weight: 400;
+    font-family: Microsoft YaHei-Regular, Microsoft YaHei;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.smallTitle {
+    font-size: 16px;
+    font-family: Microsoft YaHei-Bold, Microsoft YaHei;
+    font-weight: bold;
+    color: #333;
+    line-height: 22px;
+    margin-bottom: 14px;
+    padding-left: 8px;
+    position: relative;
+
+    &::before {
+        width: 4px;
+        height: 14px;
+        background: #447df2;
+        opacity: 1;
+        content: '';
+        position: absolute;
+        top: 4px;
+        left: 0;
+        box-sizing: content-box;
+        transition: background-color 0.3s;
+    }
+
+    &>span:last-child {
+        float: right;
+    }
+}

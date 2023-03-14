@@ -1,0 +1,63 @@
+.appLayout {
+  width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+
+  .logo {
+    // height:64px;
+    // width: 100%;
+    float: left;
+    margin-right: 90px;
+
+    .logoIcon {
+      height: 64px;
+    }
+  }
+
+  .menu {
+    height: 100%;
+    background-color: transparent;
+
+    :global {
+      .ant-menu,
+      .ant-menu-inline {
+        background-color: transparent !important;
+        background: transparent !important;
+      }
+      .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+        background-color: rgba(42, 84, 209, 0.1);
+      }
+    }
+    .menuItem {
+      margin: 0 14px;
+      background-color: #fff;
+
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      padding: 0 24px;
+      border-radius: 3px;
+      font-size: 14px;
+      color: #000000e6;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    .menuItemHeight {
+      background-color: #ecedee;
+    }
+  }
+
+  .user {
+    float: right;
+    cursor: pointer;
+    .username {
+    }
+  }
+
+  .innerContent {
+    background: #f8f9fa;
+    height: calc(100vh - 64px);
+  }
+}
