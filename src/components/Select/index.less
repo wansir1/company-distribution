@@ -1,0 +1,32 @@
+.inputSearch {
+    // margin-bottom: 14px;
+    height: 33px;
+    min-width: 280px;
+    left: 10px;
+    position: relative;
+
+    :global {
+        .ant-select {
+            border-radius: 2px;
+            width: calc(100% - 44px);
+        }
+
+        .ant-select-selector {
+            font-size: 14px;
+            font-family: Microsoft YaHei-Regular, Microsoft YaHei;
+            font-weight: 400;
+            color: #333;
+            height: 33px !important;
+        }
+
+        .ant-select-selection-search-input,
+        .ant-select-selection-placeholder {
+            height: 33px !important;
+        }
+
+        .ant-select-selection-item,
+        .ant-select-selection-placeholder {
+            line-height: 33px !important;
+        }
+    }
+}

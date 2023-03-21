@@ -103,6 +103,7 @@ const CompanySearch: React.FC = (props) => {
                   style={{
                     borderRadius: '3px',
                     padding: '2px 14px',
+                    display: 'inline-block',
                     background: '#1890ff',
                     color: '#fff',
                   }}

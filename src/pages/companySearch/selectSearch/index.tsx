@@ -1,10 +1,11 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { Select,Tag } from 'antd';
+import { Tag } from 'antd';
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
 import styles from './index.less';
 import {
   mapColor,
 } from '@/Map/constants';
+import Select from '@/components/Select';
 export type typeListType = { typeId: string; name: string }[];
 export type searchListType = {
   typeList: typeListType;
@@ -42,24 +43,18 @@ const tagRender = (props: CustomTagProps) => {
   );
 };
   return (
-    <Fragment>
-      <div className={styles.inputSearch}>
         <Select
-          {...props}
           mode="multiple"
           value={searchValue}
           tagRender={tagRender}
-          onChange={(e) => handleChange(e)}
-          showSearch
-          allowClear
+          onChange={(e:any) => handleChange(e)}
           placeholder="请选择类型"
           options={searchList}
           optionFilterProp={'name'}
           fieldNames={{ label: 'name', value: 'typeId' }}
-          maxTagCount= 'responsive'
+          maxTagCount="responsive"
+          {...props}
         />
-      </div>
-    </Fragment>
   );
 };
 

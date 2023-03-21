@@ -67,8 +67,7 @@ const SelectSearch: React.FC<PropsType> = (props) => {
       setSearchValue({ ...searchValue, companyValue: '' });
       console.log(companyList);
     })();
-    map &&
-      map.getAllOverlays('polygon')[0] &&
+      map?.getAllOverlays('polygon')[0] &&
       map.remove(map.getAllOverlays('polygon')[0]);
     if (map) {
       const city = searchList.cityList.find(

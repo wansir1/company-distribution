@@ -18,6 +18,7 @@ const Layouts = (props) => {
   const userInfo = null;
   const [openKey, setOpenKey] = useState(['/industry']);
   const { pathname } = location;
+  console.log({ pathname }, 'pathname');
   const handleLogout = async () => {
     console.log(routes, 'fs');
     // await requestLoginOut();
@@ -46,7 +47,7 @@ const Layouts = (props) => {
           item.title,
           path ? path + item.path : item.path,
           '',
-          renderItem(item.routes, `${item.path}/`),
+          renderItem(item.routes, `${path? path+item.path: item.path}/`),
         );
       }
       return getItem(item.title, path ? path + item.path : item.path, '');
@@ -77,7 +78,7 @@ const Layouts = (props) => {
     setOpenKey(key);
     
   };
-console.log({ pathname });
+
   return (
     <Layout className={style.appLayout}>
       <Header>

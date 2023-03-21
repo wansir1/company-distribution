@@ -73,8 +73,9 @@ const CompanyDistribution: React.FC = () => {
       .size([10, 10])
       .shape('circle')
       .color('typeName', (val) => {
-        const colorIndex = searchData.typeList.findIndex(item => item.name == val[0]);
-        console.log(colorIndex,val)
+        const colorIndex = searchData.typeList.findIndex(
+          (item) => item.name == val[0],
+        );
         return mapColor[colorIndex];
       })
       .style({
