@@ -60,7 +60,7 @@ const BusinessDetail: React.FC = (props) => {
         setSelectValue(value);
   }
   const handleClick = () => {
-    console.log(selectValue);
+    console.log(selectValue,'k');
   }
   return (
     <div className={searchStyles.wrapper}>
