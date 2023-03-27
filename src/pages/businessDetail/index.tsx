@@ -1,44 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Input, Row, Col, Spin, Button, Space, Table } from 'antd';
-import Title from '@/components/Title';
 import { companyType } from '@/Map/constants';
 import { SearchOutlined } from '@ant-design/icons';
-import { mapColor } from '@/Map/constants';
-import Chart from '@/components/Echart';
 import { requestCompany } from '@/services/search';
+import { columns,recommendType } from './constants';
 import Select from '@/components/Select';
-// import SelectSearch, { typeListType } from './selectSearch';
-// import { columns, firstOption, secondOption, thirdOption } from './constants';
+import Info from './companyInfo'
 import searchStyles from '../companySearch/index.less';
-// const { Search } = Input;
-// const content = [
-//   {
-//     label: '相关企业数',
-//     value: 2735,
-//     valueStyle: { color: '#13c2c2' },
-//     unit: '家',
-//   },
-//   {
-//     label: '相关企业专利数量',
-//     value: 46722,
-//     style: { top: '14px' },
-//     valueStyle: { color: '#3436c7' },
-//     unit: '个',
-//   },
-//   {
-//     label: '相关企业中上市公司数量',
-//     valueStyle: { color: 'green' },
-//     style: { top: '24px' },
-//     value: 119,
-//     unit: '家',
-//   },
-// ];
+import styles from './index.less';
 const BusinessDetail: React.FC = (props) => {
 //   const [typeList, setTypeList] = useState<typeListType>([]);
-  const [companyList, setCompanyList] = useState<{
-    loading: boolean;
-    data: companyType[];
-  }>({ loading: false, data: [] });
+  const [loading, setLoading] = useState(true);
+ const [companyList, setCompanyList] = useState<{
+   loading: boolean;
+   data: companyType[];
+ }>({ loading: false, data: [] });
+ const [recommendList, setRecommendList] = useState<recommendType[]>([])
   const [selectValue, setSelectValue] = useState<string>('');
 
   useEffect(() => {
@@ -46,17 +23,28 @@ const BusinessDetail: React.FC = (props) => {
   }, []);
 
   const getCompanyList = async () => {
-    setCompanyList({ loading: true, data: [] });
-    const companyList: companyType[] = await requestCompany({ typeId: '1' });
-    Array.isArray(companyList)
-      ? setCompanyList({ loading: false, data: companyList })
-      : setCompanyList({ loading: false, data: [] });
+    try{
+    const res: companyType[] = await requestCompany({});
+    console.log(res);
+    if(Array.isArray(res))
+      { 
+        const list = res.map(item => {return{companyName:item.name,industrialLayout:item.typeName};});
+        setCompanyList({ loading: false, data: res });
+        setRecommendList(list);
+    }else{
+        setCompanyList({ loading: false, data: [] });
+        setRecommendList([]);
+      }
+    }catch(e){
+        console.log(e);
+    }
+      setLoading(false);
   };
-  if (companyList.loading) {
+  if (loading) {
     return (
       <Spin
         size="large"
-        spinning={companyList.loading}
+        spinning={loading}
         tip={'加载中'}
         style={{
           marginTop: 200,
@@ -72,7 +60,7 @@ const BusinessDetail: React.FC = (props) => {
         setSelectValue(value);
   }
   const handleClick = () => {
-        console.log(selectValue);
+    console.log(selectValue);
   }
   return (
     <div className={searchStyles.wrapper}>
@@ -92,14 +80,33 @@ const BusinessDetail: React.FC = (props) => {
         />
       </div>
       <Row
+        gutter={[8, 0]}
         style={{
           position: 'relative',
-          height: '575px',
           top: '20px',
-          marginLeft: '10px',
-          background: '#FFFFFF',
+          marginLeft: '6px',
+          marginRight: '6px',
         }}
-      ></Row>
+      >
+        <Col span={12}>
+          <div className={styles.colBox}>
+            <Info />
+          </div>
+        </Col>
+        <Col span={12}>
+          <div className={styles.colBox}>
+            <span className={styles.span}>潜在竞合公司推荐</span>
+            <Table
+              className="businessTable"
+              columns={columns}
+              dataSource={recommendList}
+              loading={companyList.loading}
+              bordered
+              size="middle"
+            />
+          </div>
+        </Col>
+      </Row>
     </div>
   );
 };

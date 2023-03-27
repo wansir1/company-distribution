@@ -50,8 +50,8 @@ const CompanySearch: React.FC = (props) => {
 
   const getCompanyList = async () => {
     setCompanyList({loading:true, data:[]});
-    const companyList: companyType[] = await requestCompany({ typeId: '1' });
-     Array.isArray(companyList) ? setCompanyList({loading:false,data:companyList}) : setCompanyList({loading: false, data:[]});
+    const res: companyType[] = await requestCompany({});
+     Array.isArray(res) ? setCompanyList({loading:false,data:res}) : setCompanyList({loading: false, data:[]});
   }
   const getTypeList = async () => {
     const typeList: typeListType = await requestIndustryType();

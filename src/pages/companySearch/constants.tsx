@@ -46,6 +46,9 @@ export const columns: ColumnsType<companyType> = [
     dataIndex: 'registeredCapital',
     key: 'registeredCapital',
     align: 'center',
+    render: (record,data) => {
+        return <span>{record ? record : '--'}</span>;
+    }
   },
 ];
 

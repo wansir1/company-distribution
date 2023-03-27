@@ -25,11 +25,12 @@ export const drawBounds = ({
   //行政区查询
   district.setLevel(level);
   district.search(searchName, function (status: any, result: any) {
-    map.remove(polygons); //清除上次结果
+    map?.remove(polygons); //清除上次结果
     polygons = [];
-    var bounds = result.districtList[0].boundaries;
-    if (bounds) {
-      for (var i = 0, l = bounds.length; i < l; i++) {
+    var bounds = result?.districtList[0]?.boundaries;
+    console.log(result,'ggggg');
+    if (bounds && bounds.length) {
+      for (var i = 0, h = bounds.length; i < h; i++) {
         //生成行政区划polygon
         var polygon = new AMap.Polygon({
           strokeWeight: 1,
