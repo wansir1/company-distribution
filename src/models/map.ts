@@ -1,13 +1,13 @@
 import { Scene } from '@antv/l7';
 
-type stateType = {
+type StateType = {
   map: AMap.Map | null;
   loca: any;
   scene: Scene;
 };
 
 const mapModel = {
-  namespace:'map',
+  namespace: 'map',
   state: {
     map: null,
     loca: null,
@@ -16,7 +16,7 @@ const mapModel = {
   effects: {},
   reducers: {
     save(
-      state:stateType,
+      state: StateType,
       {
         payload,
       }: { payload: { map?: AMap.Map | null; loca?: any; scene?: Scene } },

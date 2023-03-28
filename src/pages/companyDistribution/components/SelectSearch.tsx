@@ -1,21 +1,21 @@
-import React, { useState, useEffect,Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { Select } from 'antd';
-import { companyType } from '@/Map/constants';
+import { CompanyType } from '@/Map/constants';
 import { requestCompany } from '@/services/search';
 import { drawBounds } from '@/Map/constants';
 import styles from './index.less';
-export type cityListType = { cityId: string; cityName: string }[];
-export type typeListType = {typeId: string; name: string}[];
-export type searchListType = {
-    cityList: cityListType,
-    typeList:  typeListType,
-    companyList: companyType[],
-}
+export type CityListType = { cityId: string; cityName: string }[];
+export type TypeListType = { typeId: string; name: string }[];
+export type SearchListType = {
+  cityList: CityListType;
+  typeList: TypeListType;
+  companyList: CompanyType[];
+};
 type PropsType = {
   children?: React.ReactNode;
   map: AMap.Map;
-  setFindValue: React.Dispatch<React.SetStateAction<companyType[]>>;
-  dataList: searchListType;
+  setFindValue: React.Dispatch<React.SetStateAction<CompanyType[]>>;
+  dataList: SearchListType;
 };
 const SelectSearch: React.FC<PropsType> = (props) => {
   const [searchValue, setSearchValue] = useState({
@@ -23,8 +23,8 @@ const SelectSearch: React.FC<PropsType> = (props) => {
     typeValue: '',
     companyValue: '',
   });
-  const {setFindValue,map,dataList} = props;
-  const [searchList, setSearchList] = useState<searchListType>({
+  const { setFindValue, map, dataList } = props;
+  const [searchList, setSearchList] = useState<SearchListType>({
     cityList: dataList.cityList.map((item) => {
       return { cityId: item.cityId, cityName: item.cityName };
     }),
@@ -55,7 +55,7 @@ const SelectSearch: React.FC<PropsType> = (props) => {
 
   useEffect(() => {
     (async function () {
-      const companyList: companyType[] = await requestCompany({
+      const companyList: CompanyType[] = await requestCompany({
         cityId: searchValue.cityValue,
         typeId: searchValue.typeValue,
       });
@@ -67,7 +67,7 @@ const SelectSearch: React.FC<PropsType> = (props) => {
       setSearchValue({ ...searchValue, companyValue: '' });
       console.log(companyList);
     })();
-      map?.getAllOverlays('polygon')[0] &&
+    map?.getAllOverlays('polygon')[0] &&
       map.remove(map.getAllOverlays('polygon')[0]);
     if (map) {
       const city = searchList.cityList.find(

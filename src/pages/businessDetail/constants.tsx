@@ -1,13 +1,13 @@
 import type { ColumnsType } from 'antd/es/table';
-import { companyType } from '@/Map/constants';
+import { CompanyType } from '@/Map/constants';
 import { Space } from 'antd';
-import styles from './index.less'
-export type recommendType = {
+import styles from './index.less';
+export type RecommendType = {
   serialNumber?: number;
   companyName: string;
-  industrialLayout: string[]|string;
-}
-export const columns: ColumnsType<recommendType> = [
+  industrialLayout: string[] | string;
+};
+export const columns: ColumnsType<RecommendType> = [
   {
     title: '序号',
     dataIndex: 'serialNumber',
@@ -28,13 +28,25 @@ export const columns: ColumnsType<recommendType> = [
     dataIndex: 'industrialLayout',
     key: 'industrialLayout',
     align: 'center',
-    render: (record:string[], data, index) => {
-       return <Space>
-            {record.map(item => {
-            return <span className={styles.span} style={{backgroundColor: 'rgba(26, 144, 255, 0.85)', fontSize: '8px',marginBottom: '0px'}}>{item}</span>
-        })}
-       </Space>
-      
-    }
+    render: (record: string[], data, index) => {
+      return (
+        <Space>
+          {record.map((item) => {
+            return (
+              <span
+                className={styles.span}
+                style={{
+                  backgroundColor: 'rgba(26, 144, 255, 0.85)',
+                  fontSize: '8px',
+                  marginBottom: '0px',
+                }}
+              >
+                {item}
+              </span>
+            );
+          })}
+        </Space>
+      );
+    },
   },
 ];

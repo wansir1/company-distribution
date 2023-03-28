@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Input, Row, Col, Spin, Button, Space, Table } from 'antd';
 import Title from '@/components/Title';
-import { companyType } from '@/Map/constants';
+import { CompanyType } from '@/Map/constants';
 import { SearchOutlined } from '@ant-design/icons';
 import { mapColor } from '@/Map/constants';
 import Chart from '@/components/Echart';
 import { requestIndustryType, requestCompany } from '@/services/search';
 import RenderRow from '@/components/Row';
-import SelectSearch, { typeListType } from './selectSearch';
-import { columns, firstOption,secondOption,thirdOption } from './constants';
+import SelectSearch, { TypeListType } from './selectSearch';
+import { columns, firstOption, secondOption, thirdOption } from './constants';
 import styles from './index.less';
 const { Search } = Input;
 const content = [
@@ -34,11 +34,11 @@ const content = [
   },
 ];
 const CompanySearch: React.FC = (props) => {
-  const [typeList, setTypeList] = useState<typeListType>([]);
+  const [typeList, setTypeList] = useState<TypeListType>([]);
   const [loading, setLoading] = useState(true);
   const [companyList, setCompanyList] = useState<{
     loading: boolean;
-    data: companyType[];
+    data: CompanyType[];
   }>({ loading: false, data: [] });
   useEffect(() => {
     getTypeList();
@@ -49,12 +49,14 @@ const CompanySearch: React.FC = (props) => {
   }, []);
 
   const getCompanyList = async () => {
-    setCompanyList({loading:true, data:[]});
-    const res: companyType[] = await requestCompany({});
-     Array.isArray(res) ? setCompanyList({loading:false,data:res}) : setCompanyList({loading: false, data:[]});
-  }
+    setCompanyList({ loading: true, data: [] });
+    const res: CompanyType[] = await requestCompany({});
+    Array.isArray(res)
+      ? setCompanyList({ loading: false, data: res })
+      : setCompanyList({ loading: false, data: [] });
+  };
   const getTypeList = async () => {
-    const typeList: typeListType = await requestIndustryType();
+    const typeList: TypeListType = await requestIndustryType();
     Array.isArray(typeList) ? setTypeList(typeList) : setTypeList([]);
     setLoading(false);
   };

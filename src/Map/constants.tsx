@@ -28,7 +28,7 @@ export const drawBounds = ({
     map?.remove(polygons); //清除上次结果
     polygons = [];
     var bounds = result?.districtList[0]?.boundaries;
-    console.log(result,'ggggg');
+    console.log(result, 'ggggg');
     if (bounds && bounds.length) {
       for (var i = 0, h = bounds.length; i < h; i++) {
         //生成行政区划polygon
@@ -48,7 +48,7 @@ export const drawBounds = ({
   });
 };
 
-type mapLayerListType = {type: string,value: string, map: any};
+type MapLayerListType = { type: string; value: string; map: any };
 
 // 清除popup
 // export const removePopupFun = (scene:Scene) => {
@@ -61,13 +61,18 @@ type mapLayerListType = {type: string,value: string, map: any};
 // };
 
 // 清除所有图层
-export const removeMap = (scene:Scene) => {
-//   scene && removePopupFun(scene);
+export const removeMap = (scene: Scene) => {
+  //   scene && removePopupFun(scene);
   scene && scene.removeAllLayer();
 };
 
 // 添加图层
-export const addMap = (list:mapLayerListType[], value:string, map:any, scene:Scene) => {
+export const addMap = (
+  list: MapLayerListType[],
+  value: string,
+  map: any,
+  scene: Scene,
+) => {
   if (!map) return list;
   const mapList = list.map((item) => {
     if (item.value === value) {
@@ -87,7 +92,12 @@ export const addMap = (list:mapLayerListType[], value:string, map:any, scene:Sce
 };
 
 // 清除图层
-export const deleteMap = (list:mapLayerListType[], type:string, value:string, scene:Scene) => {
+export const deleteMap = (
+  list: MapLayerListType[],
+  type: string,
+  value: string,
+  scene: Scene,
+) => {
   const mapList = list.map((item) => {
     if (item.type === type && item.value === value) {
       if (Array.isArray(item.map)) {
@@ -106,7 +116,11 @@ export const deleteMap = (list:mapLayerListType[], type:string, value:string, sc
 };
 
 //  清除type 图层
-export const deleteAllMap = (list:mapLayerListType[], type:string, scene:Scene) => {
+export const deleteAllMap = (
+  list: MapLayerListType[],
+  type: string,
+  scene: Scene,
+) => {
   const mapList = list.map((item) => {
     if (type === 'all' && item.map) {
       if (Array.isArray(item.map)) {
@@ -134,7 +148,7 @@ export const deleteAllMap = (list:mapLayerListType[], type:string, scene:Scene) 
 };
 
 // 获取type是否存在图层
-export const getSelectedData = (arr:mapLayerListType[], type:string) => {
+export const getSelectedData = (arr: MapLayerListType[], type: string) => {
   if (!type) return [];
   const list: string[] = [];
   arr.forEach((v) => {
@@ -146,7 +160,7 @@ export const getSelectedData = (arr:mapLayerListType[], type:string) => {
 };
 
 // 处理数据
-export type companyType = {
+export type CompanyType = {
   address: string;
   cityName: string;
   companyId: string;
@@ -159,8 +173,7 @@ export type companyType = {
   typeName: string[];
   selectType?: number;
 };
-export type siteDataType =
- {
+export type SiteDataType = {
   type: string;
   properties: {
     address: string;
@@ -179,9 +192,9 @@ export type siteDataType =
 };
 
 // 处理公司数据
-export const handleCompanyData = (arr:companyType[]) => {
+export const handleCompanyData = (arr: CompanyType[]) => {
   if (!arr) return [];
-  const siteData:siteDataType[] = [];
+  const siteData: SiteDataType[] = [];
   arr.map((i) => {
     const siteObj = {
       type: 'Feature',
@@ -207,11 +220,17 @@ export const handleCompanyData = (arr:companyType[]) => {
   return siteData;
 };
 
-
 // Popup
-export const renderPopupMap = (info:any = {}, option:{offsets?:[number,number],closeButton?:boolean,maxWidth?: string} = {}) => {
+export const renderPopupMap = (
+  info: any = {},
+  option: {
+    offsets?: [number, number];
+    closeButton?: boolean;
+    maxWidth?: string;
+  } = {},
+) => {
   const { lngLat, ...cfg } = info;
-  console.log({info})
+  console.log({ info });
   const { offsets = [0, 0], closeButton = false, maxWidth = '406px' } = option;
   const box = <PopupDataBox {...cfg} />;
   const html = ReactDOMServer.renderToString(box);
@@ -243,10 +262,13 @@ export const mapColor = [
   '#FC9C04',
 ];
 
-
-
-export let popupMap:any = null;
-const popupClick = (e:any, scene:Scene, callback:()=>void, optionList:any[] = []) => {
+export let popupMap: any = null;
+const popupClick = (
+  e: any,
+  scene: Scene,
+  callback: () => void,
+  optionList: any[] = [],
+) => {
   const event = e || window.event;
   const target = event.target || event.srcElement;
   const className = target.className;
@@ -260,11 +282,16 @@ const popupClick = (e:any, scene:Scene, callback:()=>void, optionList:any[] = []
 };
 
 // 弹框
-export const addPopupMap = (info:any, scene:Scene, callback:() => void, optionList:any) => {
+export const addPopupMap = (
+  info: any,
+  scene: Scene,
+  callback: () => void,
+  optionList: any,
+) => {
   const popup = renderPopupMap({
     title: info.name,
     data: [info],
-    lngLat: {lng:info.longitude,lat:info.latitude},
+    lngLat: { lng: info.longitude, lat: info.latitude },
     id: info.companyId,
     type: 'company',
   });

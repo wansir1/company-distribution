@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Input, Row, Col, Spin, Button, Space, Table } from 'antd';
-import { companyType } from '@/Map/constants';
+import { CompanyType } from '@/Map/constants';
 import { SearchOutlined } from '@ant-design/icons';
 import { requestCompany } from '@/services/search';
-import { columns,recommendType } from './constants';
+import { columns, RecommendType } from './constants';
 import Select from '@/components/Select';
-import Info from './companyInfo'
+import Info from './companyInfo';
 import searchStyles from '../companySearch/index.less';
 import styles from './index.less';
 const BusinessDetail: React.FC = (props) => {
-//   const [typeList, setTypeList] = useState<typeListType>([]);
+  //   const [typeList, setTypeList] = useState<TypeListType>([]);
   const [loading, setLoading] = useState(true);
- const [companyList, setCompanyList] = useState<{
-   loading: boolean;
-   data: companyType[];
- }>({ loading: false, data: [] });
- const [recommendList, setRecommendList] = useState<recommendType[]>([])
+  const [companyList, setCompanyList] = useState<{
+    loading: boolean;
+    data: CompanyType[];
+  }>({ loading: false, data: [] });
+  const [recommendList, setRecommendList] = useState<RecommendType[]>([]);
   const [selectValue, setSelectValue] = useState<string>('');
 
   useEffect(() => {
@@ -23,22 +23,23 @@ const BusinessDetail: React.FC = (props) => {
   }, []);
 
   const getCompanyList = async () => {
-    try{
-    const res: companyType[] = await requestCompany({});
-    console.log(res);
-    if(Array.isArray(res))
-      { 
-        const list = res.map(item => {return{companyName:item.name,industrialLayout:item.typeName};});
+    try {
+      const res: CompanyType[] = await requestCompany({});
+      console.log(res);
+      if (Array.isArray(res)) {
+        const list = res.map((item) => {
+          return { companyName: item.name, industrialLayout: item.typeName };
+        });
         setCompanyList({ loading: false, data: res });
         setRecommendList(list);
-    }else{
+      } else {
         setCompanyList({ loading: false, data: [] });
         setRecommendList([]);
       }
-    }catch(e){
-        console.log(e);
+    } catch (e) {
+      console.log(e);
     }
-      setLoading(false);
+    setLoading(false);
   };
   if (loading) {
     return (
@@ -57,11 +58,11 @@ const BusinessDetail: React.FC = (props) => {
     );
   }
   const handleChange = (value: string) => {
-        setSelectValue(value);
-  }
+    setSelectValue(value);
+  };
   const handleClick = () => {
-    console.log(selectValue,'k');
-  }
+    console.log(selectValue, 'k');
+  };
   return (
     <div className={searchStyles.wrapper}>
       <div className={searchStyles.search} style={{ alignItems: 'center' }}>

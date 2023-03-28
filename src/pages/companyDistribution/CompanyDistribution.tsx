@@ -1,8 +1,8 @@
 import styles from './CompanyDistribution.less';
 import { Scene, PointLayer } from '@antv/l7';
-import {  useSelector } from 'umi';
-import React,{ Fragment, useCallback, useEffect,useState } from 'react';
-import {Button,Col,Row,Spin} from 'antd';
+import { useSelector } from 'umi';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import { Button, Col, Row, Spin } from 'antd';
 import CartoonRightBox from '@/components/CartoonRightBox';
 import CollapseBox from '@/components/CollapseBox';
 import {
@@ -10,30 +10,30 @@ import {
   requestCompany,
   requestIndustryType,
 } from '@/services/search';
-import {ContentBox} from '@/components/ContentBox';
-import {_data,_dataSource} from './constants'
+import { ContentBox } from '@/components/ContentBox';
+import { _data, _dataSource } from './constants';
 import {
   handleCompanyData,
-  companyType,
+  CompanyType,
   deleteMap,
   addMap,
   mapColor,
   addPopupMap,
-  popupMap
+  popupMap,
 } from '@/Map/constants';
 import SelectSearch, {
-  searchListType,
-  cityListType,
-  typeListType,
+  SearchListType,
+  CityListType,
+  TypeListType,
 } from './components/SelectSearch';
-  type mapLayerListType = { type: string; value: string; map: any };
-  let mapLayerList: mapLayerListType[] = [
-    {
-      type: 'search',
-      value: 'company',
-      map: null,
-    },
-  ];
+type MapLayerListType = { type: string; value: string; map: any };
+let mapLayerList: MapLayerListType[] = [
+  {
+    type: 'search',
+    value: 'company',
+    map: null,
+  },
+];
 const CompanyDistribution: React.FC = () => {
   const { scene, map } = useSelector(
     ({
@@ -42,28 +42,30 @@ const CompanyDistribution: React.FC = () => {
       map: { map?: AMap.Map | null; loca?: any; scene: Scene };
     }) => ({ ...map }),
   );
-    const [findValue, setFindValue] = useState<companyType[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [searchData, setSearchData] = useState<searchListType>({
-      cityList: [],
-      typeList: [],
-      companyList: [],
-    });
+  const [findValue, setFindValue] = useState<CompanyType[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [searchData, setSearchData] = useState<SearchListType>({
+    cityList: [],
+    typeList: [],
+    companyList: [],
+  });
   useEffect(() => {
     handleDataList();
     return () => {
-        scene&&scene.removeAllLayer();
-    }
+      scene && scene.removeAllLayer();
+    };
   }, [scene]);
   useEffect(() => {
-    console.log(mapLayerList,'kkkkkkkk')
-    scene && deleteMap(mapLayerList,'search','company',scene);
+    console.log(mapLayerList, 'kkkkkkkk');
+    scene && deleteMap(mapLayerList, 'search', 'company', scene);
     scene && scene.removeAllLayer();
     popupMap && popupMap.remove();
-    scene && handleCompanyMap(findValue[0]?.selectType==3,findValue)
-  },[findValue])
-  const handleCompanyMap = async (isAutoFit:boolean,findValue: companyType[]) => {
-    
+    scene && handleCompanyMap(findValue[0]?.selectType == 3, findValue);
+  }, [findValue]);
+  const handleCompanyMap = async (
+    isAutoFit: boolean,
+    findValue: CompanyType[],
+  ) => {
     const data = {
       type: 'FeatureCollection',
       features: handleCompanyData(findValue),
@@ -80,38 +82,38 @@ const CompanyDistribution: React.FC = () => {
       })
       .style({
         stroke: '#447df2',
-        strokeWidth:1,
+        strokeWidth: 1,
       });
     pointLayer.on('click', (e) => {
-        addPopupMap(e.feature.properties,scene,()=>{},[]);
+      addPopupMap(e.feature.properties, scene, () => {}, []);
     });
-    const mapList = addMap(mapLayerList,'company', pointLayer, scene);
-    mapLayerList=[...mapList];
+    const mapList = addMap(mapLayerList, 'company', pointLayer, scene);
+    mapLayerList = [...mapList];
   };
 
-  const handleDataList = async() => {
-      const cityList: cityListType = await requestCity('1597867222326329346');
-      const typeList: typeListType = await requestIndustryType();
-      const companyList: companyType[] = await requestCompany({});
-      setSearchData({cityList,typeList,companyList});
-      setLoading(false);
+  const handleDataList = async () => {
+    const cityList: CityListType = await requestCity('1597867222326329346');
+    const typeList: TypeListType = await requestIndustryType();
+    const companyList: CompanyType[] = await requestCompany({});
+    setSearchData({ cityList, typeList, companyList });
+    setLoading(false);
+  };
+  if (loading) {
+    return (
+      <Spin
+        size="large"
+        spinning={loading}
+        tip={'加载中'}
+        style={{
+          marginTop: 200,
+          marginBottom: 200,
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          width: '100%',
+        }}
+      />
+    );
   }
-     if(loading)
-     {
-        return (
-          <Spin
-            size="large"
-            spinning={loading}
-            tip={'加载中'}
-            style={{
-              marginTop: 200,
-              marginBottom: 200,
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              width: '100%',
-            }}
-          />
-        );}
   return (
     <Fragment>
       <div className={styles.leftTopSearchBox}>

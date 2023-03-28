@@ -1,4 +1,3 @@
-
 export const _dataSource = {
   companyRate: '10',
   differenceValue: '10',
@@ -19,5 +18,3 @@ export const _data = [
     contentType: 1,
   },
 ];
-
-

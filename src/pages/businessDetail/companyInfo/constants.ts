@@ -1,5 +1,5 @@
 import type { ColumnsType } from 'antd/es/table';
-export type businessInfoType = {
+export type BusinessInfoType = {
   companyName: string;
   registeredCapital: string;
   address: string;
@@ -8,7 +8,7 @@ export type businessInfoType = {
   contactInfo: string;
   registrationStatus: string;
 };
-type keyType = keyof businessInfoType;
+type keyType = keyof BusinessInfoType;
 export const businessInfoList: { value: string; key: keyType }[] = [
   { value: '公司中文名称', key: 'companyName' },
   { value: '注册资本', key: 'registeredCapital' },
@@ -19,8 +19,13 @@ export const businessInfoList: { value: string; key: keyType }[] = [
   { value: '登记状态', key: 'registrationStatus' },
 ];
 
-export type releaseType = {board:string, stockCode:string, stockName:string,releaseDate:string};
-export const columns: ColumnsType<releaseType> = [
+export type ReleaseType = {
+  board: string;
+  stockCode: string;
+  stockName: string;
+  releaseDate: string;
+};
+export const columns: ColumnsType<ReleaseType> = [
   {
     title: '板块',
     dataIndex: 'board',
@@ -44,12 +49,17 @@ export const columns: ColumnsType<releaseType> = [
     dataIndex: 'releaseDate',
     key: 'releaseDate',
     align: 'center',
-  }
+  },
 ];
 
-export type technologyType = {name: string, licenseNumber: string, identificationDate: string, agency: string,}
+export type TechnologyType = {
+  name: string;
+  licenseNumber: string;
+  identificationDate: string;
+  agency: string;
+};
 
-export const technologyColumns: ColumnsType<technologyType> = [
+export const technologyColumns: ColumnsType<TechnologyType> = [
   {
     title: '公司名称',
     dataIndex: 'name',

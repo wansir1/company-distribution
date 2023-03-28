@@ -1,10 +1,10 @@
 import styles from './index.less';
 import Image from './Image';
-import React,{ Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { Col, Row } from 'antd';
 import Tip from '../Tip';
 
-type dataType = {
+type DataType = {
   contentType?: number;
   length?: {
     type?: string;
@@ -23,20 +23,20 @@ type dataType = {
   tip?: string;
   unit?: string;
   differenceName?: string;
-  differenceValue?: string,
-  differenceUnit?: string,
+  differenceValue?: string;
+  differenceUnit?: string;
 };
 
 type PropsType = {
-    data : dataType[],
-    dataSource: {[keyword: string]: string|number},
-    colSpan?: number,
-}
+  data: DataType[];
+  dataSource: { [keyword: string]: string | number };
+  colSpan?: number;
+};
 export const ContentBox: React.FC<PropsType> = (props) => {
-  const { data, dataSource,colSpan } = props;
+  const { data, dataSource, colSpan } = props;
 
-  const handleClick = (params:dataType) => {
-    const { type, callback=()=>{}, left } = params;
+  const handleClick = (params: DataType) => {
+    const { type, callback = () => {}, left } = params;
     if (left) {
       callback(params);
       return;
@@ -45,7 +45,7 @@ export const ContentBox: React.FC<PropsType> = (props) => {
     callback(params);
   };
 
-  const colItem = (item:dataType)=>(
+  const colItem = (item: DataType) => (
     <Col span={colSpan || 12}>
       <div className={styles.contentBox}>
         <div className={styles.contentText}>
@@ -115,26 +115,31 @@ export const ContentBox: React.FC<PropsType> = (props) => {
                     <div
                       className={styles.difference}
                       style={
-                        item.differenceValue?dataSource[item.differenceValue] < 0
-                          ? {
-                              color: 'red',
-                            }
-                          : {}:{}
+                        item.differenceValue
+                          ? dataSource[item.differenceValue] < 0
+                            ? {
+                                color: 'red',
+                              }
+                            : {}
+                          : {}
                       }
                     >
                       <div
                         className={styles.triangle}
                         style={
-                         item.differenceValue? dataSource[item.differenceValue] < 0
-                            ? {
-                                borderColor:
-                                  'red transparent transparent transparent',
-                                marginBottom: '-3px',
-                              }
-                            : {}:{}
+                          item.differenceValue
+                            ? dataSource[item.differenceValue] < 0
+                              ? {
+                                  borderColor:
+                                    'red transparent transparent transparent',
+                                  marginBottom: '-3px',
+                                }
+                              : {}
+                            : {}
                         }
                       ></div>
-                      {item.differenceValue&&(dataSource[item.differenceValue] || '--')}
+                      {item.differenceValue &&
+                        (dataSource[item.differenceValue] || '--')}
                       {item.differenceUnit || ''}
                     </div>
                   </div>

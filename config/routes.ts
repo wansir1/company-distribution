@@ -12,6 +12,11 @@ export default [
         component: '@/pages/companyDistribution/CompanyDistribution',
       },
       {
+        path: 'cluster',
+        title: '产业集群图谱',
+        component: '@/pages/clusterMapping',
+      },
+      {
         path: 'detail',
         title: '公司详情',
         routes: [

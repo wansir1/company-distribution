@@ -1,11 +1,16 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { Typography, Space, Popover, Divider, Table } from 'antd';
 import Title from '@/components/Title';
-import { businessInfoType, businessInfoList,columns,technologyColumns } from './constants';
+import {
+  BusinessInfoType,
+  businessInfoList,
+  columns,
+  technologyColumns,
+} from './constants';
 import styles from './index.less';
 const { Link } = Typography;
 const MAX_SPANS = 4;
-const businessInfo: businessInfoType = {
+const businessInfo: BusinessInfoType = {
   companyName: '青岛特锐德电气股份有限公司',
   registeredCapital: '99757万元人民币',
   address: '青岛市崂山区松岭路336号',
@@ -22,7 +27,7 @@ let tagTest: string[] = [
   '电力设备',
   '测试机',
 ];
-let tag : string[] = ['创业板 (300001)','高新技术企业']
+let tag: string[] = ['创业板 (300001)', '高新技术企业'];
 const CompanyInfo: React.FC = (props) => {
   const [visible, setVisible] = useState(false);
   const [businessData, setBusinessData] = useState([]);
@@ -50,9 +55,11 @@ const CompanyInfo: React.FC = (props) => {
           网址：www.baidu.com
         </Link>
         <div className={styles.spanColor}>
-            <Space className={styles.firstSpace}>
-            {tag.map(item => <span key={item+'1'}>{item}</span>)}
-            </Space>
+          <Space className={styles.firstSpace}>
+            {tag.map((item) => (
+              <span key={item + '1'}>{item}</span>
+            ))}
+          </Space>
           <div className={styles.secondRow}>
             <Space>
               {tagTest.slice(0, MAX_SPANS).map((item, index) => {

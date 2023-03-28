@@ -1,10 +1,9 @@
 import type { ColumnsType } from 'antd/es/table';
-import { companyType } from '@/Map/constants';
+import { CompanyType } from '@/Map/constants';
 import {
   BarChart,
   BarSeriesOption,
   LineSeriesOption,
- 
   PieSeriesOption,
 } from 'echarts/charts';
 import * as echarts from 'echarts';
@@ -16,7 +15,7 @@ import {
   GridComponentOption,
 } from 'echarts/components';
 
-export const columns: ColumnsType<companyType> = [
+export const columns: ColumnsType<CompanyType> = [
   {
     title: '企业名称',
     dataIndex: 'name',
@@ -46,13 +45,11 @@ export const columns: ColumnsType<companyType> = [
     dataIndex: 'registeredCapital',
     key: 'registeredCapital',
     align: 'center',
-    render: (record,data) => {
-        return <span>{record ? record : '--'}</span>;
-    }
+    render: (record, data) => {
+      return <span>{record ? record : '--'}</span>;
+    },
   },
 ];
-
-
 
 type EChartsOption = echarts.ComposeOption<
   | TooltipComponentOption
@@ -63,11 +60,10 @@ type EChartsOption = echarts.ComposeOption<
   | ToolboxComponentOption
 >;
 
-
 export const firstOption: EChartsOption = {
   tooltip: {
     trigger: 'item',
-    formatter: '{a} <br/>{b} : {c}千万 ({d}%)'
+    formatter: '{a} <br/>{b} : {c}千万 ({d}%)',
   },
   title: {
     subtext: '相关企业融资金额',

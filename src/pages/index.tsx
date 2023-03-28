@@ -4,7 +4,7 @@ import { Button, Space } from 'antd';
 import { useHistory, useModel, useSelector } from 'umi';
 import { useCallback, useEffect } from 'react';
 import { requestCity, requestCompany } from '@/services/search';
-import { handleCompanyData, companyType } from '@/Map/constants';
+import { handleCompanyData, CompanyType } from '@/Map/constants';
 const IndexPage: React.FC = () => {
   const { scene, map } = useSelector(
     ({
@@ -17,8 +17,8 @@ const IndexPage: React.FC = () => {
   const history = useHistory();
   const { initialState } = useModel('@@initialState');
   const { user, singin, singout } = useModel('user');
-  type mapLayerListType = { type: string; value: string; map: any };
-  const mapLayerList: mapLayerListType = {
+  type MapLayerListType = { type: string; value: string; map: any };
+  const mapLayerList: MapLayerListType = {
     type: 'search',
     value: 'company',
     map: null,
@@ -34,13 +34,13 @@ const IndexPage: React.FC = () => {
   }, [scene]);
 
   const handleCityList = async () => {
-    const res: companyType[] = await requestCompany({});
+    const res: CompanyType[] = await requestCompany({});
     const data = {
       type: 'FeatureCollection',
       features: handleCompanyData(res),
     };
     console.log(data, 'aaa');
-    const pointLayer = new PointLayer({autoFit: true,})
+    const pointLayer = new PointLayer({ autoFit: true })
       .source(data)
       .size([10, 10])
       .shape('plane')
