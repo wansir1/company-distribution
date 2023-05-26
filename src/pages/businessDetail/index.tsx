@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Row, Col, Spin, Button, Space, Table } from 'antd';
+import { Row, Col, Spin, Button, Space, Table } from 'antd';
 import { CompanyType } from '@/Map/constants';
-import { SearchOutlined } from '@ant-design/icons';
 import { requestCompany } from '@/services/search';
 import { columns, RecommendType } from './constants';
 import Select from '@/components/Select';
@@ -69,15 +68,9 @@ const BusinessDetail: React.FC = (props) => {
         <Select
           value={selectValue}
           onChange={(e: any) => handleChange(e)}
-          placeholder="请选择"
           options={companyList.data}
-          optionFilterProp={'name'}
           fieldNames={{ label: 'name', value: 'companyId' }}
-        />
-        <Button
-          type="primary"
-          icon={<SearchOutlined />}
-          onClick={handleClick}
+          handleClick={handleClick}
         />
       </div>
       <Row

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { Tag } from 'antd';
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
-import styles from './index.less';
 import { mapColor } from '@/Map/constants';
 import Select from '@/components/Select';
 export type TypeListType = { typeId: string; name: string }[];
@@ -10,10 +9,11 @@ export type SearchListType = {
 };
 type PropsType = {
   typeList: TypeListType;
+  single?: boolean;
 };
 const SelectSearch: React.FC<PropsType> = (props) => {
   const [searchValue, setSearchValue] = useState<string[]>([]);
-  const { typeList } = props;
+  const { typeList, single = false } = props;
   console.log({ typeList });
   const [searchList, setSearchList] = useState<TypeListType>(typeList);
   const handleChange = (value: string[]) => {
@@ -42,7 +42,7 @@ const SelectSearch: React.FC<PropsType> = (props) => {
   };
   return (
     <Select
-      mode="multiple"
+      mode={single ? '' : 'multiple'}
       value={searchValue}
       tagRender={tagRender}
       onChange={(e: any) => handleChange(e)}

@@ -20,14 +20,17 @@
     ]
   },
   "dependencies": {
+    "@ant-design/charts": "^1.4.2",
     "@ant-design/pro-layout": "^7.1.8",
     "@antv/l7": "^2.11.5",
     "@antv/l7-maps": "^2.11.5",
+    "@turf/turf": "^6.5.0",
     "antd": "4.24.4",
     "echarts": "^5.4.1",
     "echarts-for-react": "^3.0.2",
     "react": "17.x",
     "react-dom": "17.x",
+    "TagCloud": "^2.3.2",
     "umi": "^3.5.34"
   },
   "devDependencies": {

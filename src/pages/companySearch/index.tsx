@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Input, Row, Col, Spin, Button, Space, Table } from 'antd';
 import Title from '@/components/Title';
 import { CompanyType } from '@/Map/constants';
-import { SearchOutlined } from '@ant-design/icons';
 import { mapColor } from '@/Map/constants';
 import Chart from '@/components/Echart';
 import { requestIndustryType, requestCompany } from '@/services/search';
@@ -10,7 +9,6 @@ import RenderRow from '@/components/Row';
 import SelectSearch, { TypeListType } from './selectSearch';
 import { columns, firstOption, secondOption, thirdOption } from './constants';
 import styles from './index.less';
-const { Search } = Input;
 const content = [
   {
     label: '相关企业数',
@@ -81,24 +79,20 @@ const CompanySearch: React.FC = (props) => {
     <div className={styles.wrapper}>
       <div className={styles.search} style={{ alignItems: 'center' }}>
         <SelectSearch typeList={typeList} />
-        <Button type="primary" icon={<SearchOutlined />} />
       </div>
       <Row
         style={{
           position: 'relative',
-          height: '575px',
           top: '20px',
           marginLeft: '10px',
         }}
       >
         <Col span={4}>
-          <Row gutter={[0, 12]}>
+          <Row gutter={[0, 12]} style={{ height: '42vh' }}>
             {content.map((item, index) => (
               <RenderRow content={item} key={index} />
             ))}
-          </Row>
-          <Row>
-            <Col style={{ padding: '6px 4px' }} className={styles.typeBox}>
+            <Col className={styles.typeBox}>
               <div>
                 <span>选中的产业类别：</span>
                 <span
@@ -152,11 +146,6 @@ const CompanySearch: React.FC = (props) => {
                 <Chart option={firstOption} style={{ height: '380px' }} />
               </Col>
             </Row>
-            {/* <Row>
-              <Col span={24}>
-                <Chart option={secondOption} style={{ height: '190px' }} />
-              </Col>
-            </Row> */}
             <Row>
               <Col span={24}>
                 <Chart option={thirdOption} style={{ height: '190px' }} />

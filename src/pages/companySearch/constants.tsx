@@ -8,9 +8,7 @@ import {
 } from 'echarts/charts';
 import * as echarts from 'echarts';
 import {
-  TooltipComponent,
   TooltipComponentOption,
-  GridComponent,
   ToolboxComponentOption,
   GridComponentOption,
 } from 'echarts/components';
@@ -73,8 +71,6 @@ export const firstOption: EChartsOption = {
     show: true,
     feature: {
       mark: { show: true },
-      dataView: { show: true, readOnly: false },
-      restore: { show: true },
       saveAsImage: { show: true },
     },
   },
@@ -85,6 +81,10 @@ export const firstOption: EChartsOption = {
       radius: [20, 140],
       center: ['50%', '50%'],
       roseType: 'area',
+      label: {
+        show: true,
+        overflow: 'break',
+      },
       itemStyle: {
         borderRadius: 5,
       },

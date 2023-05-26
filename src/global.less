@@ -3,98 +3,124 @@
   padding: 0 !important;
   padding-right: 14px !important;
   z-index: 99;
-  background-color: #fff!important;
+  background-color: #fff !important;
 }
 
 body {
-    font-family: Arial, sans-serif;
+  font-family: Arial, sans-serif;
 }
 // 图层popup 样式
 .hz-popup-box {
-    width: 326px;
+  width: 326px;
 
-    .hz-popup-title {
-        display: flex;
-        line-height: 28px;
+  .hz-popup-title {
+    display: flex;
+    line-height: 28px;
 
-        div {
-            flex: 1;
-        }
-
-        img {
-            width: 40px;
-            height: 40px;
-            margin-top: -10px;
-            cursor: pointer;
-        }
+    div {
+      flex: 1;
     }
 
-    .hz-popup-data {
-        padding: 8px;
-        line-height: 32px;
-        height: 48px;
-        font-size: 12px;
-        color: #333333;
-        margin-top: 4px;
-        background-color: rgba(51, 70, 129, 0.04);
-        border-radius: 4px 4px 4px 4px;
-        display: flex;
-        overflow: hidden;
+    img {
+      width: 40px;
+      height: 40px;
+      margin-top: -10px;
+      cursor: pointer;
+    }
+  }
 
-        .ha-data-value {
-            flex: 1;
-            margin: 0 4px;
-            font-family: Medium;
-            font-size: 16px;
-            text-align: right;
-        }
+  .hz-popup-data {
+    padding: 8px;
+    line-height: 32px;
+    height: 48px;
+    font-size: 12px;
+    color: #333333;
+    margin-top: 4px;
+    background-color: rgba(51, 70, 129, 0.04);
+    border-radius: 4px 4px 4px 4px;
+    display: flex;
+    overflow: hidden;
 
-        .ha-data-unit {
-            line-height: 38px;
-        }
+    .ha-data-value {
+      flex: 1;
+      margin: 0 4px;
+      font-family: Medium;
+      font-size: 16px;
+      text-align: right;
     }
 
-    .hz-button {
-        height: 48px;
-        line-height: 48px;
-        background: #1163ff;
-        border-radius: 4px;
-        border: 1px solid #e8ecef;
-        font-family: PuHui-65;
-        font-size: 14px;
-        color: #fff;
-        cursor: pointer;
-        margin-top: 8px;
-        text-align: center;
-
-        img {
-            width: 20px;
-            height: 20px;
-            margin-right: 4px;
-            margin-top: -2px;
-        }
+    .ha-data-unit {
+      line-height: 38px;
     }
+  }
+
+  .hz-button {
+    height: 48px;
+    line-height: 48px;
+    background: #1163ff;
+    border-radius: 4px;
+    border: 1px solid #e8ecef;
+    font-family: PuHui-65;
+    font-size: 14px;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 8px;
+    text-align: center;
+
+    img {
+      width: 20px;
+      height: 20px;
+      margin-right: 4px;
+      margin-top: -2px;
+    }
+  }
 }
 
-
 .table {
-
-    .ant-table-thead>tr>th,
-    .ant-table-tbody>tr>td,
-    .ant-table tfoot>tr>th,
-    .ant-table tfoot>tr>td {
-        padding: 16px 12px;
-    }
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td,
+  .ant-table tfoot > tr > th,
+  .ant-table tfoot > tr > td {
+    padding: 16px 12px;
+  }
 }
 
 .businessTable {
-    .ant-table-thead>tr>th {
-        background: #f2f4f7;
-            font-weight: normal;
-            color: #656565;
-    }
-   .ant-table-tbody>tr>td {
-            text-align: center;
-                color: #333;
-    }
+  .ant-table-thead > tr > th {
+    background: #f2f4f7;
+    font-weight: normal;
+    color: #656565;
+  }
+  .ant-table-tbody > tr > td {
+    text-align: center;
+    color: #333;
+  }
+}
+
+.tagCloud {
+  .tagcloud {
+    font-size: 10px;
+  }
+
+  .tagcloud--item {
+    padding: 3px 6px;
+    background-color: transparent;
+    border: 1px solid transparent;
+    font-weight: bold;
+    color: gray;
+    font-family: Microsoft YaHei;
+    cursor: pointer;
+  }
+
+  .tagcloud--item:hover {
+    color: black;
+    font-size: 16px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border: 1px solid #333;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    opacity: 1 !important;
+    z-index: 100 !important;
+  }
 }

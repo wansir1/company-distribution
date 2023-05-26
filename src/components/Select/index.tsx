@@ -1,12 +1,13 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { Select as AntSelect } from 'antd';
+import { Select as AntSelect, Button } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
 const Select: React.FC<any> = (props) => {
-    const {divStyles, selectStyles} = props;
+  const { divStyles, selectStyles, handleClick } = props;
   return (
-    <Fragment>
-      <div className={styles.inputSearch} style={divStyles} >
+    <div className={styles.wrapper} style={divStyles}>
+      <div className={styles.inputSearch}>
         <AntSelect
           showSearch
           allowClear
@@ -16,7 +17,8 @@ const Select: React.FC<any> = (props) => {
           {...props}
         />
       </div>
-    </Fragment>
+      <Button type="primary" icon={<SearchOutlined />} onClick={handleClick} />
+    </div>
   );
 };
 

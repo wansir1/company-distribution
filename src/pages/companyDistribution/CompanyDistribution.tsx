@@ -92,10 +92,20 @@ const CompanyDistribution: React.FC = () => {
   };
 
   const handleDataList = async () => {
-    const cityList: CityListType = await requestCity('1597867222326329346');
-    const typeList: TypeListType = await requestIndustryType();
-    const companyList: CompanyType[] = await requestCompany({});
-    setSearchData({ cityList, typeList, companyList });
+    try {
+      const cityList: CityListType = await requestCity('1597867222326329346');
+      const typeList: TypeListType = await requestIndustryType();
+      const companyList: CompanyType[] = await requestCompany({});
+      if (
+        Array.isArray(companyList) &&
+        Array.isArray(typeList) &&
+        Array.isArray(cityList)
+      ) {
+        setSearchData({ cityList, typeList, companyList });
+      }
+    } catch (e) {
+      setSearchData({ cityList: [], typeList: [], companyList: [] });
+    }
     setLoading(false);
   };
   if (loading) {

@@ -8,13 +8,24 @@ export default [
     routes: [
       {
         path: 'distribution',
-        title: '公司分布',
+        title: '地域分布',
         component: '@/pages/companyDistribution/CompanyDistribution',
       },
       {
         path: 'cluster',
         title: '产业集群图谱',
-        component: '@/pages/clusterMapping',
+        routes: [
+          {
+            path: 'panorama',
+            title: '全景图谱',
+            component: '@/pages/clusterMapping',
+          },
+          {
+            path: 'individuals',
+            title: '个体图谱',
+            component: '@/pages/individualsMapping',
+          },
+        ],
       },
       {
         path: 'detail',
@@ -28,25 +39,33 @@ export default [
           {
             path: 'technology',
             title: '技术详情',
+            component: '@/pages/technologyDetail',
           },
           {
             path: 'investment',
             title: '投资详情',
+            component: '@/pages/investmentDetail',
           },
         ],
       },
       {
         path: 'search',
-        title: '公司搜索',
+        title: '产业分析',
         component: '@/pages/companySearch',
       },
       {
         path: 'industrialChain',
         title: '产业链分析',
+        component: '@/pages/industrialChain',
+      },
+      {
+        path: 'industrialChainPrediction',
+        title: '产业预测分析',
       },
       {
         path: 'policy',
         title: '政策库',
+        component: '@/pages/policy',
       },
       //   { path: 'test', title: '测试', component: '@/pages/index' },
       //   {

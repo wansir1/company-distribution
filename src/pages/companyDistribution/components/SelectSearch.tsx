@@ -57,14 +57,16 @@ const SelectSearch: React.FC<PropsType> = (props) => {
     (async function () {
       const companyList: CompanyType[] = await requestCompany({
         cityId: searchValue.cityValue,
-        typeId: searchValue.typeValue,
+        typeIdList: [searchValue.typeValue],
       });
-      setSearchList({
-        ...searchList,
-        companyList: companyList,
-      });
-      setFindValue(companyList);
-      setSearchValue({ ...searchValue, companyValue: '' });
+      if (Array.isArray(companyList)) {
+        setSearchList({
+          ...searchList,
+          companyList: companyList,
+        });
+        setFindValue(companyList);
+        setSearchValue({ ...searchValue, companyValue: '' });
+      }
       console.log(companyList);
     })();
     map?.getAllOverlays('polygon')[0] &&

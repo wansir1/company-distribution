@@ -1,60 +1,39 @@
+import TagCloud from 'TagCloud';
+import { GraphType } from '@/pages/clusterMapping/constants';
 export interface GraphNode {
   symbolSize: number;
   label?: {
     show?: boolean;
   };
 }
-export interface DataType {
-  id: number;
-  name: string;
-  category: number;
-  value?: number | string;
-  symbolSize?: number;
-  label?: {
-    show?: boolean;
+export interface globalThis {
+  Event: {
+    target: {
+      className: string;
+    };
   };
 }
 
-export interface LinkType {
-  source: number;
-  target: number;
-  value: string;
-}
-export interface GraphType {
-  category: { name: string }[];
-  data: DataType[];
-  links: LinkType[];
-}
-
-export const getSymbolValue = (valueArr: number[]): number[] => {
-  // 数值能够更好地体现出转换前数值之间的大小差异，线性缩放方法：
-  // 1找到原始数据中的最小值（min）和最大值（max）。
-  // 2将每个数值减去最小值，得到差值（diff）。
-  // 3计算缩放因子（scale factor）：scale = (desiredMax - desiredMin) / (max - min)，其中desiredMax是期望的最大值，desiredMin是期望的最小值。
-  // 4将每个差值乘以缩放因子，然后加上desiredMin，得到转换后的数值。
-  const MIN_SCALE = 0.005;
-  const desiredMax = 100;
-  const desiredMin = 5;
-  const min = Math.min.apply(null, valueArr);
-  const max = Math.max.apply(null, valueArr);
-  const scale = (desiredMax - desiredMin) / (max - min);
-  const nonLinearScale = (value: number) => {
-    const exponent = 1.08;
-    const scaledValue = Math.pow(value - min, exponent) * scale + desiredMin;
-    return scaledValue > 100 ? 100 : Math.round(scaledValue);
-  };
-  console.log('scale', scale, min, max);
-  const result =
-    scale < MIN_SCALE
-      ? valueArr.map((item) => {
-          return nonLinearScale(item);
-        })
-      : valueArr.map((item) => {
-          const diff = item - min;
-          const scaledNum = diff * scale + desiredMin;
-          return Math.round(scaledNum);
-        });
-  return result;
+export const handleTagCloud = (prop: any) => {
+  const { setSelectValue, getRelationData, data } = prop;
+  const container = '.tagCloud';
+  const texts = data
+    .sort((a, b) => b.registeredCapital - a.registeredCapital)
+    .map((item: any) => item.name)
+    .slice(0, 25);
+  const options = { radius: 200 };
+  TagCloud(container, texts, options);
+  let tagCloud = document.querySelector(container);
+  tagCloud?.addEventListener('click', function clickEventHandler(e) {
+    if (
+      e.target instanceof HTMLElement &&
+      e.target.className === 'tagcloud--item'
+    ) {
+      setSelectValue(e.target.innerText);
+      getRelationData(e.target.innerText);
+    }
+    // 在这里使用了一个类型保护，断言的方式可能导致运行时错误
+  });
 };
 
 export const getOption = (graphData: GraphType | undefined) => {
@@ -71,6 +50,7 @@ export const getOption = (graphData: GraphType | undefined) => {
     legend: {
       x: 'center',
       show: true,
+      top: '30rem',
       data: graphData ? graphData.category.map((item) => item.name) : [],
     },
     series: [
@@ -90,11 +70,10 @@ export const getOption = (graphData: GraphType | undefined) => {
         force: {
           repulsion: 2500,
           edgeLength: [10, 100],
-          layoutAnimation: true,
           friction: 0.1,
           //         edgeLength: 5,
           //         repulsion: 200,
-          // gravity: 0.2
+          // gravity: 0.3
         },
         legendHoverLink: false,
         emphasis: {
@@ -107,10 +86,13 @@ export const getOption = (graphData: GraphType | undefined) => {
           blurScope: 'global',
         },
         draggable: false,
+        zoom: 0.7,
+        center: [450, 270],
         roam: true,
         categories: graphData ? graphData.category : [],
         label: {
           position: 'right',
+
           show: true,
           textStyle: {
             fontSize: 12,

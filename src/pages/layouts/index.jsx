@@ -1,10 +1,10 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Dropdown, Layout, Menu, Spin } from 'antd';
 import Map from '../../Map';
 import { history, useSelector } from 'umi';
 // import { requestLoginOut } from '@/services';
 import logo from '@/assets/images/logo.png';
-import routes from '@/../config/routes'
+import routes from '@/../config/routes';
 // import { UserInfoContext } from '../authLayout';
 import style from './index.less';
 
@@ -28,7 +28,13 @@ const Layouts = (props) => {
   // if (userInfo === null) {
   //   return <Spin size="large" tip="认证中..." />;
   // }
-
+  useEffect(() => {
+    window.addEventListener('unhandledrejection', function (event) {
+      console.log('event', event);
+      console.log('message', event.message);
+      event.preventDefault();
+    });
+  }, []);
   const getItem = (label, key, icon, children, type) => {
     return {
       key,
@@ -47,7 +53,7 @@ const Layouts = (props) => {
           item.title,
           path ? path + item.path : item.path,
           '',
-          renderItem(item.routes, `${path? path+item.path: item.path}/`),
+          renderItem(item.routes, `${path ? path + item.path : item.path}/`),
         );
       }
       return getItem(item.title, path ? path + item.path : item.path, '');
@@ -69,14 +75,13 @@ const Layouts = (props) => {
   };
 
   const handleMenuClick = ({ key }) => {
-    console.log({key,openKey},'key')
+    console.log({ key, openKey }, 'key');
     history.push(key);
     setOpenKey(openKey);
   };
 
   const handleMenuOpen = (key) => {
     setOpenKey(key);
-    
   };
 
   return (
