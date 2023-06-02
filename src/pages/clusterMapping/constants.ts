@@ -78,6 +78,7 @@ export const getOption = (graphData: GraphType | undefined) => {
         type: 'graph',
         name: '北斗产业',
         layout: 'force',
+        top: '30px',
         symbolSize: 10,
         cursor: 'pointer',
         edgeLabel: {

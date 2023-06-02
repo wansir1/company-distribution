@@ -179,6 +179,7 @@ export const thirdOption: EChartsOption = {
     },
     type: 'category',
     data: [
+      '2021-03',
       '2021-06',
       '2021-09',
       '2021-12',
@@ -211,14 +212,14 @@ export const thirdOption: EChartsOption = {
     {
       barCategoryGap: '50%',
       barMaxWidth: 57,
-      data: [270, 294, 309, 450, 500, 550, 600],
+      data: [260, 270, 294, 309, 450, 500, 550, 600],
       name: '累计专利数',
       type: 'bar',
     },
     {
       barCategoryGap: '50%',
       barMaxWidth: 57,
-      data: [3, 12, 20, 30, 51, 82, 100],
+      data: [10, 3, 12, 20, 30, 51, 82, 100],
       name: '新增专利数',
       type: 'bar',
     },

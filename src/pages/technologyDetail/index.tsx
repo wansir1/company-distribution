@@ -1,19 +1,18 @@
 import React from 'react';
 import { Row, Col } from 'antd';
-import searchStyles from '@/pages/companySearch/index.less';
 import styles from './index.less';
 import CompanyPatent from '@/pages/technologyDetail/companyPatent';
-import PowerChart from '@/pages/technologyDetail/powerChart';
-import CompanyScore from '@/pages/technologyDetail/companyScore';
+import Financing from '@/pages/technologyDetail/Trademark';
+import Trademark from '@/pages/technologyDetail/Financing';
 
 const TechnologyDetail: React.FC = () => {
   return (
-    <div className={searchStyles.wrapper}>
+    <div className={styles.wrapper}>
       <Row
         gutter={[8, 0]}
         style={{
           position: 'relative',
-          top: '20px',
+          top: '10px',
           marginLeft: '6px',
           marginRight: '6px',
         }}
@@ -26,14 +25,14 @@ const TechnologyDetail: React.FC = () => {
 
         <Col span={11}>
           <div className={styles.colBox} style={{ height: '320px' }}>
-            <PowerChart />
+            <Financing />
           </div>
 
           <div
             className={styles.colBox}
             style={{ height: '328px', marginTop: '8px' }}
           >
-            <CompanyScore />
+            <Trademark />
           </div>
         </Col>
       </Row>

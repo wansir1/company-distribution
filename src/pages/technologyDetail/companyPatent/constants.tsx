@@ -1,12 +1,16 @@
 import type { ColumnsType } from 'antd/es/table';
+
+const date: Date = new Date();
+const year: number = date.getFullYear();
+
 export type PatentNumberType = {
   patentType: string;
   totalPatentRelated: number;
-  year2023: number;
-  year2022: number;
-  year2021: number;
-  year2020: number;
-  yearBefore2020: number;
+  year: number;
+  yearMinusOne: number;
+  yearMinusTwo: number;
+  yearMinusThree: number;
+  yearMinusThreeBefore: number;
 };
 
 //专利有关于年份表的table
@@ -22,37 +26,79 @@ export const patentNumberColumns: ColumnsType<PatentNumberType> = [
     dataIndex: 'totalPatentRelated',
     key: 'totalPatentRelated',
     align: 'center',
+    render: (text: number) => {
+      if (text === 0) {
+        return <span style={{ color: 'red' }}>{text}</span>;
+      } else {
+        return text;
+      }
+    },
   },
   {
-    title: '2023',
-    dataIndex: 'year2023',
-    key: 'year2023',
+    title: `${year}`,
+    dataIndex: 'year',
+    key: 'year',
     align: 'center',
+    render: (text: number) => {
+      if (text === 0) {
+        return <span style={{ color: 'red' }}>{text}</span>;
+      } else {
+        return text;
+      }
+    },
   },
   {
-    title: '2022',
-    dataIndex: 'year2022',
-    key: 'year2022',
+    title: `${year - 1}`,
+    dataIndex: 'yearMinusOne',
+    key: 'yearMinusOne',
     align: 'center',
+    render: (text: number) => {
+      if (text === 0) {
+        return <span style={{ color: 'red' }}>{text}</span>;
+      } else {
+        return text;
+      }
+    },
   },
   {
-    title: '2021',
-    dataIndex: 'year2021',
-    key: 'year2021',
+    title: `${year - 2}`,
+    dataIndex: 'yearMinusTwo',
+    key: 'yearMinusTwo',
     align: 'center',
+    render: (text: number) => {
+      if (text === 0) {
+        return <span style={{ color: 'red' }}>{text}</span>;
+      } else {
+        return text;
+      }
+    },
   },
 
   {
-    title: '2020',
-    dataIndex: 'year2020',
-    key: 'year2020',
+    title: `${year - 3}`,
+    dataIndex: 'yearMinusThree',
+    key: 'yearMinusThree',
     align: 'center',
+    render: (text: number) => {
+      if (text === 0) {
+        return <span style={{ color: 'red' }}>{text}</span>;
+      } else {
+        return text;
+      }
+    },
   },
   {
-    title: '2020年之前',
-    dataIndex: 'yearBefore2020',
-    key: 'yearBefore2020',
+    title: `${year - 3}之前`,
+    dataIndex: 'yearMinusThreeBefore',
+    key: 'yearMinusThreeBefore',
     align: 'center',
+    render: (text: number) => {
+      if (text === 0) {
+        return <span style={{ color: 'red' }}>{text}</span>;
+      } else {
+        return text;
+      }
+    },
   },
 ];
 //专利数量表的假数据
@@ -60,149 +106,68 @@ export const patentNumber_Data: PatentNumberType[] = [
   {
     patentType: '发明专利',
     totalPatentRelated: 14,
-    year2023: 0,
-    year2022: 5,
-    year2021: 3,
-    year2020: 2,
-    yearBefore2020: 4,
+    year: 0,
+    yearMinusOne: 5,
+    yearMinusTwo: 3,
+    yearMinusThree: 2,
+    yearMinusThreeBefore: 4,
   },
   {
     patentType: '外观设计',
     totalPatentRelated: 28,
-    year2023: 7,
-    year2022: 0,
-    year2021: 14,
-    year2020: 0,
-    yearBefore2020: 7,
+    year: 7,
+    yearMinusOne: 0,
+    yearMinusTwo: 14,
+    yearMinusThree: 0,
+    yearMinusThreeBefore: 7,
   },
   {
     patentType: '实用新型',
     totalPatentRelated: 15,
-    year2023: 5,
-    year2022: 4,
-    year2021: 1,
-    year2020: 4,
-    yearBefore2020: 0,
+    year: 5,
+    yearMinusOne: 4,
+    yearMinusTwo: 1,
+    yearMinusThree: 4,
+    yearMinusThreeBefore: 0,
   },
 ];
 
-const lineData: any = [
-  {
-    year: '2020之前',
-    number: 0,
-    category: '发明专利',
-  },
-  {
-    year: '2020之前',
-    number: 7,
-    category: '外观设计',
-  },
-  {
-    year: '2020之前',
-    number: 5,
-    category: '实用新型',
-  },
-  {
-    year: '2020',
-    number: 5,
-    category: '发明专利',
-  },
-  {
-    year: '2020',
-    number: 0,
-    category: '外观设计',
-  },
-  {
-    year: '2020',
-    number: 4,
-    category: '实用新型',
-  },
-  {
-    year: '2021',
-    number: 5,
-    category: '发明专利',
-  },
-  {
-    year: '2021',
-    number: 14,
-    category: '外观设计',
-  },
-  {
-    year: '2021',
-    number: 7,
-    category: '实用新型',
-  },
-  {
-    year: '2022',
-    number: 9,
-    category: '发明专利',
-  },
-  {
-    year: '2022',
-    number: 8,
-    category: '外观设计',
-  },
-  {
-    year: '2022',
-    number: 12,
-    category: '实用新型',
-  },
-  {
-    year: '2023',
-    number: 4,
-    category: '发明专利',
-  },
-  {
-    year: '2023',
-    number: 13,
-    category: '外观设计',
-  },
-  {
-    year: '2023',
-    number: 9,
-    category: '实用新型',
-  },
-];
-export const lineConfig: any = {
-  data: lineData,
-  xField: 'year',
-  yField: 'number',
-  seriesField: 'category',
-  autoFit: false,
-  width: 720,
-  height: 300,
-  // padding:[24,24,24,100],
-  label: {},
-  point: {
-    size: 5,
-    shape: 'round',
-    style: {
-      fill: 'white',
-      stroke: '#5B8FF9',
-      lineWidth: 2,
-    },
-  },
-  tooltip: {
-    showMarkers: false,
+export const lineOption: any = {
+  xAxis: {
+    type: 'category',
+    data: ['2020年之前', '2020年', '2021年', '2022年', '2023年'],
   },
   yAxis: {
-    title: { text: '专利数量', position: 'end', autoRotate: false, offset: 50 },
+    name: '专利数量',
+    type: 'value',
   },
-  xAxis: {
-    title: { text: '年份', position: 'end', offset: 14 },
+  legend: {
+    top: '4px',
   },
-  state: {
-    active: {
-      style: {
-        shadowBlur: 4,
-        stroke: '#000',
-        fill: 'red',
-      },
-    },
-  },
-  interactions: [
+  series: [
     {
-      type: 'marker-active',
+      name: '发明专利',
+      data: [2, 3, 5, 7, 6],
+      type: 'line',
+    },
+    {
+      name: '外观设计',
+      data: [0, 2, 7, 6, 11],
+      type: 'line',
+    },
+    {
+      name: '实用新型',
+      data: [3, 5, 14, 8, 5],
+      type: 'line',
     },
   ],
+  toolbox: {
+    show: true,
+    feature: {
+      mark: { show: true },
+      dataView: { show: true, readOnly: false },
+      restore: { show: true },
+      saveAsImage: { show: true },
+    },
+  },
 };

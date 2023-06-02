@@ -1,0 +1,70 @@
+import React from 'react';
+import Title from '@/components/Title';
+import { pieConfig } from '@/pages/technologyDetail/Trademark/constants';
+import { Liquid } from '@ant-design/plots';
+import { Pie } from '@ant-design/plots';
+let percent: number = 0.785489798564565;
+let newPercent: string = (percent * 100).toFixed(2);
+const liquidConfig: any = {
+  width: 160,
+  height: 160,
+  autoFit: false,
+  percent: percent,
+  outline: {
+    border: 2,
+    distance: 4,
+  },
+  statistic: {
+    title: {
+      offsetY: 25,
+      customHtml: (percent: number) => {
+        return (
+          <span style={{ fontSize: '16px', fontWeight: 'lighter' }}>
+            超过<span style={{ color: 'FF4500' }}> {newPercent}%</span>
+            <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;的同行
+          </span>
+        );
+      },
+    },
+    content: {
+      customHtml: () => {
+        return '';
+      },
+    },
+  },
+  wave: {
+    length: 128,
+  },
+  radius: 1,
+};
+const Trademark: React.FC = () => {
+  return (
+    <div>
+      <Title text="知识产权实力" style={{ fontSize: '16px' }} />
+      <div
+        style={{
+          width: '654',
+          height: '245',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Pie {...pieConfig} />
+        <div style={{ position: 'absolute', left: '210px' }}>
+          <Liquid {...liquidConfig} />
+        </div>
+      </div>
+      <span style={{ marginLeft: 10 }}>
+        拥有商标数量情况：该企业拥有商标&nbsp;
+        <span style={{ color: '#FFA500' }}>75</span>
+        &nbsp;项，超过&nbsp;
+        <span style={{ color: '#FFA500' }}>{newPercent}%</span>
+        &nbsp;的同行。
+      </span>
+    </div>
+  );
+};
+
+export default Trademark;

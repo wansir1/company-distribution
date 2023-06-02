@@ -2,14 +2,13 @@ import React from 'react';
 import { Space, Divider, Table } from 'antd';
 import Title from '@/components/Title';
 import styles from './index.less';
+import Chart from '@/components/Echart';
 import {
+  lineOption,
   patentNumber_Data,
   patentNumberColumns,
 } from '@/pages/technologyDetail/companyPatent/constants';
-import { Line } from '@ant-design/plots';
-import { lineConfig } from '@/pages/technologyDetail/companyPatent/constants';
-// PropsType给上面传下来的props变量定义数据类型
-type PropsType = {};
+
 //业务方向和技术方向的假数据
 let technologyData: string[] = ['电气', '开关柜', '变压器', '断路器', '网络'];
 let businessData: string[] = [
@@ -46,12 +45,13 @@ const CompanyPatent: React.FC = () => {
             </Space>
           </span>
         </p>
-        <Divider style={{ margin: '-6px 0px 8px 0px' }}></Divider>
+        <Divider style={{ margin: '-6px 0px 0px 0px' }}></Divider>
         <p
           style={{
             color: '	rgba(59,46,126,0.9)',
             display: 'inline-block',
             fontWeight: 'bold',
+            marginTop: '8px',
             textAlign: 'left',
           }}
         >
@@ -82,7 +82,9 @@ const CompanyPatent: React.FC = () => {
         text="技术路径分布图"
         style={{ marginBottom: '16px', marginTop: '12px', fontSize: '16px' }}
       />
-      <Line {...lineConfig} />
+      <div>
+        <Chart option={lineOption} style={{ height: '300px' }} />
+      </div>
     </>
   );
 };

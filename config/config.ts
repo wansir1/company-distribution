@@ -6,7 +6,7 @@ export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
   },
-  hash:true,
+  hash: true,
   define: {
     'process.env': {
       BASE_URL: 'http://211.149.128.139:7777/',
@@ -23,5 +23,6 @@ export default defineConfig({
     },
   ],
   fastRefresh: {},
+  mfsu: {},
   routes: routes,
 });

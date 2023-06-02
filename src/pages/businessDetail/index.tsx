@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Row, Col, Spin, Button, Space, Table } from 'antd';
 import { CompanyType } from '@/Map/constants';
 import { requestCompany } from '@/services/search';
+import { GlobalInfoContext } from '../layouts';
 import { columns, RecommendType } from './constants';
 import Select from '@/components/Select';
 import Info from './companyInfo';
 import searchStyles from '../companySearch/index.less';
 import styles from './index.less';
 const BusinessDetail: React.FC = (props) => {
-  //   const [typeList, setTypeList] = useState<TypeListType>([]);
+  const { layoutState, setLayoutState } = useContext(GlobalInfoContext);
   const [loading, setLoading] = useState(true);
   const [companyList, setCompanyList] = useState<{
     loading: boolean;
@@ -60,7 +61,10 @@ const BusinessDetail: React.FC = (props) => {
     setSelectValue(value);
   };
   const handleClick = () => {
-    console.log(selectValue, 'k');
+    if (setLayoutState) {
+      setLayoutState({ companyId: selectValue });
+      console.log(selectValue);
+    }
   };
   return (
     <div className={searchStyles.wrapper}>
@@ -84,12 +88,12 @@ const BusinessDetail: React.FC = (props) => {
       >
         <Col span={12}>
           <div className={styles.colBox}>
-            <Info />
+            <Info companyId={layoutState.companyId} />
           </div>
         </Col>
         <Col span={12}>
           <div className={styles.colBox}>
-            <span className={styles.span}>潜在竞合公司推荐</span>
+            <span className={styles.span}>竞合公司推荐</span>
             <Table
               className="businessTable"
               columns={columns}

@@ -12,7 +12,7 @@ const InvestmentDetail: React.FC = () => {
         gutter={[8, 0]}
         style={{
           position: 'relative',
-          top: '20px',
+          top: '10px',
           marginLeft: '6px',
           marginRight: '6px',
         }}

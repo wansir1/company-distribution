@@ -27,3 +27,11 @@ export function requestAllRelationships() {
 export function requestSearchRelation(param: string) {
   return requestUtils.get(`/graph/getCompanyRelationshipsByName?name=${param}`);
 }
+
+// 业务详情
+
+export function requestCompanyBusiness(param: { companyId: string }) {
+  return requestUtils.post(`/user/searchCompanyBusiness`, {
+    data: param,
+  });
+}
