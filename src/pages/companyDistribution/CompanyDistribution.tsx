@@ -1,8 +1,15 @@
 import styles from './CompanyDistribution.less';
 import { Scene, PointLayer } from '@antv/l7';
 import { useSelector } from 'umi';
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, {
+  Fragment,
+  useCallback,
+  useEffect,
+  useState,
+  useContext,
+} from 'react';
 import { Button, Col, Row, Spin } from 'antd';
+import { GlobalInfoContext } from '../layouts';
 import CartoonRightBox from '@/components/CartoonRightBox';
 import CollapseBox from '@/components/CollapseBox';
 import {
@@ -42,6 +49,7 @@ const CompanyDistribution: React.FC = () => {
       map: { map?: AMap.Map | null; loca?: any; scene: Scene };
     }) => ({ ...map }),
   );
+  const { setLayoutState } = useContext(GlobalInfoContext);
   const [findValue, setFindValue] = useState<CompanyType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchData, setSearchData] = useState<SearchListType>({
@@ -85,7 +93,7 @@ const CompanyDistribution: React.FC = () => {
         strokeWidth: 1,
       });
     pointLayer.on('click', (e) => {
-      addPopupMap(e.feature.properties, scene, () => {}, []);
+      addPopupMap(e.feature.properties, scene, setLayoutState, []);
     });
     const mapList = addMap(mapLayerList, 'company', pointLayer, scene);
     mapLayerList = [...mapList];

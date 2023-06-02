@@ -1,7 +1,7 @@
 import { Scene, Popup } from '@antv/l7';
 import PopupDataBox from '@/components/PopupDataBox';
 import ReactDOMServer from 'react-dom/server';
-
+import { history } from 'umi';
 export const drawBounds = ({
   searchName = '江西',
   level = 'province',
@@ -266,8 +266,9 @@ export let popupMap: any = null;
 const popupClick = (
   e: any,
   scene: Scene,
-  callback: () => void,
+  callback: any,
   optionList: any[] = [],
+  info: any,
 ) => {
   const event = e || window.event;
   const target = event.target || event.srcElement;
@@ -277,7 +278,8 @@ const popupClick = (
   }
   if (className === 'hz-button') {
     popupMap && popupMap.remove();
-    // callback && callback({ ...target.dataset, optionList });
+    callback && callback({ companyId: info.companyId });
+    history.push(`/industry/detail/business`);
   }
 };
 
@@ -285,7 +287,7 @@ const popupClick = (
 export const addPopupMap = (
   info: any,
   scene: Scene,
-  callback: () => void,
+  callback: any,
   optionList: any,
 ) => {
   const popup = renderPopupMap({
@@ -301,6 +303,7 @@ export const addPopupMap = (
   scene.setCenter([info.longitude, info.latitude]);
   const hzPopupBox = document.getElementById('hzPopupBox');
   if (hzPopupBox) {
-    hzPopupBox.onclick = (e) => popupClick(e, scene, callback, optionList);
+    hzPopupBox.onclick = (e) =>
+      popupClick(e, scene, callback, optionList, info);
   }
 };
