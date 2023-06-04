@@ -27,8 +27,12 @@ const BusinessDetail: React.FC = (props) => {
       const res: CompanyType[] = await requestCompany({});
       console.log(res);
       if (Array.isArray(res)) {
-        const list = res.map((item) => {
-          return { companyName: item.name, industrialLayout: item.typeName };
+        const list = res.map((item, index) => {
+          return {
+            companyName: item.name,
+            industrialLayout: item.typeName,
+            serialNumber: index + 1,
+          };
         });
         setCompanyList({ loading: false, data: res });
         setRecommendList(list);

@@ -13,9 +13,9 @@ export const columns: ColumnsType<RecommendType> = [
     dataIndex: 'serialNumber',
     key: 'serialNumber',
     align: 'center',
-    render: (record, data, index) => {
-      return <span>{index + 1}</span>;
-    },
+    // render: (record, data, index) => {
+    //   return <span>{index + 1}</span>;
+    // },
   },
   {
     title: '企业名称',
