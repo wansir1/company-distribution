@@ -10,13 +10,14 @@ import style from './index.less';
 
 interface StateType {
   companyId: string;
+  companyName: string;
 }
 interface DefaultValueType {
   layoutState: StateType;
   setLayoutState?: React.Dispatch<React.SetStateAction<StateType>>;
 }
 const defaultContextValue: DefaultValueType = {
-  layoutState: { companyId: '' },
+  layoutState: { companyId: '', companyName: '' },
 };
 const { Header, Content, Sider } = Layout;
 export const GlobalInfoContext = React.createContext(defaultContextValue);
@@ -26,7 +27,10 @@ const Layouts = (props: any) => {
   //   }));
   //   const userInfo = useContext(UserInfoContext);
   const userInfo = null;
-  const [layoutState, setLayoutState] = useState<StateType>({ companyId: '' });
+  const [layoutState, setLayoutState] = useState<StateType>({
+    companyId: '',
+    companyName: '',
+  });
   const [openKey, setOpenKey] = useState(['/industry']);
   const { pathname } = location;
   const handleLogout = async () => {

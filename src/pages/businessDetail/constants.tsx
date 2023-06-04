@@ -24,7 +24,7 @@ export const columns: ColumnsType<RecommendType> = [
     align: 'center',
   },
   {
-    title: '产业布局',
+    title: '产业类别',
     dataIndex: 'industrialLayout',
     key: 'industrialLayout',
     align: 'center',

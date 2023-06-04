@@ -278,7 +278,7 @@ const popupClick = (
   }
   if (className === 'hz-button') {
     popupMap && popupMap.remove();
-    callback && callback({ companyId: info.companyId });
+    callback && callback({ companyId: info.companyId, companyName: info.name });
     history.push(`/industry/detail/business`);
   }
 };
