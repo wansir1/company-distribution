@@ -9,12 +9,12 @@ export type SearchListType = {
 };
 type PropsType = {
   typeList: TypeListType;
+  handleClick: any;
   single?: boolean;
 };
 const SelectSearch: React.FC<PropsType> = (props) => {
   const [searchValue, setSearchValue] = useState<string[]>([]);
-  const { typeList, single = false } = props;
-  console.log({ typeList });
+  const { typeList, single = false, handleClick } = props;
   const [searchList, setSearchList] = useState<TypeListType>(typeList);
   const handleChange = (value: string[]) => {
     setSearchValue(value);
@@ -52,6 +52,9 @@ const SelectSearch: React.FC<PropsType> = (props) => {
       fieldNames={{ label: 'name', value: 'typeId' }}
       maxTagCount="responsive"
       {...props}
+      handleClick={() => {
+        handleClick(searchValue);
+      }}
     />
   );
 };

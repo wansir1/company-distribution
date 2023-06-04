@@ -4,33 +4,22 @@ import Title from '@/components/Title';
 import { CompanyType } from '@/Map/constants';
 import { mapColor } from '@/Map/constants';
 import Chart from '@/components/Echart';
-import { requestIndustryType, requestCompany } from '@/services/search';
+import {
+  requestIndustryType,
+  requestCompany,
+  requestIndustryData,
+} from '@/services/search';
 import RenderRow from '@/components/Row';
 import SelectSearch, { TypeListType } from './selectSearch';
-import { columns, firstOption, secondOption, thirdOption } from './constants';
+import {
+  columns,
+  getFirstOption,
+  IndustryData,
+  getThirdOption,
+  getIndex,
+} from './constants';
 import styles from './index.less';
-const content = [
-  {
-    label: '相关企业数',
-    value: 2735,
-    valueStyle: { color: '#13c2c2' },
-    unit: '家',
-  },
-  {
-    label: '相关企业专利数量',
-    value: 46722,
-    style: { top: '14px' },
-    valueStyle: { color: '#3436c7' },
-    unit: '个',
-  },
-  {
-    label: '相关企业中上市公司数量',
-    valueStyle: { color: 'green' },
-    style: { top: '24px' },
-    value: 119,
-    unit: '家',
-  },
-];
+
 const CompanySearch: React.FC = (props) => {
   const [typeList, setTypeList] = useState<TypeListType>([]);
   const [loading, setLoading] = useState(true);
@@ -38,25 +27,61 @@ const CompanySearch: React.FC = (props) => {
     loading: boolean;
     data: CompanyType[];
   }>({ loading: false, data: [] });
+  const [selectValue, setSelectValue] = useState<string[]>([]);
+  const [industryData, setIndustryData] = useState<IndustryData | {}>({});
+  const {
+    relatedEnterpriseNumber,
+    relatedPatentsNumber,
+    listedCompaniesNumber,
+    financingEchart,
+    patentEchart,
+  } = industryData as IndustryData;
   useEffect(() => {
     getTypeList();
   }, []);
 
-  useEffect(() => {
-    getCompanyList();
-  }, []);
-
-  const getCompanyList = async () => {
+  const getCompanyList = async (params: string[]) => {
     setCompanyList({ loading: true, data: [] });
-    const res: CompanyType[] = await requestCompany({});
-    Array.isArray(res)
-      ? setCompanyList({ loading: false, data: res })
-      : setCompanyList({ loading: false, data: [] });
+    try {
+      const res: CompanyType[] = await requestCompany({ typeIdList: params });
+      Array.isArray(res)
+        ? setCompanyList({
+            loading: false,
+            data: res.sort((a, b) => b.registeredCapital - a.registeredCapital),
+          })
+        : setCompanyList({ loading: false, data: [] });
+      if (params.length === 0) {
+        setCompanyList({ loading: false, data: [] });
+      }
+    } catch (e) {
+      setCompanyList({ loading: false, data: [] });
+    }
   };
   const getTypeList = async () => {
-    const typeList: TypeListType = await requestIndustryType();
-    Array.isArray(typeList) ? setTypeList(typeList) : setTypeList([]);
+    try {
+      const typeList: TypeListType = await requestIndustryType();
+      Array.isArray(typeList) ? setTypeList(typeList) : setTypeList([]);
+    } catch (e) {
+      console.log(e);
+      setTypeList([]);
+    }
+
     setLoading(false);
+  };
+  const getIndustryData = async (param: string[]) => {
+    try {
+      const res: IndustryData = await requestIndustryData({
+        companyTypeList: param,
+      });
+      if (!('code' in res)) {
+        setIndustryData(res);
+      }
+      if (param.length === 0) {
+        setIndustryData({});
+      }
+    } catch (e) {
+      setIndustryData({});
+    }
   };
   if (loading) {
     return (
@@ -74,11 +99,18 @@ const CompanySearch: React.FC = (props) => {
       />
     );
   }
-  console.log({ typeList, loading });
+  const handleClick = (selectValue: string[] = []) => {
+    const param: string[] = selectValue
+      .map((item) => typeList.filter((value) => value.typeId === item))
+      .map((item) => item[0].name);
+    getCompanyList(selectValue);
+    setSelectValue(selectValue);
+    getIndustryData(param);
+  };
   return (
     <div className={styles.wrapper}>
       <div className={styles.search} style={{ alignItems: 'center' }}>
-        <SelectSearch typeList={typeList} />
+        <SelectSearch typeList={typeList} handleClick={handleClick} />
       </div>
       <Row
         style={{
@@ -89,23 +121,31 @@ const CompanySearch: React.FC = (props) => {
       >
         <Col span={4}>
           <Row gutter={[0, 12]} style={{ height: '42vh' }}>
-            {content.map((item, index) => (
+            {getIndex(
+              relatedEnterpriseNumber,
+              relatedPatentsNumber,
+              listedCompaniesNumber,
+            ).map((item, index) => (
               <RenderRow content={item} key={index} />
             ))}
             <Col className={styles.typeBox}>
               <div>
                 <span>选中的产业类别：</span>
-                <span
-                  style={{
-                    borderRadius: '3px',
-                    padding: '2px 14px',
-                    display: 'inline-block',
-                    background: '#1890ff',
-                    color: '#fff',
-                  }}
-                >
-                  芯片
-                </span>
+                {selectValue.map((item) => (
+                  <span
+                    style={{
+                      borderRadius: '3px',
+                      padding: '2px 14px',
+                      display: 'inline-block',
+                      background: mapColor[+item - 1],
+                      color: '#fff',
+                      margin: '2px',
+                    }}
+                    key={item}
+                  >
+                    {typeList.filter((value) => value.typeId === item)[0].name}
+                  </span>
+                ))}
               </div>
               <div style={{ marginTop: '10px' }}>
                 <span>所有产业类别：</span>
@@ -143,12 +183,18 @@ const CompanySearch: React.FC = (props) => {
           <div className={styles.lastBox}>
             <Row>
               <Col span={24}>
-                <Chart option={firstOption} style={{ height: '380px' }} />
+                <Chart
+                  option={getFirstOption(financingEchart)}
+                  style={{ height: '380px' }}
+                />
               </Col>
             </Row>
             <Row>
               <Col span={24}>
-                <Chart option={thirdOption} style={{ height: '190px' }} />
+                <Chart
+                  option={getThirdOption(patentEchart)}
+                  style={{ height: '190px' }}
+                />
               </Col>
             </Row>
           </div>

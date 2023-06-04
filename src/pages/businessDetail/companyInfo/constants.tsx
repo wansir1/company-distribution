@@ -2,9 +2,13 @@ import type { ColumnsType } from 'antd/es/table';
 import Title from '@/components/Title';
 import { Table } from 'antd';
 type keyType = keyof CompanyBusinessIndustryInfo;
-export const businessInfoList: { value: string; key: keyType }[] = [
+export const businessInfoList: {
+  value: string;
+  key: keyType;
+  unit?: string;
+}[] = [
   { value: '公司中文名称', key: 'name' },
-  { value: '注册资本', key: 'registeredCapital' },
+  { value: '注册资本', key: 'registeredCapital', unit: '万' },
   { value: '注册地址', key: 'registeredAddress' },
   { value: '法人代表', key: 'legalRepresentative' },
   { value: '注册时间', key: 'registeredTime' },

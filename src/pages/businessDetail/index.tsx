@@ -32,13 +32,17 @@ const BusinessDetail: React.FC = (props) => {
         layoutState.companyName,
       );
       if (!('code' in res)) {
-        const list = res.data.map((item: DataType, index: number) => {
-          return {
-            companyName: item.name,
-            industrialLayout: [res.category[item.category].name],
-            serialNumber: index + 1,
-          };
-        });
+        const list = res.data
+          .map((item: DataType, index: number) => {
+            return {
+              companyName: item.name,
+              industrialLayout: [res.category[item.category].name],
+              serialNumber: index + 1,
+              registeredCapital: item.value,
+            };
+          })
+          .sort((a: any, b: any) => b.registeredCapital - a.registeredCapital);
+
         setRecommendList(list);
       } else {
         setRecommendList([]);
@@ -51,13 +55,6 @@ const BusinessDetail: React.FC = (props) => {
     try {
       const res: CompanyType[] = await requestCompany({});
       if (Array.isArray(res)) {
-        // const list = res.map((item, index) => {
-        //   return {
-        //     companyName: item.name,
-        //     industrialLayout: item.typeName,
-        //     serialNumber: index + 1,
-        //   };
-        // });
         setCompanyList({ loading: false, data: res });
       } else {
         setCompanyList({ loading: false, data: [] });

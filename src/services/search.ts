@@ -51,3 +51,11 @@ export function requestCompanyInvestment(param: { companyId: string }) {
     data: param,
   });
 }
+
+// 产业分析
+
+export function requestIndustryData(param: { companyTypeList: string[] }) {
+  return requestUtils.post(`/user/searchCompanyRelations`, {
+    data: param,
+  });
+}

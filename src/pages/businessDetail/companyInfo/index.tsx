@@ -143,7 +143,8 @@ const CompanyInfo: React.FC<PropType> = (props) => {
                 >
                   {item.value}:
                   <span style={{ marginLeft: '8px', color: '#808080' }}>
-                    {companyBusinessIndustryInfo?.[item.key] || '--'}
+                    {companyBusinessIndustryInfo?.[item.key] || '--'}{' '}
+                    {item.unit ? item.unit : null}
                   </span>
                 </p>
                 <Divider style={{ margin: '-6px 0px 0px 0px' }} />

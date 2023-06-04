@@ -3,6 +3,7 @@ import { CompanyType } from '@/Map/constants';
 import { Space } from 'antd';
 import styles from './index.less';
 export type RecommendType = {
+  registeredCapital?: string | number;
   serialNumber?: number;
   companyName: string;
   industrialLayout: string[] | string;
@@ -47,6 +48,15 @@ export const columns: ColumnsType<RecommendType> = [
           })}
         </Space>
       );
+    },
+  },
+  {
+    title: '注册资本(万)',
+    dataIndex: 'registeredCapital',
+    key: 'registeredCapital',
+    align: 'center',
+    render: (record, data) => {
+      return <span>{record ? record : '--'}</span>;
     },
   },
 ];
