@@ -2,11 +2,25 @@ import React from 'react';
 import { Table } from 'antd/es';
 import Title from '@/components/Title';
 import {
-  investment_Data,
   investmentColumns,
+  InvestmentType,
 } from '@/pages/investmentDetail/investmentList/constants';
-
-const InvestmentList: React.FC = () => {
+import { CompanyInvestmentVO } from '@/pages/investmentDetail/constants';
+interface PropType {
+  companyInvestmentVOList: CompanyInvestmentVO[];
+}
+const InvestmentList: React.FC<PropType> = (props) => {
+  const { companyInvestmentVOList } = props;
+  const companyInvestmentList: InvestmentType[] = companyInvestmentVOList?.map(
+    (item, index) => {
+      return {
+        serialNumber: index + 1,
+        name: item.name,
+        ratio: item.ratio,
+        amount: item.amount,
+      };
+    },
+  );
   return (
     <div>
       <Title
@@ -16,8 +30,12 @@ const InvestmentList: React.FC = () => {
       <Table
         className=""
         columns={investmentColumns}
-        dataSource={investment_Data}
-        pagination={false}
+        dataSource={companyInvestmentList}
+        pagination={{
+          pageSize: 5,
+          showSizeChanger: false,
+          showTotal: () => `共${companyInvestmentVOList.length}条`,
+        }}
         bordered
         size="small"
       />

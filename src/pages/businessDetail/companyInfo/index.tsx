@@ -7,6 +7,11 @@ import {
   columns,
   technologyColumns,
   ResType,
+  getTable,
+  ReleaseType,
+  TechnologyType,
+  ResultGoPublicVO,
+  ColumnHighTechVO,
 } from './constants';
 import styles from './index.less';
 const { Link } = Typography;
@@ -87,9 +92,9 @@ const CompanyInfo: React.FC<PropType> = (props) => {
         </Link>
         <div className={styles.spanColor}>
           <Space className={styles.firstSpace}>
-            {companyBusinessLayoutInfo?.resultGoPublicVO.plate && (
-              <span>{`${companyBusinessLayoutInfo?.resultGoPublicVO.plate}
-              (${companyBusinessLayoutInfo?.resultGoPublicVO.securitiesCode})`}</span>
+            {companyBusinessLayoutInfo?.resultGoPublicVO?.plate && (
+              <span>{`${companyBusinessLayoutInfo?.resultGoPublicVO?.plate}
+              (${companyBusinessLayoutInfo?.resultGoPublicVO?.securitiesCode})`}</span>
             )}
             {companyBusinessLayoutInfo?.isHighTech && <span>高新技术企业</span>}
           </Space>
@@ -165,36 +170,17 @@ const CompanyInfo: React.FC<PropType> = (props) => {
           }
         })}
       </div>
-      <Title
-        text="上市公司信息"
-        style={{ marginBottom: '3px', marginTop: '30px', fontSize: '16px' }}
-      />
-      <Table
-        className="businessTable"
-        columns={columns}
-        dataSource={[resultGoPublicVO]}
-        bordered
-        pagination={false}
-        size="small"
-      />
-
-      <Title
-        text="高新技术企业"
-        style={{ marginBottom: '3px', marginTop: '30px', fontSize: '16px' }}
-      />
-      <Table
-        className="businessTable"
-        columns={technologyColumns}
-        dataSource={[
+      {resultGoPublicVO &&
+        getTable<ReleaseType, ResultGoPublicVO>(1, resultGoPublicVO, columns)}
+      {resultHighTechVO &&
+        getTable<TechnologyType, ColumnHighTechVO>(
+          2,
           {
             ...resultHighTechVO,
             name: companyBusinessIndustryInfo?.name || '',
           },
-        ]}
-        bordered
-        pagination={false}
-        size="small"
-      />
+          technologyColumns,
+        )}
     </div>
   );
 };

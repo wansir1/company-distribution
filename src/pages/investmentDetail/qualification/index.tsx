@@ -2,13 +2,43 @@ import React from 'react';
 import Title from '@/components/Title';
 import { Table } from 'antd/es';
 import {
-  copyright_Data,
   copyrightColumns,
-  qualification_Data,
+  CopyrightType,
   qualificationColumns,
+  QualificationType,
 } from '@/pages/investmentDetail/qualification/constants';
-
-const Qualification: React.FC = () => {
+import {
+  QualificationCertificateVO,
+  SoftwareWritingVO,
+} from '@/pages/investmentDetail/constants';
+interface PropType {
+  qualificationCertificateVOList: QualificationCertificateVO[];
+  softwareWritingVOList: SoftwareWritingVO[];
+}
+const Qualification: React.FC<PropType> = (props) => {
+  const { softwareWritingVOList, qualificationCertificateVOList } = props;
+  const softwareWritingList: CopyrightType[] = softwareWritingVOList?.map(
+    (item, index) => {
+      return {
+        serialNumber: index + 1,
+        name: item.name,
+        registrationTime: item.registrationTime,
+        versionNumber: item.versionNumber,
+        registrationNumber: item.registrationNumber,
+      };
+    },
+  );
+  const qualificationCertificateList: QualificationType[] =
+    qualificationCertificateVOList?.map((item, index) => {
+      return {
+        serialNumber: index + 1,
+        name: item.name,
+        type: item.type,
+        number: item.number,
+        issuingTime: item.issuingTime,
+        closingTime: item.closingTime,
+      };
+    });
   return (
     <div>
       <Title
@@ -18,10 +48,11 @@ const Qualification: React.FC = () => {
       <Table
         className=""
         columns={copyrightColumns}
-        dataSource={copyright_Data}
+        dataSource={softwareWritingList}
         pagination={{
           pageSize: 5,
-          showTotal: () => `共${copyright_Data.length}条`,
+          showSizeChanger: false,
+          showTotal: () => `共${softwareWritingVOList.length}条`,
         }}
         bordered
         size="small"
@@ -33,10 +64,11 @@ const Qualification: React.FC = () => {
       <Table
         className=""
         columns={qualificationColumns}
-        dataSource={qualification_Data}
+        dataSource={qualificationCertificateList}
         pagination={{
           pageSize: 5,
-          showTotal: () => `共${qualification_Data.length}条`,
+          showSizeChanger: false,
+          showTotal: () => `共${qualificationCertificateVOList.length}条`,
         }}
         bordered
         size="small"

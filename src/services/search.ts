@@ -35,3 +35,19 @@ export function requestCompanyBusiness(param: { companyId: string }) {
     data: param,
   });
 }
+
+// 技术详情
+
+export function requestCompanyTechnology(param: { companyId: string }) {
+  return requestUtils.post(`/user/searchCompanyTechnology`, {
+    data: param,
+  });
+}
+
+// 投资详情
+
+export function requestCompanyInvestment(param: { companyId: string }) {
+  return requestUtils.post(`/user/searchCompanyOverseas`, {
+    data: param,
+  });
+}
