@@ -11,7 +11,7 @@ interface PropType {
 }
 const InvestmentList: React.FC<PropType> = (props) => {
   const { companyInvestmentVOList } = props;
-  const companyInvestmentList: InvestmentType[] = companyInvestmentVOList?.map(
+  let companyInvestmentList: InvestmentType[] = companyInvestmentVOList?.map(
     (item, index) => {
       return {
         serialNumber: index + 1,
@@ -21,6 +21,12 @@ const InvestmentList: React.FC<PropType> = (props) => {
       };
     },
   );
+  companyInvestmentList
+    .sort((a, b) => b.amount - a.amount)
+    .forEach((item, index) => {
+      companyInvestmentList[index] = { ...item, serialNumber: index + 1 };
+    });
+
   return (
     <div>
       <Title

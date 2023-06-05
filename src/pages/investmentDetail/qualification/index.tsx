@@ -17,7 +17,7 @@ interface PropType {
 }
 const Qualification: React.FC<PropType> = (props) => {
   const { softwareWritingVOList, qualificationCertificateVOList } = props;
-  const softwareWritingList: CopyrightType[] = softwareWritingVOList?.map(
+  let softwareWritingList: CopyrightType[] = softwareWritingVOList?.map(
     (item, index) => {
       return {
         serialNumber: index + 1,
@@ -28,7 +28,12 @@ const Qualification: React.FC<PropType> = (props) => {
       };
     },
   );
-  const qualificationCertificateList: QualificationType[] =
+  softwareWritingList
+    .sort((a, b) => b.registrationTime.localeCompare(a.registrationTime))
+    .forEach((item, index) => {
+      softwareWritingList[index] = { ...item, serialNumber: index + 1 };
+    });
+  let qualificationCertificateList: QualificationType[] =
     qualificationCertificateVOList?.map((item, index) => {
       return {
         serialNumber: index + 1,
@@ -37,6 +42,14 @@ const Qualification: React.FC<PropType> = (props) => {
         number: item.number,
         issuingTime: item.issuingTime,
         closingTime: item.closingTime,
+      };
+    });
+  qualificationCertificateList
+    .sort((a, b) => b.issuingTime.localeCompare(a.issuingTime))
+    .forEach((item, index) => {
+      qualificationCertificateList[index] = {
+        ...item,
+        serialNumber: index + 1,
       };
     });
   return (

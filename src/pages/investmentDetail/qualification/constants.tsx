@@ -18,6 +18,7 @@ export type QualificationType = {
   issuingTime: string;
   closingTime: string;
 };
+//软件著作权表格列属性设置
 export const copyrightColumns: ColumnsType<CopyrightType> = [
   {
     title: '序号',
@@ -51,37 +52,42 @@ export const copyrightColumns: ColumnsType<CopyrightType> = [
   },
 ];
 
-//企业资质列表数据类型
+//企业资质表格列属性设置
 export const qualificationColumns: ColumnsType<QualificationType> = [
   {
     title: '序号',
     dataIndex: 'serialNumber',
     key: 'serialNumber',
     align: 'center',
+    width: '8%',
   },
   {
-    title: '资质名称',
+    title: '资质证书名称',
     dataIndex: 'name',
     key: 'name',
     align: 'center',
+    width: '36%',
   },
   {
     title: '资质类型',
     dataIndex: 'type',
     key: 'type',
     align: 'center',
+    width: '12%',
   },
   {
     title: '许可证号',
     dataIndex: 'number',
     key: 'number',
     align: 'center',
+    width: '20%',
   },
   {
     title: '发证日期',
     dataIndex: 'issuingTime',
     key: 'issuingTime',
     align: 'center',
+    width: '12%',
     render: (record, data, index) => {
       if (data.issuingTime != '1990-01-01') {
         return <span>{data.issuingTime}</span>;
@@ -94,6 +100,7 @@ export const qualificationColumns: ColumnsType<QualificationType> = [
     dataIndex: 'closingTime',
     key: 'closingTime',
     align: 'center',
+    width: '12%',
     render: (record, data, index) => {
       if (data.closingTime != '1990-01-01') {
         return <span>{data.closingTime}</span>;

@@ -32,7 +32,11 @@ const BusinessDetail: React.FC = (props) => {
         layoutState.companyName,
       );
       if (!('code' in res)) {
-        const list = res.data
+        const data = res.data.filter(
+          (item) => item.name !== layoutState.companyName,
+        );
+        const list = data
+          .sort((a: any, b: any) => b.value - a.value)
           .map((item: DataType, index: number) => {
             return {
               companyName: item.name,
@@ -40,8 +44,7 @@ const BusinessDetail: React.FC = (props) => {
               serialNumber: index + 1,
               registeredCapital: item.value,
             };
-          })
-          .sort((a: any, b: any) => b.registeredCapital - a.registeredCapital);
+          });
 
         setRecommendList(list);
       } else {

@@ -26,7 +26,7 @@ export const investmentColumns: ColumnsType<InvestmentType> = [
     key: 'ratio',
     align: 'center',
     render: (record, data, index) => {
-      return <span>{data.ratio * 100}%</span>;
+      return <span>{parseFloat((data.ratio * 100).toFixed(2))}%</span>;
     },
   },
   {

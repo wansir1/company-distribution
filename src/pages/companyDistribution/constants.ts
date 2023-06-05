@@ -1,7 +1,7 @@
 export const _dataSource = {
   companyRate: '10',
-  differenceValue: '10',
-  companyNum: '44',
+  differenceValue: '5',
+  companyNum: '41',
 };
 export const _data = [
   {
