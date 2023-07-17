@@ -1,11 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Dropdown, Layout, Menu, Spin } from 'antd';
 import Map from '../../Map';
-import { history, useSelector } from 'umi';
+import { history } from 'umi';
 // import { requestLoginOut } from '@/services';
 import logo from '@/assets/images/logo.png';
 import routes from '@/../config/routes';
-// import { UserInfoContext } from '../authLayout';
 import style from './index.less';
 
 interface StateType {
@@ -22,11 +21,10 @@ const defaultContextValue: DefaultValueType = {
 const { Header, Content, Sider } = Layout;
 export const GlobalInfoContext = React.createContext(defaultContextValue);
 const Layouts = (props: any) => {
-  //   const { map } = useSelector(({ map }) => ({
-  //     ...map,
-  //   }));
-  //   const userInfo = useContext(UserInfoContext);
-  const userInfo = null;
+  const userInfo = localStorage.getItem('userInfo')
+    ? JSON.parse(localStorage.getItem('userInfo')!)
+    : '';
+  console.log(userInfo, 'userInfo');
   const [layoutState, setLayoutState] = useState<StateType>({
     companyId: '',
     companyName: '',
@@ -39,16 +37,9 @@ const Layouts = (props: any) => {
     // window.location.reload();
   };
 
-  // if (userInfo === null) {
-  //   return <Spin size="large" tip="认证中..." />;
-  // }
-  //   useEffect(() => {
-  //     window.addEventListener('unhandledrejection', function (event) {
-  //       console.log('event', event);
-  //       console.log('message', event.message);
-  //       event.preventDefault();
-  //     });
-  //   }, []);
+  //   if (!userInfo) {
+  //     return <Spin size="large" tip="认证中..." />;
+  //   }
   const getItem = (
     label: any,
     key: any,
@@ -121,7 +112,11 @@ const Layouts = (props: any) => {
               }
             >
               <span className={style.username}>
-                {userInfo ? userInfo.name : '未登录'}
+                {userInfo
+                  ? userInfo.name
+                    ? userInfo.name
+                    : '无名氏'
+                  : '未登录'}
               </span>
             </Dropdown>
           </div>

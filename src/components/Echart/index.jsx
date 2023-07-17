@@ -2,15 +2,18 @@ import ReactECharts from 'echarts-for-react';
 import { Fragment } from 'react';
 import * as echarts from 'echarts';
 
-const EChart = (props) => {
-  const { option, style } = props; //option 的值由父组件传入
-
+const Chart = (props) => {
+  const { option, styles = {}, chartRef } = props; //option 的值由父组件传入
   return (
-    <Fragment>
-      {option && (
-        <ReactECharts key={Date.now()} option={option} style={style} {...props} />
-      )}
-    </Fragment>
+    option && (
+      <ReactECharts
+        key={Date.now()}
+        option={option}
+        style={{ height: '100%', width: '100%', ...styles }}
+        ref={chartRef}
+        {...props}
+      />
+    )
   );
 };
-export default EChart;
+export default Chart;

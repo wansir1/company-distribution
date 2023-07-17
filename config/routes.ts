@@ -61,6 +61,7 @@ export default [
       {
         path: 'industrialChainPrediction',
         title: '产业预测分析',
+        component: '@/pages/industrialChainPrediction',
       },
       {
         path: 'policy',
@@ -85,8 +86,9 @@ export default [
       },
     ],
   },
+  { path: '/home', component: '@/pages/centralAdministration' },
   {
     path: '*',
-    redirect: '/industry/default',
+    redirect: '/home',
   },
 ];

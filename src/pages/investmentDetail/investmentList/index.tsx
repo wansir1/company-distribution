@@ -22,7 +22,7 @@ const InvestmentList: React.FC<PropType> = (props) => {
     },
   );
   companyInvestmentList
-    .sort((a, b) => b.amount - a.amount)
+    ?.sort((a, b) => b.amount - a.amount)
     .forEach((item, index) => {
       companyInvestmentList[index] = { ...item, serialNumber: index + 1 };
     });

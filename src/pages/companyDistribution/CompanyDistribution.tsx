@@ -51,6 +51,7 @@ const CompanyDistribution: React.FC = () => {
   );
   const { setLayoutState } = useContext(GlobalInfoContext);
   const [findValue, setFindValue] = useState<CompanyType[]>([]);
+  const [city, setCity] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [searchData, setSearchData] = useState<SearchListType>({
     cityList: [],

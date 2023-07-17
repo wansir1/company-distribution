@@ -5,7 +5,7 @@ import { Col, Row } from 'antd';
 import Tip from '../Tip';
 
 type DataType = {
-  contentType?: number;
+  contentType: number;
   length?: {
     type?: string;
     callback?: (e: any) => void;
@@ -18,8 +18,8 @@ type DataType = {
   type?: string;
   callback?: (e: any) => void;
   left?: boolean;
-  value: string;
-  label: string;
+  value?: string;
+  label?: string;
   tip?: string;
   unit?: string;
   differenceName?: string;

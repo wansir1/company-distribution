@@ -14,6 +14,7 @@ const Financing: React.FC<PropType> = (props) => {
   let newPercent: string = (resultCompanyFinances?.financeRatio * 100).toFixed(
     2,
   );
+  newPercent = isNaN(Number(newPercent)) ? ' -- ' : newPercent;
   const liquidConfig: any = {
     width: 160,
     height: 160,

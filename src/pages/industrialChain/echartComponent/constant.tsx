@@ -2,8 +2,10 @@ import * as echarts from 'echarts';
 import * as turf from '@turf/turf';
 import geoJsonData from '@/assets/datavJson/JiangXi.json';
 import jiangXi from '@/assets/datavJson/JiangXi_exclusive.json';
+import ReactECharts from 'echarts-for-react';
 type EChartsOption = echarts.EChartsOption;
 
+type ChartRefType = ReactECharts;
 interface EnterpriseValuesType {
   value: number;
   name: string;
@@ -13,6 +15,7 @@ interface EnterpriseDataType {
   category: { name: string }[];
   values: EnterpriseValuesType[];
 }
+
 const getEnterpriseOption = (
   data: EnterpriseDataType,
   componentNumber: number,
@@ -33,6 +36,12 @@ const getEnterpriseOption = (
       subtext: subtext,
       top: 'top',
       left: 'left',
+      textStyle: {
+        fontSize: 18,
+      },
+      subtextStyle: {
+        fontSize: 12,
+      },
     },
     tooltip: {
       trigger: 'item',
@@ -62,7 +71,7 @@ const getEnterpriseOption = (
     ],
     series: [
       {
-        name: '企业数量统计分布',
+        name: text,
         type: 'pie',
         radius: ['40%', '70%'],
         center: ['50%', '60%'],
@@ -71,7 +80,6 @@ const getEnterpriseOption = (
           show: true,
           position: 'inner',
           formatter(param) {
-            console.log(param, 'jj');
             return param.value + '';
           },
         },
@@ -93,6 +101,12 @@ const getEnterpriseOption = (
         data: data.values,
       },
     ],
+    animationDelay: function (idx) {
+      return idx * 200;
+    },
+    animationDelayUpdate: function (idx) {
+      return idx * 200;
+    },
   };
 };
 // 增长率组件
@@ -117,7 +131,10 @@ const getGrowthRateOption = (
       text: text,
       subtext: subtext,
       textStyle: {
-        // fontSize: 15,
+        fontSize: 18,
+      },
+      subtextStyle: {
+        fontSize: 12,
       },
     },
     tooltip: {
@@ -173,6 +190,12 @@ const getGrowthRateOption = (
         data: [0.3, 0.12, 0.2, 0.4, 0.4, 0.3, 0.25, 0.38, 0.5, 0.4, 0.14, 0.33],
       },
     ],
+    animationDelay: function (idx) {
+      return idx * 130;
+    },
+    animationDelayUpdate: function (idx) {
+      return idx * 130;
+    },
   };
 };
 
@@ -202,6 +225,12 @@ const getMapOption = (data: any, componentNumber: number) => {
       text: text,
       subtext: subtext,
       left: 'left',
+      textStyle: {
+        fontSize: 18,
+      },
+      subtextStyle: {
+        fontSize: 12,
+      },
     },
     tooltip: {
       trigger: 'item',
@@ -221,6 +250,9 @@ const getMapOption = (data: any, componentNumber: number) => {
       backgroundColor: '#dcdcdc',
       inRange: {
         color: color,
+      },
+      textStyle: {
+        fontSize: 12,
       },
       // text: ['High', 'Low'],
     },
@@ -285,4 +317,5 @@ export {
   getEnterpriseOption,
   getGrowthRateOption,
   getMapOption,
+  ChartRefType,
 };

@@ -1,3 +1,4 @@
+import { number } from 'echarts';
 import { requestUtils } from '../utils/request';
 
 interface paramsType {
@@ -7,7 +8,7 @@ interface paramsType {
 }
 
 export function requestCity(param: string) {
-  return requestUtils.get(`user/getCitysByProvinceId/${param}`);
+  return requestUtils.get(`/user/getCitysByProvinceId/${param}`);
 }
 
 export function requestCompany(param: paramsType) {
@@ -58,4 +59,22 @@ export function requestIndustryData(param: { companyTypeList: string[] }) {
   return requestUtils.post(`/user/searchCompanyRelations`, {
     data: param,
   });
+}
+
+// 登录
+interface LoginParam {
+  phone: string;
+  password: string;
+  role: number;
+}
+export function requestLogin(param: LoginParam) {
+  return requestUtils.post(`/user/login`, {
+    data: param,
+  });
+}
+
+// 注册
+
+export function requestRegCompany() {
+  return requestUtils.get(`/user/getCompany`);
 }

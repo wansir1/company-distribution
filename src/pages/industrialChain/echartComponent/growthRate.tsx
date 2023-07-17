@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Chart from '@/components/Echart';
-import { getGrowthRateOption } from './constant';
-export const GrowthRate: React.FC<{ componentNumber?: number }> = (props) => {
+import { getGrowthRateOption, ChartRefType } from './constant';
+export const GrowthRate: React.FC<{
+  componentNumber?: number;
+  chartRef?: React.RefObject<ChartRefType>;
+  styles?: { [key: string]: string };
+}> = (props) => {
   const [data, setData] = useState<number>();
-  const { componentNumber = 1 } = props;
+  const { componentNumber = 1, chartRef, styles = {} } = props;
   useEffect(() => {
     getData();
   }, []);
@@ -15,5 +19,5 @@ export const GrowthRate: React.FC<{ componentNumber?: number }> = (props) => {
     }
   };
   const option = data ? getGrowthRateOption(data, componentNumber) : {};
-  return <Chart option={option} style={{ height: '27vh' }} />;
+  return <Chart option={option} chartRef={chartRef} styles={styles} />;
 };

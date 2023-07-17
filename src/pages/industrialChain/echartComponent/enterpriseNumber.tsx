@@ -5,14 +5,17 @@ import {
   EnterpriseDataType,
   EnterpriseValuesType,
   getEnterpriseOption,
+  ChartRefType,
 } from './constant';
 import { requestAllRelationships } from '@/services/search';
 
-export const EnterpriseNumber: React.FC<{ componentNumber?: number }> = (
-  props,
-) => {
+export const EnterpriseNumber: React.FC<{
+  componentNumber?: number;
+  chartRef?: React.RefObject<ChartRefType>;
+  styles?: { [key: string]: string };
+}> = (props) => {
   const [data, setData] = useState<EnterpriseDataType>();
-  const { componentNumber = 1 } = props;
+  const { componentNumber = 1, chartRef, styles = {} } = props;
   useEffect(() => {
     getRelationData();
   }, []);
@@ -20,9 +23,9 @@ export const EnterpriseNumber: React.FC<{ componentNumber?: number }> = (
     try {
       let temp: EnterpriseValuesType[] = [];
       const res = await requestAllRelationships();
-      res.category.map((item: { name: string }, index: number) => {
+      res?.category.map((item: { name: string }, index: number) => {
         let count = 0;
-        res.data.map((item: DataType) => {
+        res?.data.map((item: DataType) => {
           if (item.category === index) {
             count++;
           }
@@ -35,5 +38,5 @@ export const EnterpriseNumber: React.FC<{ componentNumber?: number }> = (
     }
   };
   const option = data ? getEnterpriseOption(data, componentNumber) : {};
-  return <Chart option={option} style={{ height: '27vh' }} />;
+  return <Chart option={option} chartRef={chartRef} styles={styles} />;
 };

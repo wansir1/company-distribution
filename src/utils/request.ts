@@ -2,10 +2,11 @@
  * request 网络请求工具
  * 更详细的 api 文档: https://github.com/umijs/umi-request
  */
-import request, { extend } from 'umi-request';
+import request, { extend, RequestOptionsInit } from 'umi-request';
+import { history } from 'umi';
 import { notification } from 'antd';
 
-export function getQueryString(name:any) {
+export function getQueryString(name: any) {
   const reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
   const r = window.location.search.substr(1).match(reg);
   if (r != null) return unescape(r[2]);
@@ -13,10 +14,10 @@ export function getQueryString(name:any) {
 }
 
 type codeMessageType = {
-    [key:number]: string
-}
+  [key: number]: string;
+};
 
-const codeMessage:codeMessageType = {
+const codeMessage: codeMessageType = {
   200: '服务器成功返回请求的数据。',
   201: '新建或修改数据成功。',
   202: '一个请求已经进入后台排队（异步任务）。',
@@ -37,7 +38,7 @@ const codeMessage:codeMessageType = {
 /**
  * 异常处理程序
  */
-const errorHandler = (error:any) => {
+const errorHandler = (error: any) => {
   const { response } = error;
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
@@ -70,11 +71,9 @@ const prefix = process.env.BASE_URL;
 request.interceptors.response.use(async (response, options) => {
   if (response.status === 401) {
     // @ts-ignore
-    const orgId = getQueryString('_orgId');
     const responseBody = await response.json();
-    window.location.href = `${process.env.LOGIN_ADDRESS}&state=${
-      responseBody.state
-    }&name=${responseBody.name || ''}&_orgId=${orgId}`;
+    console.log(responseBody, 'responseBody');
+    // history.push(`/home`)
     throw response;
   }
   return response;
@@ -85,12 +84,34 @@ request.interceptors.response.use((response) => {
   return parseRequest(response);
 });
 
+/**
+ * 添加请求拦截器
+ */
+// request.interceptors.request.use((url, options) => {
+//     // 获取 Token
+//     const token = localStorage.getItem('token');
+//     // 添加 Token 到请求头
+//     if (token) {
+//         const headers = {
+//             ...options.headers,
+//             Authorization: `${token}`,
+//         };
+//         return {
+//             url,
+//             options:{...options, headers},
+//         };
+//     }
+//     return {
+//         url,
+//         options,
+//     };
+// });
+
 export const requestUtils = extend({
   prefix: prefix + '',
   errorHandler,
   credentials: 'include',
 });
-
 
 export const createRequest = extend;
 

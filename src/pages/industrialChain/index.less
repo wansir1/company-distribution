@@ -63,6 +63,7 @@
   background: #ffffff;
   padding: 6 14px;
   margin: 3px;
+  cursor: pointer;
   overflow: auto;
 }
 
@@ -71,4 +72,23 @@
   flex-direction: column;
   align-items: center;
   margin-top: 3px;
+}
+
+.textBox::after {
+  content: '';
+  width: 5em;
+  height: 1em;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  animation: scale 2s linear infinite;
+}
+
+@keyframes scale {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.2, 1);
+  }
 }

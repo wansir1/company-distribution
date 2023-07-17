@@ -15,6 +15,8 @@ const Trademark: React.FC<PropsType> = (props) => {
   let newPercent: string = (
     resultCompanyTrademarks?.trademarkRatio * 100
   ).toFixed(2);
+  newPercent = isNaN(Number(newPercent)) ? ' -- ' : newPercent;
+
   const liquidConfig: any = {
     width: 160,
     height: 160,

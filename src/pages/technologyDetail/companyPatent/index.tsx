@@ -18,7 +18,6 @@ interface PropType {
 const MAX_SPANS = 4;
 const CompanyPatent: React.FC<PropType> = (props) => {
   const { resultIndustryTypeVOS, searchFormatPatentMap } = props;
-
   const moreBusinessSpan: ResultIndustryTypeVOS[] = resultIndustryTypeVOS
     ?.filter((item: ResultIndustryTypeVOS) => item.type == 0)
     .slice(MAX_SPANS);

@@ -9,6 +9,7 @@ import Select from '@/components/Select';
 import Info from './companyInfo';
 import searchStyles from '../companySearch/index.less';
 import styles from './index.less';
+
 const BusinessDetail: React.FC = (props) => {
   const { layoutState, setLayoutState } = useContext(GlobalInfoContext);
   const [loading, setLoading] = useState(true);

@@ -1,18 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
+import { Link, history } from 'umi';
 import { Spin } from 'antd';
 import { requestIndustryType } from '@/services/search';
-import SelectSearch, { TypeListType } from '../companySearch/selectSearch';
+import { TypeListType } from '../companySearch/selectSearch';
 import {
   EnterpriseNumber,
   GrowthRate,
   MapDistribution,
 } from './echartComponent';
+import ModalBox from '@/components/ModalBox';
 import styles from './index.less';
 import planet from '@/assets/images/planet.gif';
 
 const IndustrialChain: React.FC = (props) => {
   const [typeList, setTypeList] = useState<TypeListType>([]);
   const [loading, setLoading] = useState(true);
+  const [visible, setVisible] = useState(false);
+  const [modalSelect, setModalSelect] = useState<number | null>(null);
+  const pointEvent = { pointerEvents: 'none' };
   useEffect(() => {
     getTypeList();
   }, []);
@@ -37,44 +42,67 @@ const IndustrialChain: React.FC = (props) => {
       />
     );
   }
-  console.log({ typeList, loading }, 'lll');
+  const componentMapping: { [key: number]: React.ReactNode } = {
+    11: <EnterpriseNumber />,
+    12: <EnterpriseNumber componentNumber={2} />,
+    21: <GrowthRate />,
+    22: <GrowthRate componentNumber={2} />,
+    23: <GrowthRate componentNumber={3} />,
+    31: <MapDistribution />,
+    32: <MapDistribution componentNumber={2} />,
+  };
+  const handleClick = (num: number) => {
+    setVisible(true);
+    setModalSelect(num);
+  };
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.content}>
-        <div className={styles.firstRow}>
-          <div className={styles.box}>
-            <EnterpriseNumber />
+    <Fragment>
+      <div className={styles.wrapper}>
+        <div className={styles.content}>
+          <div className={styles.firstRow}>
+            <div className={styles.box} onClick={() => handleClick(11)}>
+              <EnterpriseNumber styles={pointEvent} />
+            </div>
+
+            <div className={styles.textBox}>
+              <div className={styles.text}>多维度产业分析</div>
+              <img
+                src={planet}
+                style={{ height: '17vh', borderRadius: '50%' }}
+              />
+            </div>
+            <div className={styles.box} onClick={() => handleClick(12)}>
+              <EnterpriseNumber componentNumber={2} styles={pointEvent} />
+            </div>
+            <div className={styles.box} onClick={() => handleClick(21)}>
+              <GrowthRate styles={pointEvent} />
+            </div>
+            <div className={styles.box} onClick={() => handleClick(22)}>
+              <GrowthRate componentNumber={2} styles={pointEvent} />
+            </div>
+            <div className={styles.box} onClick={() => handleClick(23)}>
+              <GrowthRate componentNumber={3} styles={pointEvent} />
+            </div>
           </div>
-          <div className={styles.textBox}>
-            {/* <div className={styles.search} style={{ alignItems: 'center' }}>
-              <SelectSearch typeList={typeList} single={true} />
-            </div> */}
-            <div className={styles.text}>多维度产业分析</div>
-            <img src={planet} style={{ height: '19vh', borderRadius: '50%' }} />
-          </div>
-          <div className={styles.box}>
-            <EnterpriseNumber componentNumber={2} />
-          </div>
-          <div className={styles.box}>
-            <GrowthRate />
-          </div>
-          <div className={styles.box}>
-            <GrowthRate componentNumber={2} />
-          </div>
-          <div className={styles.box}>
-            <GrowthRate componentNumber={3} />
-          </div>
-        </div>
-        <div className={styles.secondRow}>
-          <div className={styles.box}>
-            <MapDistribution />
-          </div>
-          <div className={styles.box}>
-            <MapDistribution componentNumber={2} />
+          <div className={styles.secondRow}>
+            <div className={styles.box} onClick={() => handleClick(31)}>
+              <MapDistribution styles={pointEvent} />
+            </div>
+            <div className={styles.box} onClick={() => handleClick(32)}>
+              <MapDistribution componentNumber={2} styles={pointEvent} />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <ModalBox
+        visible={visible}
+        onCancel={() => {
+          setVisible(false);
+        }}
+      >
+        {modalSelect && componentMapping[modalSelect]}
+      </ModalBox>
+    </Fragment>
   );
 };
 

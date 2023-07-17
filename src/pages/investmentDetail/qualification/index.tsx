@@ -29,7 +29,7 @@ const Qualification: React.FC<PropType> = (props) => {
     },
   );
   softwareWritingList
-    .sort((a, b) => b.registrationTime.localeCompare(a.registrationTime))
+    ?.sort((a, b) => b.registrationTime.localeCompare(a.registrationTime))
     .forEach((item, index) => {
       softwareWritingList[index] = { ...item, serialNumber: index + 1 };
     });
@@ -45,7 +45,7 @@ const Qualification: React.FC<PropType> = (props) => {
       };
     });
   qualificationCertificateList
-    .sort((a, b) => b.issuingTime.localeCompare(a.issuingTime))
+    ?.sort((a, b) => b.issuingTime.localeCompare(a.issuingTime))
     .forEach((item, index) => {
       qualificationCertificateList[index] = {
         ...item,
