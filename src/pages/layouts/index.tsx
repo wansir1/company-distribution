@@ -1,18 +1,20 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dropdown, Layout, Menu, Spin } from 'antd';
 import Map from '../../Map';
-import { history } from 'umi';
+import { history, useLocation } from 'umi';
 // import { requestLoginOut } from '@/services';
 import logo from '@/assets/images/logo.png';
 import routes from '@/../config/routes';
 import style from './index.less';
-
+import { LoginType } from '@/pages/home/constants';
+import { message } from 'antd/es';
 interface StateType {
   companyId: string;
   companyName: string;
 }
 interface DefaultValueType {
   layoutState: StateType;
+  userInfo?: LoginType;
   setLayoutState?: React.Dispatch<React.SetStateAction<StateType>>;
 }
 const defaultContextValue: DefaultValueType = {
@@ -21,25 +23,33 @@ const defaultContextValue: DefaultValueType = {
 const { Header, Content, Sider } = Layout;
 export const GlobalInfoContext = React.createContext(defaultContextValue);
 const Layouts = (props: any) => {
-  const userInfo = localStorage.getItem('userInfo')
-    ? JSON.parse(localStorage.getItem('userInfo')!)
-    : '';
-  console.log(userInfo, 'userInfo');
+  const [userInfo, setUserInfo] = useState<LoginType>(
+    (useLocation().state as any).userInfo,
+  );
   const [layoutState, setLayoutState] = useState<StateType>({
     companyId: '',
     companyName: '',
   });
+  console.log(userInfo, layoutState, 'userInfo');
   const [openKey, setOpenKey] = useState(['/industry']);
   const { pathname } = location;
   const handleLogout = async () => {
     console.log(routes, 'fs');
+    localStorage.clear();
+    message.success('退出成功');
+    await waitTime(600);
+    history.push('/home');
     // await requestLoginOut();
     // window.location.reload();
   };
 
-  //   if (!userInfo) {
-  //     return <Spin size="large" tip="认证中..." />;
-  //   }
+  const waitTime = (time: number = 100) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(true);
+      }, time);
+    });
+  };
   const getItem = (
     label: any,
     key: any,
@@ -96,7 +106,9 @@ const Layouts = (props: any) => {
   };
 
   return (
-    <GlobalInfoContext.Provider value={{ layoutState, setLayoutState }}>
+    <GlobalInfoContext.Provider
+      value={{ layoutState, setLayoutState, userInfo }}
+    >
       <Layout className={style.appLayout}>
         <Header>
           <div className={style.logo}>

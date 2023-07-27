@@ -49,7 +49,7 @@ const CompanyDistribution: React.FC = () => {
       map: { map?: AMap.Map | null; loca?: any; scene: Scene };
     }) => ({ ...map }),
   );
-  const { setLayoutState } = useContext(GlobalInfoContext);
+  const { setLayoutState, userInfo } = useContext(GlobalInfoContext);
   const [findValue, setFindValue] = useState<CompanyType[]>([]);
   const [city, setCity] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
@@ -65,7 +65,7 @@ const CompanyDistribution: React.FC = () => {
     };
   }, [scene]);
   useEffect(() => {
-    console.log(mapLayerList, 'kkkkkkkk');
+    console.log(mapLayerList, userInfo, 'kkkkkkkk');
     scene && deleteMap(mapLayerList, 'search', 'company', scene);
     scene && scene.removeAllLayer();
     popupMap && popupMap.remove();

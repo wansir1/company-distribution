@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import styles from './index.less';
 import { Button, message, Form, Input, Select } from 'antd';
-import { requestRegCompany, requestLogin } from '@/services/search';
+import {
+  requestRegCompany,
+  requestLogin,
+  requestRegister,
+  RegisterParam,
+  LoginParam,
+} from '@/services/search';
 import { history } from 'umi';
 import {
-  LoginFormType,
   handleLoginSuccess,
   LoginType,
   RegCompanyType,
+  checkPhone,
 } from './constants';
 import lockAlt from '@/assets/images/lockAlt.svg';
 import phone from '@/assets/images/phone.svg';
@@ -18,17 +24,19 @@ const Home: React.FC = () => {
   const [companyList, setCompanyList] = useState<RegCompanyType[]>([]);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
-  const onLogFinish = async (values: LoginFormType) => {
+  const onLogFinish = async (values: LoginParam) => {
     try {
       setLoading(true);
       const res: LoginType = await requestLogin(values);
       console.log(res);
       setLoading(false);
-      if (typeof res === 'string') {
+      if ('code' in res) {
         message.error('登录信息输入错误，请重新登录');
       } else {
         handleLoginSuccess(res);
-        history.push(`/industry/default`);
+        values.role === 1
+          ? history.push(`/industry/distribution`, { userInfo: res })
+          : history.push(`/administration/personCentral`);
         message.success('登录成功');
       }
       console.log(res, '--login');
@@ -54,17 +62,17 @@ const Home: React.FC = () => {
       console.log(e);
     }
   };
-  const onRegFinish = async (values: any) => {
+  const onRegFinish = async (values: RegisterParam) => {
     try {
-      // setLoading(true);
-      // const res: LoginType = await requestLogin(values);
-      // console.log(res);
-      // setLoading(false);
-      const res = 1;
+      setLoading(true);
+      const res = await requestRegister(values);
+      console.log(res);
+      setLoading(false);
+
       if (typeof res === 'string') {
-        message.error('注册失败，请重新注册');
+        message.success('注册成功，审核通过后可登陆');
       } else {
-        message.success('注册成功，请登录');
+        message.error('注册失败，请重新注册');
       }
       form.resetFields();
       console.log(res, '--login');
@@ -227,7 +235,7 @@ const Home: React.FC = () => {
                         <Form onFinish={onRegFinish} form={form}>
                           <div className={styles.formGroup}>
                             <Form.Item
-                              name="regName"
+                              name="name"
                               rules={[
                                 {
                                   required: true,
@@ -249,7 +257,7 @@ const Home: React.FC = () => {
                           </div>
                           <div className={styles.formGroup}>
                             <Form.Item
-                              name="regPhone"
+                              name="phone"
                               rules={[
                                 {
                                   required: true,
@@ -258,6 +266,22 @@ const Home: React.FC = () => {
                                 {
                                   pattern: /^[0-9]{11}$/,
                                   message: '请输入正确的手机号码!',
+                                },
+                                {
+                                  validator: async (_, value) => {
+                                    const pattern = /^[0-9]{11}$/;
+                                    if (!pattern.test(value))
+                                      return Promise.resolve();
+                                    const notExitPhone = await checkPhone(
+                                      value,
+                                    );
+                                    if (!value || notExitPhone) {
+                                      return Promise.resolve();
+                                    }
+                                    return Promise.reject(
+                                      new Error('手机号码已存在，请重新输入!'),
+                                    );
+                                  },
                                 },
                               ]}
                             >
@@ -278,7 +302,7 @@ const Home: React.FC = () => {
                             style={{ marginTop: '0.5rem' }}
                           >
                             <Form.Item
-                              name="regPass"
+                              name="password"
                               rules={[
                                 {
                                   required: true,
@@ -371,7 +395,6 @@ const Home: React.FC = () => {
                               >
                                 <Option value={1}>普通用户</Option>
                                 <Option value={2}>普通管理员</Option>
-                                <Option value={3}>超级管理员</Option>
                               </Select>
                             </Form.Item>
                             <img

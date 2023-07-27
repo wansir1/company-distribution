@@ -73,7 +73,7 @@ request.interceptors.response.use(async (response, options) => {
     // @ts-ignore
     const responseBody = await response.json();
     console.log(responseBody, 'responseBody');
-    // history.push(`/home`)
+    history.push(`/home`);
     throw response;
   }
   return response;
@@ -87,30 +87,30 @@ request.interceptors.response.use((response) => {
 /**
  * 添加请求拦截器
  */
-// request.interceptors.request.use((url, options) => {
-//     // 获取 Token
-//     const token = localStorage.getItem('token');
-//     // 添加 Token 到请求头
-//     if (token) {
-//         const headers = {
-//             ...options.headers,
-//             Authorization: `${token}`,
-//         };
-//         return {
-//             url,
-//             options:{...options, headers},
-//         };
-//     }
-//     return {
-//         url,
-//         options,
-//     };
-// });
+request.interceptors.request.use((url, options) => {
+  // 获取 Token
+  const token = localStorage.getItem('token');
+  // 添加 Token 到请求头
+  if (token) {
+    const headers = {
+      ...options.headers,
+      Authorization: `${token}`,
+    };
+    return {
+      url,
+      options: { ...options, headers },
+    };
+  }
+  return {
+    url,
+    options,
+  };
+});
 
 export const requestUtils = extend({
   prefix: prefix + '',
   errorHandler,
-  credentials: 'include',
+  //   credentials: 'include',
 });
 
 export const createRequest = extend;

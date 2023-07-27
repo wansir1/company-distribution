@@ -152,7 +152,7 @@ const ModalBox: React.FC<PropsType> = ({ children, visible, onCancel }) => {
         </div>
         {visible && (
           <div className={styles.close}>
-            <ArrowLeftOutlined style={{ fontSize: '14px' }} />
+            <ArrowLeftOutlined rev={undefined} style={{ fontSize: '14px' }} />
           </div>
         )}
       </div>

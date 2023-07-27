@@ -54,12 +54,12 @@ export default [
         component: '@/pages/companySearch',
       },
       {
-        path: 'industrialChain',
+        path: 'industrial-chain',
         title: '产业链分析',
         component: '@/pages/industrialChain',
       },
       {
-        path: 'industrialChainPrediction',
+        path: 'industrial-chain-prediction',
         title: '产业预测分析',
         component: '@/pages/industrialChainPrediction',
       },
@@ -80,15 +80,69 @@ export default [
       //     path: 'userInfo',
       //     component: '@/pages/user/map',
       //   },
+    ],
+  },
+  {
+    path: '/administration',
+    name: '管理中心',
+    component: '@/pages/centralAdministration',
+    routes: [
       {
-        path: '*',
-        redirect: 'distribution',
+        path: 'person-central',
+        name: '个人中心',
+        component: '@/pages/personCentral',
+      },
+      {
+        path: 'company-central',
+        name: '企业中心',
+        component: '@/pages/companyCentral',
+      },
+      {
+        path: 'user-management',
+        name: '用户管理',
+        component: '@/pages/userManagement',
+      },
+      {
+        path: 'data-center',
+        title: '数据中心',
+        routes: [
+          {
+            path: 'investment',
+            name: '对外投资',
+            component: '@/pages/dataCenter/investment',
+          },
+          {
+            path: 'finance',
+            name: '融资信息',
+          },
+          {
+            path: 'high-tech',
+            name: '高新科技',
+          },
+          {
+            path: 'patent',
+            name: '专利信息',
+          },
+          {
+            path: 'software',
+            name: '软著信息',
+          },
+          {
+            path: 'qualification',
+            name: '企业资质',
+          },
+          {
+            path: 'layout-info',
+            name: 'TBI信息',
+          },
+        ],
       },
     ],
   },
-  { path: '/home', component: '@/pages/centralAdministration' },
+  { path: '/home', component: '@/pages/home' },
+  // { path: '/home', component: '@/pages/personCentral' },
   {
     path: '*',
-    redirect: '/home',
+    redirect: '/administration/person-central',
   },
 ];

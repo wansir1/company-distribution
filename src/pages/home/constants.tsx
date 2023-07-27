@@ -1,10 +1,6 @@
-export interface LoginFormType {
-  password: string;
-  phone: string;
-  role: number;
-}
+import { requestCheckPhone } from '@/services/search';
 
-export interface LoginType {
+export type LoginType = {
   companyId: string;
   name: string;
   phone: string;
@@ -13,7 +9,7 @@ export interface LoginType {
   state: number;
   token: string;
   userId: number;
-}
+};
 
 export interface RegCompanyType {
   companyId: string;
@@ -25,4 +21,16 @@ export const handleLoginSuccess = (userInfo: LoginType) => {
   localStorage.clear();
   localStorage.setItem('userInfo', JSON.stringify(userInfo));
   localStorage.setItem('token', userInfo.token);
+};
+
+export const checkPhone = async (phone: string) => {
+  // 定义一个异步函数来调用 checkPhone 接口
+  try {
+    const data = await requestCheckPhone(phone); // 解析响应数据
+
+    return typeof data === 'boolean' ? true : false; // 返回数据
+  } catch (error) {
+    console.error(error); // 处理错误
+    return null;
+  }
 };

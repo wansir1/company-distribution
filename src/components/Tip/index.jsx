@@ -2,7 +2,7 @@ import React from 'react';
 import { Tooltip } from 'antd';
 import annotation from '@/assets/images/annotation.png';
 
-const Tip = ({ title, content: text, imgList, style: styles }) => {
+const Tip = ({ title, content: text, imgList, style: styles, imgStyle }) => {
   const style = {
     width: '200px',
     fontSize: '14px',
@@ -37,6 +37,7 @@ const Tip = ({ title, content: text, imgList, style: styles }) => {
             width: '14px',
             cursor: 'pointer',
             margin: '0 2px',
+            ...imgStyle,
           }}
           src={annotation}
           alt=""

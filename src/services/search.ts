@@ -62,7 +62,7 @@ export function requestIndustryData(param: { companyTypeList: string[] }) {
 }
 
 // 登录
-interface LoginParam {
+export interface LoginParam {
   phone: string;
   password: string;
   role: number;
@@ -74,7 +74,23 @@ export function requestLogin(param: LoginParam) {
 }
 
 // 注册
-
+export interface RegisterParam {
+  companyId: string;
+  name: string;
+  sex: number;
+  phone: string;
+  password: string;
+  role: number;
+}
 export function requestRegCompany() {
   return requestUtils.get(`/user/getCompany`);
+}
+
+export function requestCheckPhone(param: string) {
+  return requestUtils.post(`/user/checkPhone?phone=${param}`);
+}
+export function requestRegister(param: RegisterParam) {
+  return requestUtils.post(`/user/register`, {
+    data: param,
+  });
 }
