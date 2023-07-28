@@ -1,21 +1,22 @@
-import {useState, useCallback} from 'react'
-
-export default function user () {
-    const [user, setUser] = useState<API.IUser>({id:11, name: 'test', passward: '123'});
-    const singin = useCallback((name: string, passward: string) => {
-        setUser({
-            id: 1,
-            name,
-            passward,
-        })
-    }, [])
-    const singout = useCallback(() => {
-        setUser({} as API.IUser);
-    }, [])
-
-    return {
-        user,
-        singin,
-        singout
-    }
+import { LoginType } from '@/pages/home/constants';
+export interface UserModel {
+  userInfo: LoginType;
+  loginRole: number;
 }
+
+export default {
+  namespace: 'user',
+  state: {
+    userInfo: {},
+    loginRole: void 0,
+  },
+  reducers: {
+    saveUser(
+      state: UserModel,
+      action: { payload: { userInfo: LoginType; loginRole: number } },
+    ) {
+      const { userInfo, loginRole } = action.payload;
+      return { ...state, userInfo, loginRole };
+    },
+  },
+};

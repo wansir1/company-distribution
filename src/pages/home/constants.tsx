@@ -17,9 +17,10 @@ export interface RegCompanyType {
 }
 
 // 在登录成功后保存 Token
-export const handleLoginSuccess = (userInfo: LoginType) => {
+export const handleLoginSuccess = (userInfo: LoginType, loginRole: number) => {
   localStorage.clear();
-  localStorage.setItem('userInfo', JSON.stringify(userInfo));
+  const userAllInfo = { ...userInfo, loginRole };
+  localStorage.setItem('userInfo', JSON.stringify(userAllInfo));
   localStorage.setItem('token', userInfo.token);
 };
 

@@ -33,9 +33,9 @@ const Home: React.FC = () => {
       if ('code' in res) {
         message.error('登录信息输入错误，请重新登录');
       } else {
-        handleLoginSuccess(res);
+        handleLoginSuccess(res, values.role);
         values.role === 1
-          ? history.push(`/industry/distribution`, { userInfo: res })
+          ? history.push(`/industry/distribution`)
           : history.push(`/administration/personCentral`);
         message.success('登录成功');
       }
@@ -83,9 +83,12 @@ const Home: React.FC = () => {
     console.log('Received values of form: ', values);
   };
   return (
-    <>
-      <a href="https://front.codes/" className={styles.logo} target="_blank">
-        <img src="https://assets.codepen.io/1462889/fcy.png" alt="" />
+    <div className={styles.container}>
+      <a href="#" className={styles.logo}>
+        <img
+          src="https://assets.codepen.io/1462889/fcy.png"
+          alt="https://front.codes/"
+        />
       </a>
 
       <div className={styles.section}>
@@ -423,7 +426,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

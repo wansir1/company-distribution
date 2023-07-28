@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Dropdown, Layout, Menu, Spin } from 'antd';
 import Map from '../../Map';
-import { history, useLocation } from 'umi';
+import { history, useSelector } from 'umi';
 // import { requestLoginOut } from '@/services';
 import logo from '@/assets/images/logo.png';
 import routes from '@/../config/routes';
 import style from './index.less';
+import { UserModel } from '@/models/user';
 import { LoginType } from '@/pages/home/constants';
 import { message } from 'antd/es';
 interface StateType {
   companyId: string;
   companyName: string;
 }
+type UserInfo = LoginType & { loginRole: number };
 interface DefaultValueType {
   layoutState: StateType;
-  userInfo?: LoginType;
+  userInfo?: UserInfo;
   setLayoutState?: React.Dispatch<React.SetStateAction<StateType>>;
 }
 const defaultContextValue: DefaultValueType = {
@@ -23,9 +25,10 @@ const defaultContextValue: DefaultValueType = {
 const { Header, Content, Sider } = Layout;
 export const GlobalInfoContext = React.createContext(defaultContextValue);
 const Layouts = (props: any) => {
-  const [userInfo, setUserInfo] = useState<LoginType>(
-    (useLocation().state as any).userInfo,
-  );
+  // 从本地存储中获取用户信息
+  const userInfo: UserInfo =
+    localStorage.getItem('userInfo') &&
+    JSON.parse(localStorage.getItem('userInfo')!);
   const [layoutState, setLayoutState] = useState<StateType>({
     companyId: '',
     companyName: '',
