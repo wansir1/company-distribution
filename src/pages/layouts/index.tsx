@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Dropdown, Layout, Menu, Spin } from 'antd';
 import Map from '../../Map';
 import { history, useSelector } from 'umi';
-// import { requestLoginOut } from '@/services';
 import logo from '@/assets/images/logo.png';
 import routes from '@/../config/routes';
 import style from './index.less';
 import { UserModel } from '@/models/user';
 import { LoginType } from '@/pages/home/constants';
-import { message } from 'antd/es';
+import { handleLogout } from '@/utils/helper';
+
 interface StateType {
   companyId: string;
   companyName: string;
@@ -36,23 +36,6 @@ const Layouts = (props: any) => {
   console.log(userInfo, layoutState, 'userInfo');
   const [openKey, setOpenKey] = useState(['/industry']);
   const { pathname } = location;
-  const handleLogout = async () => {
-    console.log(routes, 'fs');
-    localStorage.clear();
-    message.success('退出成功');
-    await waitTime(600);
-    history.push('/home');
-    // await requestLoginOut();
-    // window.location.reload();
-  };
-
-  const waitTime = (time: number = 100) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, time);
-    });
-  };
   const getItem = (
     label: any,
     key: any,

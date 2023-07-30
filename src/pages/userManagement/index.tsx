@@ -30,7 +30,7 @@ const columns: ProColumns<ColumnType & { indexNum: number }>[] = [
           ? { backgroundColor: '#979797' }
           : {};
       return (
-        <div className={styles.indexNum} style={bgColor}>
+        <div className={styles.index} style={bgColor}>
           {record.indexNum}
         </div>
       );

@@ -36,7 +36,7 @@ const Home: React.FC = () => {
         handleLoginSuccess(res, values.role);
         values.role === 1
           ? history.push(`/industry/distribution`)
-          : history.push(`/administration/personCentral`);
+          : history.push(`/administration/person-central`);
         message.success('登录成功');
       }
       console.log(res, '--login');

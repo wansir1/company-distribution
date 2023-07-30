@@ -9,7 +9,9 @@ import {
   ProFormText,
   ProFormTextArea,
 } from '@ant-design/pro-components';
+import React, { useContext } from 'react';
 import { Col, message, Row, Space, Switch } from 'antd';
+import { AdminInfoContext } from '@/pages/centralAdministration';
 import type { FormLayout } from 'antd/lib/form/Form';
 import { useState } from 'react';
 
@@ -23,11 +25,11 @@ const waitTime = (time: number = 100) => {
   });
 };
 
-const PersonCentral = () => {
+const PersonCentral: React.FC = () => {
   const [formLayoutType, setFormLayoutType] = useState<FormLayout>(
     LAYOUT_TYPE_HORIZONTAL,
   );
-
+  const { userInfo } = useContext(AdminInfoContext);
   const [edit, setEdit] = useState(true);
 
   return (

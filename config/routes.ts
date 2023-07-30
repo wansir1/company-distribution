@@ -114,26 +114,32 @@ export default [
           {
             path: 'finance',
             name: '融资信息',
+            component: '@/pages/dataCenter/finance',
           },
           {
             path: 'high-tech',
             name: '高新科技',
+            component: '@/pages/dataCenter/highTech',
           },
           {
             path: 'patent',
             name: '专利信息',
+            component: '@/pages/dataCenter/patent',
           },
           {
             path: 'software',
             name: '软著信息',
+            component: '@/pages/dataCenter/software',
           },
           {
             path: 'qualification',
             name: '企业资质',
+            component: '@/pages/dataCenter/qualification',
           },
           {
             path: 'layout-info',
             name: 'TBI信息',
+            component: '@/pages/dataCenter/layoutInfo',
           },
         ],
       },
