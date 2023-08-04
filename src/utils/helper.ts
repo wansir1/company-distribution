@@ -34,3 +34,7 @@ export const handleLogout = async () => {
   message.success('退出成功');
   history.push('/home');
 };
+
+export const isNotEmptyObj = <T extends {}>(value: {} | T): value is T => {
+  return Object.keys(value).length !== 0;
+};

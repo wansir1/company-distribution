@@ -1,7 +1,9 @@
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable, ProCard } from '@ant-design/pro-components';
 import { Space, Tag, message } from 'antd';
-import { useRef, useState } from 'react';
+import { useRef, useState, useContext } from 'react';
+import { requestInvestment, SearchInvestmentType } from '@/services/search';
+import { AdminInfoContext } from '@/pages/centralAdministration';
 import { convertToArray, dataTest, ColumnType } from './constants';
 import Editable from './Editable';
 import styles from './index.less';
@@ -129,6 +131,8 @@ const columns: ProColumns<ColumnType & { indexNum: number }>[] = [
 
 export default () => {
   const actionRef = useRef<ActionType>();
+  const { userInfo } = useContext(AdminInfoContext);
+  if (!userInfo) return;
   return (
     <ProCard tabs={{ type: 'card' }}>
       <ProCard.TabPane key="tab1" tab="信息管理">
@@ -137,25 +141,35 @@ export default () => {
           actionRef={actionRef}
           cardBordered
           request={async (params = {}, sort, filter) => {
-            await waitTime(2000);
-            const data2 = dataTest.map((data, index) => ({
-              ...data,
-              indexNum: index + 1,
-            }));
-            console.log(sort, filter, params, data2, 'params');
-            return { data: data2, success: true, total: 30 };
+            try {
+              const res: SearchInvestmentType = await requestInvestment({
+                current: params.current!,
+                size: params.pageSize!,
+                companyId: userInfo?.companyId,
+              });
+              const data = res.records.map((data, index) => ({
+                ...data,
+                indexNum: index + 1,
+              }));
+              return { data, success: true, total: res.total };
+            } catch (e) {
+              console.log(e);
+              return { data: [], success: true };
+            }
+
+            console.log(sort, filter, params, 'params');
           }}
           editable={{
             type: 'multiple',
             onSave: async (key, row, originRow) => {
-              console.log(key, row, originRow);
+              console.log(key, row, originRow, '1111');
               row.business =
                 typeof row.business === 'string'
                   ? convertToArray(row.business)
                   : row.business;
               row.amount = Number(row.amount);
               row.ratio = Number(row.ratio) / 100; //这里不处理是因为row.name为string，而定义的类型也为string所以不需要处理
-              console.log(key, row, originRow); //查看处理后的数据是否符合传给后端的类型数据，符合则通过接口把res传给接口
+              console.log(key, row, originRow, '22222'); //查看处理后的数据是否符合传给后端的类型数据，符合则通过接口把res传给接口
               try {
                 message
                   .loading('Action in progress..', 1)

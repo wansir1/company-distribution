@@ -94,3 +94,62 @@ export function requestRegister(param: RegisterParam) {
     data: param,
   });
 }
+
+// 用户中心
+export interface PersonParam {
+  userId?: string;
+  name: string;
+  phone: string;
+  idCard?: string;
+  sex?: number;
+  nation?: string;
+  nativePlace?: string;
+  birthday?: string;
+  education?: number;
+  position?: string;
+  entryTime?: string;
+  state?: number;
+  companyName?: string;
+  role?: number;
+  companyId?: string;
+}
+export function requestUserInfo(param: string) {
+  return requestUtils.post(`/user/getUserById/${param}`);
+}
+
+// 修改用户中心信息
+export function requestUpdateUserInfo(param: PersonParam) {
+  return requestUtils.post(`/user/updateUserCenter`, { data: param });
+}
+
+// 管理员对外投资
+interface SearchInvestmentParam {
+  companyId: string;
+  current: number;
+  size: number;
+}
+
+export type SearchInvestmentType = {
+  records: Records[];
+  total: number;
+  size: number;
+  current: number;
+  orders?: any[];
+  searchCount: boolean;
+  pages: number;
+};
+
+export type Records = {
+  companyInvestmentId: number;
+  name: string;
+  ratio: number;
+  amount: number;
+  companyId: number;
+  companyName: string;
+  business: string[];
+};
+export function requestInvestment(param: SearchInvestmentParam) {
+  return requestUtils.post(`/admin/searchInvestment/${param.companyId}`, {
+    data: { current: param.current, size: param.size },
+  });
+}

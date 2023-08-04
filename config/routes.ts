@@ -68,18 +68,6 @@ export default [
         title: '政策库',
         component: '@/pages/policy',
       },
-      //   { path: 'test', title: '测试', component: '@/pages/index' },
-      //   {
-      //     path: 'user',
-      //     title: '测试2',
-      //     component: '@/pages/user',
-      //     wrappers: ['@/wrappers/auth'],
-      //   },
-      //   {
-      //     title: '公司',
-      //     path: 'userInfo',
-      //     component: '@/pages/user/map',
-      //   },
     ],
   },
   {

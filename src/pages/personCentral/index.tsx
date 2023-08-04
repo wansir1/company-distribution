@@ -2,36 +2,42 @@ import {
   ProCard,
   ProForm,
   ProFormDatePicker,
-  ProFormDateRangePicker,
-  ProFormDigit,
   ProFormRadio,
   ProFormSelect,
   ProFormText,
   ProFormTextArea,
 } from '@ant-design/pro-components';
-import React, { useContext } from 'react';
+import type { ProFormInstance } from '@ant-design/pro-components';
+import { GlobalInfoContext } from '../layouts';
+import React, { useContext, useRef } from 'react';
 import { Col, message, Row, Space, Switch } from 'antd';
+import {
+  requestUserInfo,
+  PersonParam,
+  requestUpdateUserInfo,
+} from '@/services/search';
+import { isNotEmptyObj } from '@/utils/helper';
 import { AdminInfoContext } from '@/pages/centralAdministration';
 import type { FormLayout } from 'antd/lib/form/Form';
 import { useState } from 'react';
 
 const LAYOUT_TYPE_HORIZONTAL = 'horizontal';
-
-const waitTime = (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
+type PropsType = {
+  role?: number;
 };
-
-const PersonCentral: React.FC = () => {
+const PersonCentral: React.FC<PropsType> = (props) => {
   const [formLayoutType, setFormLayoutType] = useState<FormLayout>(
     LAYOUT_TYPE_HORIZONTAL,
   );
-  const { userInfo } = useContext(AdminInfoContext);
-  const [edit, setEdit] = useState(true);
+  const formRef = useRef<ProFormInstance>();
+  const { role } = props;
+  // 这里是因为用户也有这个模块，要不然不用判断直接useContext(AdminInfoContext)获取就可以了
+  const { userInfo } =
+    role === 1 ? useContext(GlobalInfoContext) : useContext(AdminInfoContext);
 
+  const [edit, setEdit] = useState(true);
+  const [refresh, setRefresh] = useState(false);
+  console.log(userInfo, 'user info');
   return (
     <ProCard>
       <Switch
@@ -44,23 +50,21 @@ const PersonCentral: React.FC = () => {
         checkedChildren="开启编辑"
         unCheckedChildren="禁止编辑"
       />
-      <ProForm<{
-        name: string;
-        company?: string;
-        useMode?: string;
-      }>
+      <ProForm<PersonParam | {}>
         layout={formLayoutType}
         grid={true}
+        formRef={formRef}
         disabled={!edit}
         rowProps={{
           gutter: [16, formLayoutType === 'inline' ? 16 : 0],
         }}
         submitter={{
+          searchConfig: { submitText: '保存' },
           render: (props, doms) => {
             return formLayoutType === LAYOUT_TYPE_HORIZONTAL ? (
               <Row>
-                <Col span={14} offset={4}>
-                  <Space>{doms}</Space>
+                <Col span={14} offset={10} style={{ direction: 'rtl' }}>
+                  <Space size="middle">{doms}</Space>
                 </Col>
               </Row>
             ) : (
@@ -69,19 +73,46 @@ const PersonCentral: React.FC = () => {
           },
         }}
         onFinish={async (values) => {
-          await waitTime(2000);
-          console.log(values);
-          message.success('提交成功');
+          if (isNotEmptyObj(values)) {
+            try {
+              const data = await requestUpdateUserInfo({
+                ...values,
+                userId: userInfo?.userId.toString(),
+                companyId: userInfo?.companyId,
+              });
+              if ('code' in data) {
+                message.error('保存失败');
+              } else {
+                message.success('保存成功');
+              }
+              setRefresh(!refresh);
+              console.log(values, 'values');
+              // formRef?.current?.setFieldsValue(values);
+            } catch (err) {
+              console.log(err);
+              message.warning('系统修复中或重新登录');
+            }
+          }
         }}
-        params={{}}
+        params={{ refresh }}
         request={async () => {
-          await waitTime(100);
-          return {
-            companyName: '蚂蚁设计有限公司',
-            useMode: 'chapter',
-            name: 'john',
-            sex: 0,
-          };
+          try {
+            if (userInfo) {
+              const data: PersonParam = await requestUserInfo(
+                userInfo.userId.toString(),
+              );
+              console.log(data, 'person');
+              return {
+                ...data,
+                companyName: userInfo.companyName,
+                role: userInfo.loginRole,
+              };
+            }
+            return {};
+          } catch (e) {
+            console.log(e);
+            return {};
+          }
         }}
         autoFocusFirstInput
       >
@@ -105,13 +136,12 @@ const PersonCentral: React.FC = () => {
           placeholder="请输入名称"
         />
         <ProFormText colProps={{ md: 12, xl: 8 }} name="name" label="姓名" />
-        <ProFormText colProps={{ md: 12, xl: 8 }} name="phone" label="电话" />
+
         <ProFormSelect
           colProps={{ xl: 8, md: 12 }}
           label="角色"
           name="role"
           disabled
-          allowClear
           options={[
             { value: 1, label: '普通用户' },
             { value: 2, label: '普通管理员' },
@@ -124,7 +154,13 @@ const PersonCentral: React.FC = () => {
           label="职务"
         />
         <ProFormText
-          colProps={{ md: 12, xl: 8 }}
+          colProps={{ md: 12, xl: 12 }}
+          name="phone"
+          label="电话"
+          disabled
+        />
+        <ProFormText
+          colProps={{ md: 12, xl: 12 }}
           name="idCard"
           label="身份证"
         />
@@ -160,14 +196,14 @@ const PersonCentral: React.FC = () => {
         <ProFormDatePicker
           colProps={{ xl: 8, md: 12 }}
           label="出生日期"
-          name="birthDate"
+          name="birthday"
         />
         <ProFormDatePicker
           colProps={{ xl: 8, md: 12 }}
           label="入职时间"
           name="entryTime"
         />
-        <ProFormSelect
+        {/* <ProFormSelect
           colProps={{ xl: 8, md: 12 }}
           label="职位"
           name="level"
@@ -184,7 +220,7 @@ const PersonCentral: React.FC = () => {
             },
             optionFilterProp: 'name',
           }}
-        />
+        /> */}
       </ProForm>
     </ProCard>
   );

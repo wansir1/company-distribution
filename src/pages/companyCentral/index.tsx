@@ -10,6 +10,7 @@ import {
   ProFormText,
   ProFormTextArea,
 } from '@ant-design/pro-components';
+import { requestIndustryType } from '@/services/search';
 import { Col, message, Row, Space, Switch } from 'antd';
 import type { FormLayout } from 'antd/lib/form/Form';
 import { useState } from 'react';
@@ -55,11 +56,12 @@ const CompanyCentral = () => {
           gutter: [16, formLayoutType === 'inline' ? 16 : 0],
         }}
         submitter={{
+          searchConfig: { submitText: '保存' },
           render: (props, doms) => {
             return formLayoutType === LAYOUT_TYPE_HORIZONTAL ? (
               <Row>
-                <Col span={14} offset={4}>
-                  <Space>{doms}</Space>
+                <Col span={14} offset={10} style={{ direction: 'rtl' }}>
+                  <Space size="middle">{doms}</Space>
                 </Col>
               </Row>
             ) : (

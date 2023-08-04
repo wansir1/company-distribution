@@ -9,7 +9,7 @@ import { handleLogout } from '@/utils/helper';
 import avatar from '@/assets/images/avatar.png';
 import defaultProps from './constants';
 import Tip from '@/components/Tip';
-type UserInfo = LoginType & { loginRole: number };
+export type UserInfo = LoginType & { loginRole: number };
 const settings: ProSettings | undefined = {
   fixSiderbar: true,
   layout: 'mix',
@@ -47,7 +47,9 @@ const CentralAdministration: React.FC = (props) => {
           avatarProps={{
             src: avatar,
             size: 'small',
-            title: `${userInfo?.name || '无名氏'}`,
+            title: `${
+              userInfo ? (userInfo.name ? userInfo.name : '无名氏') : '未登录'
+            }`,
             render: (props, dom) => {
               return (
                 <Dropdown

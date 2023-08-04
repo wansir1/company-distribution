@@ -24,10 +24,12 @@
         background-color: transparent !important;
         background: transparent !important;
       }
+
       .ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
         background-color: rgba(42, 84, 209, 0.1);
       }
     }
+
     .menuItem {
       margin: 0 14px;
       background-color: #fff;
@@ -44,15 +46,32 @@
         cursor: pointer;
       }
     }
+
     .menuItemHeight {
       background-color: #ecedee;
     }
   }
 
   .user {
-    float: right;
-    cursor: pointer;
-    .username {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+    color: rgba(0, 0, 0, 0.45);
+
+    .userName {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 44px;
+      border-radius: 5px;
+      padding-inline-start: 16px;
+      padding-inline-end: 16px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.03);
+      }
     }
   }
 

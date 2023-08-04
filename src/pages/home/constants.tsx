@@ -9,6 +9,7 @@ export type LoginType = {
   state: number;
   token: string;
   userId: number;
+  companyName: string;
 };
 
 export interface RegCompanyType {
