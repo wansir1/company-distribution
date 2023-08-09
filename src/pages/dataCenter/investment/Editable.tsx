@@ -3,11 +3,16 @@ import { EditableProTable } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
 import React, { useState } from 'react';
 import { convertToArray, ColumnType } from './constants';
-
-export default () => {
+import { history } from 'umi';
+import { UserInfo } from '@/pages/centralAdministration';
+import { requestUpdateInvestment } from '@/services/search';
+interface ParamType {
+  userInfo: UserInfo;
+}
+const Editable = (params: ParamType) => {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [dataSource, setDataSource] = useState<readonly ColumnType[]>([]);
-
+  const { userInfo } = params;
   const columns: ProColumns<ColumnType>[] = [
     {
       title: '公司名称',
@@ -131,17 +136,19 @@ export default () => {
           row.ratio = Number(row.ratio) / 100; //这里不处理是因为row.name为string，而定义的类型也为string所以不需要处理
           console.log(key, row, originRow); //查看处理后的数据是否符合传给后端的类型数据，符合则通过接口把res传给接口
           try {
-            message
-              .loading('Action in progress..', 1)
-              .then(() => message.success('添加成功', 2.5));
-
-            await new Promise((resolve) => {
-              setTimeout(() => {
-                resolve(true);
-              }, 2000);
+            const data = await requestUpdateInvestment({
+              ...row,
+              companyId: userInfo.companyId,
             });
+            if (typeof data === 'object' && 'code' in data) {
+              message.error('token失效请重新登录');
+              localStorage.clear();
+              history.push(`/home`);
+            } else {
+              message.success('添加成功');
+            }
           } catch (e) {
-            message.error('添加失败');
+            message.error('添加失败,系统修复中');
             console.log(e);
           }
         },
@@ -156,3 +163,5 @@ export default () => {
     />
   );
 };
+
+export default Editable;

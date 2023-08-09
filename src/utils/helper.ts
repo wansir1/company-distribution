@@ -35,6 +35,7 @@ export const handleLogout = async () => {
   history.push('/home');
 };
 
+// 联合类型消除空对象情况
 export const isNotEmptyObj = <T extends {}>(value: {} | T): value is T => {
   return Object.keys(value).length !== 0;
 };

@@ -2,7 +2,7 @@ import {
   ProCard,
   ProForm,
   ProFormDatePicker,
-  ProFormDateRangePicker,
+  ProFormDependency,
   ProFormGroup,
   ProFormDigit,
   ProFormRadio,
@@ -10,7 +10,13 @@ import {
   ProFormText,
   ProFormTextArea,
 } from '@ant-design/pro-components';
-import { requestIndustryType } from '@/services/search';
+import { requestCity, requestDistricts } from '@/services/search';
+import {
+  getIndustryType,
+  getProvince,
+  getCity,
+  getDistrict,
+} from './constants';
 import { Col, message, Row, Space, Switch } from 'antd';
 import type { FormLayout } from 'antd/lib/form/Form';
 import { useState } from 'react';
@@ -29,7 +35,6 @@ const CompanyCentral = () => {
   const [formLayoutType, setFormLayoutType] = useState<FormLayout>(
     LAYOUT_TYPE_HORIZONTAL,
   );
-
   const [edit, setEdit] = useState(true);
 
   return (
@@ -83,7 +88,7 @@ const CompanyCentral = () => {
             name: 'john',
             sex: 0,
             validTime: '2023-07-05',
-            industryTypeId: ['all', 'all2'],
+            industryTypeId: ['1', '2'],
           };
         }}
         autoFocusFirstInput
@@ -143,16 +148,13 @@ const CompanyCentral = () => {
           label="行业类别"
           name="industryTypeId"
           allowClear
-          request={async () => [
-            { name: '全部', companyId: 'all' },
-            { name: '什么', companyId: 'all2' },
-          ]}
+          request={getIndustryType}
           fieldProps={{
             showSearch: true,
             mode: 'multiple',
             fieldNames: {
               label: 'name',
-              value: 'companyId',
+              value: 'typeId',
             },
             optionFilterProp: 'name',
           }}
@@ -192,55 +194,61 @@ const CompanyCentral = () => {
             label="省级"
             name="provinceId"
             allowClear
-            request={async () => [
-              { name: '全部', provinceId: 'all' },
-              { name: '什么', provinceId: 'all2' },
-            ]}
+            request={getProvince}
             fieldProps={{
               showSearch: true,
               fieldNames: {
-                label: 'name',
+                label: 'provinceName',
                 value: 'provinceId',
               },
-              optionFilterProp: 'name',
+              optionFilterProp: 'provinceName',
             }}
           />
-          <ProFormSelect
-            colProps={{ xl: 8, md: 12 }}
-            label="市级"
-            name="cityId"
-            allowClear
-            request={async () => [
-              { name: '全部', cityId: 'all' },
-              { name: '什么', cityId: 'all2' },
-            ]}
-            fieldProps={{
-              showSearch: true,
-              fieldNames: {
-                label: 'name',
-                value: 'cityId',
-              },
-              optionFilterProp: 'name',
+          <ProFormDependency name={['provinceId']}>
+            {({ provinceId }) => {
+              return (
+                <ProFormSelect
+                  colProps={{ xl: 8, md: 12 }}
+                  label="市级"
+                  name="cityId"
+                  allowClear
+                  params={{ provinceId }}
+                  request={async (params) => getCity(params.provinceId)}
+                  fieldProps={{
+                    showSearch: true,
+                    fieldNames: {
+                      label: 'cityName',
+                      value: 'cityId',
+                    },
+                    optionFilterProp: 'cityName',
+                  }}
+                />
+              );
             }}
-          />
-          <ProFormSelect
-            colProps={{ xl: 8, md: 12 }}
-            label="县级"
-            name="districtId"
-            allowClear
-            request={async () => [
-              { name: '全部', districtId: 'all' },
-              { name: '什么', districtId: 'all2' },
-            ]}
-            fieldProps={{
-              showSearch: true,
-              fieldNames: {
-                label: 'name',
-                value: 'districtId',
-              },
-              optionFilterProp: 'name',
+          </ProFormDependency>
+          <ProFormDependency name={['cityId']}>
+            {({ cityId }) => {
+              return (
+                <ProFormSelect
+                  colProps={{ xl: 8, md: 12 }}
+                  label="县级"
+                  name="districtId"
+                  params={{ cityId }}
+                  allowClear
+                  request={async (params) => getDistrict(params.cityId)}
+                  fieldProps={{
+                    showSearch: true,
+                    fieldNames: {
+                      label: 'districtName',
+                      value: 'districtId',
+                    },
+                    optionFilterProp: 'districtName',
+                  }}
+                />
+              );
             }}
-          />
+          </ProFormDependency>
+
           <ProFormTextArea
             colProps={{ span: 24 }}
             name="address"

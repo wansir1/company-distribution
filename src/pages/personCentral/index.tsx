@@ -108,11 +108,10 @@ const PersonCentral: React.FC<PropsType> = (props) => {
                 role: userInfo.loginRole,
               };
             }
-            return {};
           } catch (e) {
             console.log(e);
-            return {};
           }
+          return {};
         }}
         autoFocusFirstInput
       >

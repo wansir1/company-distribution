@@ -1,16 +1,39 @@
 import { number } from 'echarts';
 import { requestUtils } from '../utils/request';
 
+//省
+export type ProvinceData = {
+  provinceId: string;
+  provinceName: string;
+};
+export function requestProvince() {
+  return requestUtils.get(`/user/getAllProvince`);
+}
+// 市
+export type CityData = {
+  provinceId: string;
+  cityName: string;
+  cityId: string;
+};
+export function requestCity(param: string) {
+  return requestUtils.get(`/user/getCitysByProvinceId/${param}`);
+}
+
+// 区
+export type DistrictsData = {
+  districtId: string;
+  districtName: string;
+  postCode: string;
+  cityId: string;
+};
+export function requestDistricts(param: string) {
+  return requestUtils.get(`/user/getDistrictsByCityId/${param}`);
+}
 interface paramsType {
   provinceId?: string;
   cityId?: string;
   typeIdList?: string[];
 }
-
-export function requestCity(param: string) {
-  return requestUtils.get(`/user/getCitysByProvinceId/${param}`);
-}
-
 export function requestCompany(param: paramsType) {
   return requestUtils.post(`/user/searchCompany`, {
     data: param,
@@ -140,11 +163,11 @@ export type SearchInvestmentType = {
 };
 
 export type Records = {
-  companyInvestmentId: number;
+  companyInvestmentId: string;
   name: string;
   ratio: number;
   amount: number;
-  companyId: number;
+  companyId: string;
   companyName: string;
   business: string[];
 };
@@ -152,4 +175,24 @@ export function requestInvestment(param: SearchInvestmentParam) {
   return requestUtils.post(`/admin/searchInvestment/${param.companyId}`, {
     data: { current: param.current, size: param.size },
   });
+}
+//  对外投资修改和增加
+type UpdateInvestmentType = {
+  companyInvestmentId?: string;
+  name: string;
+  ratio: number;
+  amount: number;
+  companyId?: string;
+  business: string[];
+};
+export function requestUpdateInvestment(
+  param: UpdateInvestmentType & { indexNum?: number },
+) {
+  return requestUtils.post(`/admin/saveOrUpdateInvestment`, {
+    data: param,
+  });
+}
+//  对外投资删除
+export function requestDeleteInvestment(param: string) {
+  return requestUtils.post(`/admin/deleteInvestment/${param}`);
 }
