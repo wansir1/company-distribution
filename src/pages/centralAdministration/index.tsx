@@ -7,7 +7,7 @@ import { LogoutOutlined } from '@ant-design/icons';
 import { LoginType } from '../home/constants';
 import { handleLogout } from '@/utils/helper';
 import avatar from '@/assets/images/avatar.png';
-import defaultProps from './constants';
+import { defaultProps } from './constants';
 import Tip from '@/components/Tip';
 export type UserInfo = LoginType & { loginRole: number };
 const settings: ProSettings | undefined = {
@@ -39,7 +39,7 @@ const CentralAdministration: React.FC = (props) => {
         }}
       >
         <ProLayout
-          {...defaultProps}
+          {...defaultProps(userInfo.loginRole)}
           title="产业信息管理中心"
           menu={{
             type: 'group',

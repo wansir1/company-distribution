@@ -91,6 +91,11 @@ export default [
         component: '@/pages/userManagement',
       },
       {
+        path: 'company-management',
+        name: '企业管理',
+        component: '@/pages/companyManagement',
+      },
+      {
         path: 'data-center',
         title: '数据中心',
         routes: [
@@ -128,6 +133,11 @@ export default [
             path: 'layout-info',
             name: 'TBI信息',
             component: '@/pages/dataCenter/layoutInfo',
+          },
+          {
+            path: 'industry-type',
+            name: '产业类型',
+            component: '@/pages/dataCenter/industryType',
           },
         ],
       },
