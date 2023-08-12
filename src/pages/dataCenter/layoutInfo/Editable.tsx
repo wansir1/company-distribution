@@ -3,8 +3,14 @@ import { EditableProTable } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
 import React, { useState } from 'react';
 import { convertToArray, ColumnType } from './constants';
-
-export default () => {
+import { history } from 'umi';
+import { UserInfo } from '@/pages/centralAdministration';
+import { requestUpdateIndustryLayout } from '@/services/search';
+interface ParamType {
+  userInfo: UserInfo;
+}
+export default (params: ParamType) => {
+  const { userInfo } = params;
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [dataSource, setDataSource] = useState<readonly ColumnType[]>([]);
 
@@ -23,13 +29,13 @@ export default () => {
       },
     },
     {
-      title: '类型(0-业务,1-技术,2-产业布局)',
+      title: '类型',
       dataIndex: 'type',
-      valueEnum: {
-        0: '0',
-        1: '1',
-        2: '2',
-      },
+      valueEnum: new Map([
+        [0, '业务'],
+        [1, '技术'],
+        [2, '产业布局'],
+      ]),
       ellipsis: true,
       formItemProps: {
         rules: [
@@ -93,17 +99,19 @@ export default () => {
           row.type = Number(row.type);
 
           try {
-            message
-              .loading('Action in progress..', 1)
-              .then(() => message.success('添加成功', 2.5));
-
-            await new Promise((resolve) => {
-              setTimeout(() => {
-                resolve(true);
-              }, 2000);
+            const data = await requestUpdateIndustryLayout({
+              ...row,
+              companyId: userInfo.companyId,
             });
+            if (typeof data === 'object' && 'code' in data) {
+              message.error('token失效请重新登录');
+              localStorage.clear();
+              history.push(`/home`);
+            } else {
+              message.success('添加成功');
+            }
           } catch (e) {
-            message.error('添加失败');
+            message.error('添加失败,系统修复中');
             console.log(e);
           }
         },

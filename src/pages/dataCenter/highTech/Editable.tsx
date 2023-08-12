@@ -3,8 +3,14 @@ import { EditableProTable } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
 import React, { useState } from 'react';
 import { ColumnType } from './constants';
-
-export default () => {
+import { history } from 'umi';
+import { UserInfo } from '@/pages/centralAdministration';
+import { requestUpdateHighTech } from '@/services/search';
+interface ParamType {
+  userInfo: UserInfo;
+}
+export default (params: ParamType) => {
+  const { userInfo } = params;
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [dataSource, setDataSource] = useState<readonly ColumnType[]>([]);
 
@@ -102,17 +108,20 @@ export default () => {
           console.log(key, row, originRow);
 
           try {
-            message
-              .loading('Action in progress..', 1)
-              .then(() => message.success('添加成功', 2.5));
-
-            await new Promise((resolve) => {
-              setTimeout(() => {
-                resolve(true);
-              }, 2000);
+            const data = await requestUpdateHighTech({
+              ...row,
+              companyId: userInfo.companyId,
             });
+
+            if (typeof data === 'object' && 'code' in data) {
+              message.error('token失效请重新登录');
+              localStorage.clear();
+              history.push(`/home`);
+            } else {
+              message.success('添加成功');
+            }
           } catch (e) {
-            message.error('添加失败');
+            message.error('添加失败,系统修复中');
             console.log(e);
           }
         },

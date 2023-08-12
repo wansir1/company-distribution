@@ -1,9 +1,25 @@
 //公司列表属性类型
 export type ColumnType = {
-  industryTypeId?: number;
+  industryTypeId?: string;
   name: string;
   type: number;
-  companyId?: number;
+  companyId?: string;
+};
+export type SearchIndustryLayoutType = {
+  records: Records[];
+  total: number;
+  size: number;
+  current: number;
+  orders?: any[];
+  searchCount: boolean;
+  pages: number;
+};
+
+export type Records = {
+  industryTypeId?: string;
+  name: string;
+  type: number;
+  companyId?: string;
 };
 //测试数据
 export const dataTest = [

@@ -1,20 +1,16 @@
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable, ProCard } from '@ant-design/pro-components';
-import { Space, Tag } from 'antd';
-import { useRef } from 'react';
-import { dataTest, ColumnType } from './constants';
+import { Space, Tag, message } from 'antd';
+import React, { useContext, useRef } from 'react';
+import { AdminInfoContext } from '@/pages/centralAdministration';
+import { dataTest, ColumnType, SearchUserType, roleColor } from './constants';
 import styles from './index.less';
-export const waitTimePromise = async (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
-
-export const waitTime = async (time: number = 100) => {
-  await waitTimePromise(time);
-};
+import {
+  requestDeleteUser,
+  requestUpdateUser,
+  requestUser,
+} from '@/services/search';
+import { history } from '@@/core/history';
 
 const PAGE_SIZE = 5;
 const columns: ProColumns<ColumnType & { indexNum: number }>[] = [
@@ -125,8 +121,8 @@ const columns: ProColumns<ColumnType & { indexNum: number }>[] = [
     search: false,
     render: (_, record) => (
       <Space>
-        <Tag color={record.role === 1 ? 'lime' : 'purple'}>
-          {record.role === 1 ? '普通用户' : '普通管理员'}
+        <Tag color={roleColor(record.role).color}>
+          {roleColor(record.role).role}
         </Tag>
       </Space>
     ),
@@ -139,7 +135,7 @@ const columns: ProColumns<ColumnType & { indexNum: number }>[] = [
       <a
         key="editable"
         onClick={() => {
-          action?.startEditable?.(record.userId);
+          action?.startEditable?.(record.indexNum);
         }}
       >
         编辑
@@ -150,25 +146,80 @@ const columns: ProColumns<ColumnType & { indexNum: number }>[] = [
 
 export default () => {
   const actionRef = useRef<ActionType>();
+  const { userInfo } = useContext(AdminInfoContext);
+  if (!userInfo) return <></>;
   return (
     <ProTable<ColumnType & { indexNum: number }>
       columns={columns}
       actionRef={actionRef}
       cardBordered
       request={async (params = {}, sort, filter) => {
-        await waitTime(2000);
-        const data2 = dataTest.map((data, index) => ({
-          ...data,
-          indexNum: index + 1,
-        }));
-        console.log(sort, filter, params, data2, 'params');
-        return { data: data2, success: true, total: 30 };
+        try {
+          console.log(params.state, 'params.state');
+          //调用接口并传参
+          const res: SearchUserType = await requestUser({
+            companyId: userInfo?.loginRole == 2 ? userInfo?.companyId : '',
+            name: params.name,
+            phone: params.phone,
+            state: params.state,
+            current: params.current!,
+            size: params.pageSize!,
+          });
+          console.log(res, 'res');
+          if (typeof res === 'object' && 'code' in res) {
+            message.error('token失效请重新登录');
+            localStorage.clear();
+            history.push(`/home`);
+          }
+          //处理数据格式
+          // const data = res.records?.filter(record => record.role != 3).map((data, index) => ({
+          //   ...data,
+          //   indexNum: index + 1 + (params.current! - 1) * PAGE_SIZE,
+          // }));
+          const data = res.records?.map((data, index) => ({
+            ...data,
+            state: data.state.toString(),
+            indexNum: index + 1 + (params.current! - 1) * PAGE_SIZE,
+          }));
+          console.log(data, 'data');
+          //返回
+          return { data, success: true, total: res.total };
+        } catch (e) {
+          console.log(e);
+          return { data: [], success: true };
+        }
       }}
       editable={{
         type: 'multiple',
         onSave: async (key, row, originRow) => {
-          console.log(key, row, originRow, 'jj');
-          actionRef.current?.reload();
+          try {
+            const data = await requestUpdateUser(row);
+            if (typeof data === 'object' && 'code' in data) {
+              message.error('保存失败');
+            } else {
+              message.success('保存成功');
+            }
+            actionRef.current?.reload();
+          } catch (e) {
+            message.error('添加失败');
+            console.log(e);
+          }
+        },
+        onDelete: async (key, row) => {
+          try {
+            console.log(key, row, 'keyRow');
+            const data = await requestDeleteUser(row.userId!);
+            if (typeof data === 'object' && 'code' in data) {
+              message.error('删除失败');
+            } else {
+              message.success('删除成功');
+            }
+            actionRef.current?.reloadAndRest &&
+              actionRef.current?.reloadAndRest();
+          } catch (e) {
+            message.error('添加失败');
+            console.log(e);
+          }
         },
       }}
       columnsState={{
@@ -178,7 +229,7 @@ export default () => {
           console.log('value: ', value);
         },
       }}
-      rowKey="userId"
+      rowKey="indexNum"
       search={{
         labelWidth: 'auto',
       }}

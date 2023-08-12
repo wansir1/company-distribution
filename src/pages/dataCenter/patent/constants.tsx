@@ -1,6 +1,6 @@
 //列表属性类型
 export type ColumnType = {
-  patentId?: number;
+  patentId?: string;
   name: string;
   type: string;
   state: string;
@@ -10,7 +10,30 @@ export type ColumnType = {
   applicationTime: string;
   publicNumber: string;
   publicTime: string;
-  companyId?: number;
+  companyId?: string;
+};
+export type SearchPatentType = {
+  records: Records[];
+  total: number;
+  size: number;
+  current: number;
+  orders?: any[];
+  searchCount: boolean;
+  pages: number;
+};
+
+export type Records = {
+  patentId?: string;
+  name: string;
+  type: string;
+  state: string;
+  inventor: string;
+  applicant: string;
+  applicationNumber: string;
+  applicationTime: string;
+  publicNumber: string;
+  publicTime: string;
+  companyId?: string;
 };
 //测试数据
 export const dataTest = [

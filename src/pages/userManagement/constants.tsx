@@ -1,5 +1,5 @@
 export type ColumnType = {
-  userId: string;
+  userId?: string;
   companyId: string;
   companyName: string;
   name: string;
@@ -8,6 +8,27 @@ export type ColumnType = {
   state: string;
   role: number;
 };
+export type SearchUserType = {
+  records: Records[];
+  total: number;
+  size: number;
+  current: number;
+  orders?: any[];
+  searchCount: boolean;
+  pages: number;
+};
+
+export type Records = {
+  userId?: string;
+  companyId: string;
+  companyName: string;
+  name: string;
+  sex: number;
+  phone: string;
+  state: string;
+  role: number;
+};
+
 export const dataTest = [
   {
     userId: '1',
@@ -71,3 +92,13 @@ export const dataTest = [
     role: 1,
   },
 ];
+
+export const roleColor = (role: number) => {
+  if (role === 1) {
+    return { role: '普通用户', color: 'lime' };
+  } else if (role === 2) {
+    return { role: '普通管理员', color: 'purple' };
+  } else {
+    return { role: '超级管理员', color: 'red' };
+  }
+};

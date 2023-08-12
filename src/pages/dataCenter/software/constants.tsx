@@ -1,15 +1,29 @@
 //列表属性类型
 export type ColumnType = {
-  softwareWritingId?: number;
+  softwareWritingId?: string;
   name: string;
-  //abbreviation:string;
   registrationNumber: string;
   versionNumber: string;
-  // takePowerWay:string;
-  // finishTime:string;
-  // firstPublicTime:string;
   registrationTime: string;
-  companyId?: number;
+  companyId?: string;
+};
+export type SearchSoftwareWritingType = {
+  records: Records[];
+  total: number;
+  size: number;
+  current: number;
+  orders?: any[];
+  searchCount: boolean;
+  pages: number;
+};
+
+export type Records = {
+  softwareWritingId?: string;
+  name: string;
+  registrationNumber: string;
+  versionNumber: string;
+  registrationTime: string;
+  companyId?: string;
 };
 //测试数据
 export const dataTest = [

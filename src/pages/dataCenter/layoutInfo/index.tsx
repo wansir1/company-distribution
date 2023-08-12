@@ -1,21 +1,22 @@
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable, ProCard } from '@ant-design/pro-components';
 import { Space, Tag, message } from 'antd';
-import { useRef, useState } from 'react';
-import { convertToArray, dataTest, ColumnType } from './constants';
+import { useContext, useRef, useState } from 'react';
+import {
+  convertToArray,
+  dataTest,
+  ColumnType,
+  SearchIndustryLayoutType,
+} from './constants';
 import Editable from './Editable';
 import styles from './index.less';
-export const waitTimePromise = async (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
-
-export const waitTime = async (time: number = 100) => {
-  await waitTimePromise(time);
-};
+import { history } from '@@/core/history';
+import { AdminInfoContext } from '@/pages/centralAdministration';
+import {
+  requestDeleteIndustryLayout,
+  requestIndustryLayout,
+  requestUpdateIndustryLayout,
+} from '@/services/search';
 
 const PAGE_SIZE = 5;
 
@@ -52,13 +53,13 @@ const columns: ProColumns<ColumnType & { indexNum: number }>[] = [
     },
   },
   {
-    title: '类型(0-业务,1-技术,2-产业布局)',
+    title: '类型',
     dataIndex: 'type',
-    valueEnum: {
-      0: '0',
-      1: '1',
-      2: '2',
-    },
+    valueEnum: new Map([
+      [0, '业务'],
+      [1, '技术'],
+      [2, '产业布局'],
+    ]),
     ellipsis: true,
     formItemProps: {
       rules: [
@@ -89,21 +90,46 @@ const columns: ProColumns<ColumnType & { indexNum: number }>[] = [
 
 export default () => {
   const actionRef = useRef<ActionType>();
+  const { userInfo } = useContext(AdminInfoContext);
+  const onChangeTabs = (activeKey: string) => {
+    activeKey === 'tab1' ? actionRef.current?.reload() : null;
+  };
+  if (!userInfo) return;
   return (
-    <ProCard tabs={{ type: 'card' }}>
+    <ProCard tabs={{ type: 'card', onChange: onChangeTabs }}>
       <ProCard.TabPane key="tab1" tab="信息管理">
         <ProTable<ColumnType & { indexNum: number }>
           columns={columns}
           actionRef={actionRef}
           cardBordered
           request={async (params = {}, sort, filter) => {
-            await waitTime(2000);
-            const data2 = dataTest.map((data, index) => ({
-              ...data,
-              indexNum: index + 1,
-            }));
-            console.log(sort, filter, params, data2, 'params');
-            return { data: data2, success: true, total: 30 };
+            try {
+              //调用接口并传参
+              const res: SearchIndustryLayoutType = await requestIndustryLayout(
+                {
+                  current: params.current!,
+                  size: params.pageSize!,
+                  companyId: userInfo?.companyId,
+                },
+              );
+              console.log(res, 'res');
+              if (typeof res === 'object' && 'code' in res) {
+                message.error('token失效请重新登录');
+                localStorage.clear();
+                history.push(`/home`);
+              }
+              //处理数据格式
+              const data = res.records?.map((data, index) => ({
+                ...data,
+                indexNum: index + 1 + (params.current! - 1) * PAGE_SIZE,
+              }));
+              console.log(data, 'data');
+              //返回
+              return { data, success: true, total: res.total };
+            } catch (e) {
+              console.log(e);
+              return { data: [], success: true };
+            }
           }}
           editable={{
             type: 'multiple',
@@ -113,20 +139,33 @@ export default () => {
               row.type = Number(row.type);
 
               try {
-                message
-                  .loading('Action in progress..', 1)
-                  .then(() => message.success('添加成功', 2.5));
-
-                await new Promise((resolve) => {
-                  setTimeout(() => {
-                    resolve(true);
-                  }, 2000);
-                });
+                const data = await requestUpdateIndustryLayout(row);
+                if (typeof data === 'object' && 'code' in data) {
+                  message.error('保存失败');
+                } else {
+                  message.success('保存成功');
+                }
+                actionRef.current?.reload();
               } catch (e) {
                 message.error('添加失败');
                 console.log(e);
               }
-              actionRef.current?.reload();
+            },
+            onDelete: async (key, row) => {
+              try {
+                console.log(key, row, 'keyRow');
+                const data = await requestDeleteIndustryLayout(key.toString());
+                if (typeof data === 'object' && 'code' in data) {
+                  message.error('删除失败');
+                } else {
+                  message.success('删除成功');
+                }
+                actionRef.current?.reloadAndRest &&
+                  actionRef.current?.reloadAndRest();
+              } catch (e) {
+                message.error('添加失败');
+                console.log(e);
+              }
             },
           }}
           columnsState={{
@@ -152,7 +191,7 @@ export default () => {
         />
       </ProCard.TabPane>
       <ProCard.TabPane key="tab2" tab="信息添加">
-        <Editable />
+        <Editable userInfo={userInfo} />
       </ProCard.TabPane>
     </ProCard>
   );

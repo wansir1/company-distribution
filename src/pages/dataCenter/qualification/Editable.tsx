@@ -2,12 +2,17 @@ import type { ProColumns } from '@ant-design/pro-components';
 import { EditableProTable } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
 import React, { useState } from 'react';
+import { history } from 'umi';
 import { convertToArray, ColumnType } from './constants';
-
-export default () => {
+import { UserInfo } from '@/pages/centralAdministration';
+import { requestUpdateQualification } from '@/services/search';
+interface ParamType {
+  userInfo: UserInfo;
+}
+export default (params: ParamType) => {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [dataSource, setDataSource] = useState<readonly ColumnType[]>([]);
-
+  const { userInfo } = params;
   const columns: ProColumns<ColumnType>[] = [
     {
       title: '资质名称',
@@ -131,19 +136,22 @@ export default () => {
         saveText: '添加',
         onSave: async (key, row, originRow) => {
           console.log(key, row, originRow);
-
+          // const newCompanyId:number = Number(userInfo.companyId);
           try {
-            message
-              .loading('Action in progress..', 1)
-              .then(() => message.success('添加成功', 2.5));
-
-            await new Promise((resolve) => {
-              setTimeout(() => {
-                resolve(true);
-              }, 2000);
+            const data = await requestUpdateQualification({
+              ...row,
+              companyId: userInfo.companyId,
             });
+            console.log(data, ' 测试传参数');
+            if (typeof data === 'object' && 'code' in data) {
+              message.error('token失效请重新登录');
+              localStorage.clear();
+              history.push(`/home`);
+            } else {
+              message.success('添加成功');
+            }
           } catch (e) {
-            message.error('添加失败');
+            message.error('添加失败,系统修复中');
             console.log(e);
           }
         },

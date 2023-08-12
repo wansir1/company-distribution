@@ -9,8 +9,20 @@ import {
   ProFormSelect,
   ProFormText,
   ProFormTextArea,
+  ProFormInstance,
 } from '@ant-design/pro-components';
-import { requestCity, requestDistricts } from '@/services/search';
+import {
+  CompanyParam,
+  PersonParam,
+  requestCity,
+  requestCompany,
+  requestCompanyInfo,
+  requestDistricts,
+  requestUpdateCompanyInfo,
+  requestUpdateUserInfo,
+  requestUserInfo,
+  SearchCompanyType,
+} from '@/services/search';
 import {
   getIndustryType,
   getProvince,
@@ -19,24 +31,28 @@ import {
 } from './constants';
 import { Col, message, Row, Space, Switch } from 'antd';
 import type { FormLayout } from 'antd/lib/form/Form';
-import { useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
+import { GlobalInfoContext } from '@/pages/layouts';
+import { AdminInfoContext } from '@/pages/centralAdministration';
+import { isNotEmptyObj } from '@/utils/helper';
 
 const LAYOUT_TYPE_HORIZONTAL = 'horizontal';
-
-const waitTime = (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
+type PropsType = {
+  role?: number;
 };
 
-const CompanyCentral = () => {
+const CompanyCentral: React.FC<PropsType> = (props) => {
   const [formLayoutType, setFormLayoutType] = useState<FormLayout>(
     LAYOUT_TYPE_HORIZONTAL,
   );
   const [edit, setEdit] = useState(true);
-
+  const formRef = useRef<ProFormInstance>();
+  const { role } = props;
+  // 这里是因为用户也有这个模块，要不然不用判断直接useContext(AdminInfoContext)获取就可以了
+  const { userInfo } =
+    role === 1 ? useContext(GlobalInfoContext) : useContext(AdminInfoContext);
+  const [refresh, setRefresh] = useState(false);
+  console.log(userInfo, 'user info');
   return (
     <ProCard>
       <Switch
@@ -49,13 +65,11 @@ const CompanyCentral = () => {
         checkedChildren="开启编辑"
         unCheckedChildren="禁止编辑"
       />
-      <ProForm<{
-        name: string;
-        company?: string;
-        useMode?: string;
-      }>
+      <ProForm<CompanyParam | {}>
         layout={formLayoutType}
         grid={true}
+        //xiugai
+        formRef={formRef}
         disabled={!edit}
         rowProps={{
           gutter: [16, formLayoutType === 'inline' ? 16 : 0],
@@ -75,21 +89,55 @@ const CompanyCentral = () => {
           },
         }}
         onFinish={async (values) => {
-          await waitTime(2000);
-          console.log(values);
-          message.success('提交成功');
+          if (isNotEmptyObj(values)) {
+            try {
+              console.log(values, 'values');
+              const data = await requestUpdateCompanyInfo({
+                ...values,
+                companyId: userInfo?.companyId,
+              });
+              if ('code' in data) {
+                message.error('保存失败');
+              } else {
+                message.success('保存成功');
+              }
+              setRefresh(!refresh);
+
+              formRef?.current?.setFieldsValue(values);
+            } catch (err) {
+              console.log(err);
+              message.warning('系统修复中或重新登录');
+            }
+          }
         }}
         params={{}}
+        //查询信息显示
         request={async () => {
-          await waitTime(100);
-          return {
-            companyName: '蚂蚁设计有限公司',
-            useMode: 'chapter',
-            name: 'john',
-            sex: 0,
-            validTime: '2023-07-05',
-            industryTypeId: ['1', '2'],
-          };
+          try {
+            if (userInfo) {
+              const res: SearchCompanyType = await requestCompanyInfo(
+                userInfo.companyId.toString(),
+              );
+              let data = res.records[0];
+              console.log(res, 'res');
+              data.industryTypeId = JSON.parse(data.industryTypeId)?.map(
+                String,
+              );
+
+              console.log(data, 'datahandle');
+              // let newStr:string[] = data.industryTypeId.map(String);
+              // data.industryTypeId = newStr;
+              if (data) {
+                console.log(res.records[0], 'company Info');
+                return data;
+              } else {
+                return {};
+              }
+            }
+          } catch (e) {
+            console.log(e);
+          }
+          return {};
         }}
         autoFocusFirstInput
       >

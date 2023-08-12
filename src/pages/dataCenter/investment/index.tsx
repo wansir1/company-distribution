@@ -57,10 +57,12 @@ const Investment: React.FC = () => {
             type: 'multiple',
             onSave: async (key, row, originRow) => {
               console.log(key, row, originRow, '1111');
+              // 保证business是数组
               row.business =
                 typeof row.business === 'string'
                   ? convertToArray(row.business)
                   : row.business;
+              //表格内的数字保证传给后端是数字 作转换
               row.amount = Number(row.amount);
               row.ratio = Number(row.ratio) / 100; //这里不处理是因为row.name为string，而定义的类型也为string所以不需要处理
               console.log(key, row, originRow, '22222'); //查看处理后的数据是否符合传给后端的类型数据，符合则通过接口把res传给接口

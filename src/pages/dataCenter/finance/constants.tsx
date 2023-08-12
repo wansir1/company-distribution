@@ -1,17 +1,36 @@
 //公司列表属性类型
+import { number } from 'echarts';
+
 export type ColumnType = {
-  financeId?: number;
+  financeId?: string;
   date: string;
   amount: number;
-  companyId?: number;
+  companyId?: string;
 };
+export type SearchFinanceType = {
+  records: Records[];
+  total: number;
+  size: number;
+  current: number;
+  orders?: any[];
+  searchCount: boolean;
+  pages: number;
+};
+
+export type Records = {
+  financeId?: string;
+  date: string;
+  amount: number;
+  companyId?: string;
+};
+
 //测试数据
 export const dataTest = [
   {
-    financeId: 2222,
+    financeId: '2222',
     date: '2011-6-6',
     amount: 1300,
-    companyId: 2222,
+    companyId: '2222',
   },
 ];
 //将字符串转换成字符串数组

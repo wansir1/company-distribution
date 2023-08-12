@@ -140,6 +140,7 @@ const Editable = (params: ParamType) => {
               ...row,
               companyId: userInfo.companyId,
             });
+            console.log(data, ' 测试传参数');
             if (typeof data === 'object' && 'code' in data) {
               message.error('token失效请重新登录');
               localStorage.clear();
