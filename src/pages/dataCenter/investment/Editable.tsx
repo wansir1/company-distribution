@@ -2,10 +2,10 @@ import type { ProColumns } from '@ant-design/pro-components';
 import { EditableProTable } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
 import React, { useState } from 'react';
-import { convertToArray, ColumnType } from './constants';
+import { convertToArray, ColumnType, updateInvestment } from './constants';
 import { history } from 'umi';
 import { UserInfo } from '@/pages/centralAdministration';
-import { requestUpdateInvestment } from '@/services/search';
+import { getCompanyList, ApiFunctions } from '../constants';
 interface ParamType {
   userInfo: UserInfo;
 }
@@ -15,10 +15,10 @@ const Editable = (params: ParamType) => {
   const { userInfo } = params;
   const columns: ProColumns<ColumnType>[] = [
     {
-      title: '公司名称',
+      title: '被投公司',
       dataIndex: 'name',
       ellipsis: true,
-      tip: '公司名过长会自动收缩',
+      tip: '被投资的公司',
       formItemProps: {
         rules: [
           {
@@ -31,6 +31,7 @@ const Editable = (params: ParamType) => {
     {
       title: '持股比例（%）',
       dataIndex: 'ratio',
+      width: 150,
       ellipsis: true,
       formItemProps: {
         rules: [
@@ -48,6 +49,7 @@ const Editable = (params: ParamType) => {
     {
       title: '出资金额（万）',
       dataIndex: 'amount',
+      width: 150,
       ellipsis: true,
       formItemProps: {
         rules: [
@@ -80,21 +82,49 @@ const Editable = (params: ParamType) => {
     {
       title: '操作',
       valueType: 'option',
-      width: 250,
+      width: 150,
       render: () => {
         return null;
       },
     },
   ];
+  //   userInfo.loginRole === 3
+  //     ? columns.unshift({
+  //         title: '投资公司',
+  //         dataIndex: 'companyId',
+  //         key: 'companyId',
+  //         ellipsis: true,
+  //         valueType: 'select',
+  //         width: 270,
+  //         request: getCompanyList,
+  //         fieldProps: {
+  //           showSearch: true,
+  //           style: {width: 235},
+  //           fieldNames: {
+  //             label: 'name',
+  //             value: 'companyId',
+  //           },
+  //           optionFilterProp: 'name',
+  //         },
+  //         formItemProps: {
+  //           rules: [
+  //             {
+  //               required: true,
+  //               message: '此项为必填项',
+  //             },
+  //           ],
+  //         },
+  //       })
+  //     : null; // 超级管理员添加功能
 
   return (
     <EditableProTable<ColumnType>
       headerTitle="添加数据"
+      scroll={{
+        x: 'max-content',
+      }}
       columns={columns}
       rowKey="id"
-      scroll={{
-        x: 960,
-      }}
       value={dataSource}
       onChange={setDataSource}
       recordCreatorProps={{
@@ -127,18 +157,18 @@ const Editable = (params: ParamType) => {
         editableKeys,
         saveText: '添加',
         onSave: async (key, row, originRow) => {
-          console.log(key, row, originRow);
+          console.log(key, row, originRow, '1');
           row.business =
             typeof row.business === 'string'
               ? convertToArray(row.business)
               : row.business;
           row.amount = Number(row.amount);
           row.ratio = Number(row.ratio) / 100; //这里不处理是因为row.name为string，而定义的类型也为string所以不需要处理
-          console.log(key, row, originRow); //查看处理后的数据是否符合传给后端的类型数据，符合则通过接口把res传给接口
+          console.log(key, row, originRow, '2'); //查看处理后的数据是否符合传给后端的类型数据，符合则通过接口把res传给接口
           try {
-            const data = await requestUpdateInvestment({
+            const data = await updateInvestment[userInfo.loginRole]({
               ...row,
-              companyId: userInfo.companyId,
+              companyId: row.companyId || userInfo.companyId,
             });
             console.log(data, ' 测试传参数');
             if (typeof data === 'object' && 'code' in data) {

@@ -259,7 +259,7 @@ export default () => {
             },
           }}
           columnsState={{
-            persistenceKey: 'pro-table-singe-demos',
+            persistenceKey: 'patent',
             persistenceType: 'localStorage',
             onChange(value) {
               console.log('value: ', value);

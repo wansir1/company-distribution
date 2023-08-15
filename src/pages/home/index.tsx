@@ -6,15 +6,11 @@ import {
   requestLogin,
   requestRegister,
   RegisterParam,
+  RegCompanyType,
   LoginParam,
 } from '@/services/search';
 import { history } from 'umi';
-import {
-  handleLoginSuccess,
-  LoginType,
-  RegCompanyType,
-  checkPhone,
-} from './constants';
+import { handleLoginSuccess, LoginType, checkPhone } from './constants';
 import lockAlt from '@/assets/images/lockAlt.svg';
 import phone from '@/assets/images/phone.svg';
 import user from '@/assets/images/user.svg';
@@ -34,9 +30,17 @@ const Home: React.FC = () => {
         message.error('登录信息输入错误，请重新登录');
       } else {
         handleLoginSuccess(res, values.role);
-        values.role === 1
-          ? history.push(`/industry/distribution`)
-          : history.push(`/administration/person-central`);
+        switch (values.role) {
+          case 1:
+            history.push(`/industry/distribution`);
+            break;
+          case 2:
+            history.push(`/administration/person-central`);
+            break;
+          case 3:
+            history.push(`/administration/company-management`);
+            break;
+        }
         message.success('登录成功');
       }
       console.log(res, '--login');

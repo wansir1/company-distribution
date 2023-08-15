@@ -39,7 +39,7 @@ const CentralAdministration: React.FC = (props) => {
         }}
       >
         <ProLayout
-          {...defaultProps(userInfo.loginRole)}
+          {...defaultProps(userInfo?.loginRole)}
           title="产业信息管理中心"
           menu={{
             type: 'group',

@@ -12,11 +12,6 @@ export type LoginType = {
   companyName: string;
 };
 
-export interface RegCompanyType {
-  companyId: string;
-  name: string;
-}
-
 // 在登录成功后保存 Token
 export const handleLoginSuccess = (userInfo: LoginType, loginRole: number) => {
   localStorage.clear();
