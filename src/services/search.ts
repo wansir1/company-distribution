@@ -106,8 +106,15 @@ export function requestRegCompany() {
   return requestUtils.get(`/user/getCompany`);
 }
 
-export function requestCheckPhone(param: string) {
-  return requestUtils.post(`/user/checkPhone?phone=${param}`);
+export interface CheckParamType {
+  phone: string;
+  role: number;
+  companyId: string;
+}
+export function requestCheckPhone(params: CheckParamType) {
+  return requestUtils.post(`/user/checkPhone`, {
+    data: params,
+  });
 }
 export interface RegisterParam {
   companyId: string;

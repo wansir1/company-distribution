@@ -1,4 +1,4 @@
-import { requestCheckPhone } from '@/services/search';
+import { requestCheckPhone, CheckParamType } from '@/services/search';
 
 export type LoginType = {
   companyId: string;
@@ -20,12 +20,14 @@ export const handleLoginSuccess = (userInfo: LoginType, loginRole: number) => {
   localStorage.setItem('token', userInfo.token);
 };
 
-export const checkPhone = async (phone: string) => {
+export const checkPhone = async (params: CheckParamType) => {
   // 定义一个异步函数来调用 checkPhone 接口
   try {
-    const data = await requestCheckPhone(phone); // 解析响应数据
-
-    return typeof data === 'boolean' ? true : false; // 返回数据
+    const data = await requestCheckPhone(params); // 解析响应数据
+    if (typeof data === 'object' && 'code' in data) {
+      return false;
+    }
+    return data; // 返回数据
   } catch (error) {
     console.error(error); // 处理错误
     return null;

@@ -89,10 +89,7 @@ const Home: React.FC = () => {
   return (
     <div className={styles.container}>
       <a href="#" className={styles.logo}>
-        <img
-          src="https://assets.codepen.io/1462889/fcy.png"
-          alt="https://front.codes/"
-        />
+        <img src="https://assets.codepen.io/1462889/fcy.png" alt="" />
       </a>
 
       <div className={styles.section}>
@@ -274,22 +271,6 @@ const Home: React.FC = () => {
                                   pattern: /^[0-9]{11}$/,
                                   message: '请输入正确的手机号码!',
                                 },
-                                {
-                                  validator: async (_, value) => {
-                                    const pattern = /^[0-9]{11}$/;
-                                    if (!pattern.test(value))
-                                      return Promise.resolve();
-                                    const notExitPhone = await checkPhone(
-                                      value,
-                                    );
-                                    if (!value || notExitPhone) {
-                                      return Promise.resolve();
-                                    }
-                                    return Promise.reject(
-                                      new Error('手机号码已存在，请重新输入!'),
-                                    );
-                                  },
-                                },
                               ]}
                             >
                               <Input
@@ -393,6 +374,25 @@ const Home: React.FC = () => {
                               name="role"
                               rules={[
                                 { required: true, message: '请选择角色' },
+                                {
+                                  validator: async (_, value: number) => {
+                                    console.log(_, value, '角色');
+                                    let phone: string =
+                                      form.getFieldValue('phone');
+                                    let companyId: string =
+                                      form.getFieldValue('companyId');
+                                    const notExitPhone = await checkPhone({
+                                      role: value,
+                                      phone,
+                                      companyId,
+                                    });
+                                    if (!value || notExitPhone) {
+                                      return Promise.resolve();
+                                    }
+                                    message.error('已注册，请修改注册信息');
+                                    return Promise.reject();
+                                  },
+                                },
                               ]}
                             >
                               <Select
