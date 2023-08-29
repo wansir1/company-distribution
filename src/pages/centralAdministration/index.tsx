@@ -103,7 +103,11 @@ const CentralAdministration: React.FC = (props) => {
             return (
               <div
                 onClick={() => {
-                  item.path && history.push(item.path);
+                  if (item?.path == '/administration/data-center') {
+                    history.push(item.path + '/default');
+                  } else {
+                    item.path && history.push(item.path);
+                  }
                   console.log(item.path, item, 'path');
                 }}
               >

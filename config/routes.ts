@@ -139,6 +139,10 @@ export default [
             name: '产业类型',
             component: '@/pages/dataCenter/industryType',
           },
+          {
+            path: '*',
+            redirect: 'investment',
+          },
         ],
       },
     ],
