@@ -3,41 +3,27 @@ import { EditableProTable } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
 import React, { useState } from 'react';
 import { convertToArray, ColumnType } from './constants';
-
-export default () => {
+import { history } from 'umi';
+import { UserInfo } from '@/pages/centralAdministration';
+import { requestUpdateTypeOfIndustry } from '@/services/superAdmin';
+interface ParamType {
+  userInfo: UserInfo;
+}
+export default (params: ParamType) => {
+  const { userInfo } = params;
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [dataSource, setDataSource] = useState<readonly ColumnType[]>([]);
 
   const columns: ProColumns<ColumnType>[] = [
     {
-      title: '融资日期',
-      dataIndex: 'date',
-      valueType: 'date',
-      sorter: true,
+      title: '产业类型',
+      dataIndex: 'name',
       ellipsis: true,
       formItemProps: {
         rules: [
           {
             required: true,
             message: '此项为必填项',
-          },
-        ],
-      },
-    },
-
-    {
-      title: '融资金额（万）',
-      dataIndex: 'amount',
-      ellipsis: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '此项为必填项',
-          },
-          {
-            pattern: /^(?:0|[1-9]\d*)$/,
-            message: '请输入大于等于0的数字',
           },
         ],
       },
@@ -66,8 +52,7 @@ export default () => {
         newRecordType: 'dataSource',
         record: () => ({
           id: Date.now(),
-          date: '2000-01-01',
-          amount: 0,
+          name: '',
         }),
       }}
       toolBarRender={() => {
@@ -92,20 +77,19 @@ export default () => {
         onSave: async (key, row, originRow) => {
           console.log(key, row, originRow);
 
-          row.amount = Number(row.amount);
-
           try {
-            message
-              .loading('Action in progress..', 1)
-              .then(() => message.success('添加成功', 2.5));
-
-            await new Promise((resolve) => {
-              setTimeout(() => {
-                resolve(true);
-              }, 2000);
+            const data = await requestUpdateTypeOfIndustry({
+              ...row,
             });
+            if (typeof data === 'object' && 'code' in data) {
+              message.error('token失效请重新登录');
+              localStorage.clear();
+              history.push(`/home`);
+            } else {
+              message.success('添加成功');
+            }
           } catch (e) {
-            message.error('添加失败');
+            message.error('添加失败,系统修复中');
             console.log(e);
           }
         },

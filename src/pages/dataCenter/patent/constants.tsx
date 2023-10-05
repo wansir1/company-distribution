@@ -1,6 +1,21 @@
 //列表属性类型
+import { ApiFunctions } from '@/pages/dataCenter/constants';
+import {
+  requestDeletePatent,
+  requestPatent,
+  requestUpdatePatent,
+} from '@/services/admin';
+import {
+  requestDeletePatentSuper,
+  requestPatentSuper,
+  requestUpdatePatentSuper,
+} from '@/services/superAdmin';
+
 export type ColumnType = {
   patentId?: string;
+  companyName?: string;
+  startTime?: string;
+  endTime?: string;
   name: string;
   type: string;
   state: string;
@@ -24,6 +39,7 @@ export type SearchPatentType = {
 
 export type Records = {
   patentId?: string;
+  companyName?: string;
   name: string;
   type: string;
   state: string;
@@ -55,3 +71,17 @@ export const dataTest = [
 export function convertToArray(str: string): string[] {
   return str.includes(',') ? str.split(',') : [str];
 }
+export const getPatent: ApiFunctions = {
+  2: requestPatent,
+  3: requestPatentSuper,
+};
+
+export const updatePatent: ApiFunctions = {
+  2: requestUpdatePatent,
+  3: requestUpdatePatentSuper,
+};
+
+export const deletePatent: ApiFunctions = {
+  2: requestDeletePatent,
+  3: requestDeletePatentSuper,
+};

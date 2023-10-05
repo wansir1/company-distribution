@@ -2,10 +2,10 @@ import type { ProColumns } from '@ant-design/pro-components';
 import { EditableProTable } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
 import React, { useState } from 'react';
-import { convertToArray, ColumnType } from './constants';
+import { ColumnType } from './constants';
 import { history } from 'umi';
 import { UserInfo } from '@/pages/centralAdministration';
-import { requestUpdateSoftwareWriting } from '@/services/search';
+import { requestUpdateSoftwareWriting } from '@/services/admin';
 interface ParamType {
   userInfo: UserInfo;
 }

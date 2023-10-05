@@ -4,16 +4,36 @@
   height: 600px;
   top: 0;
   left: 0;
+  //color:rgba(0,0,0,.85);
   background: white;
+}
+.title {
+  font-family: 'Arial', sans-serif;
+  font-size: 36px;
+  font-weight: bold;
+  color: black; /* 标题颜色 */
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 20px;
+  //border: 2px solid #333; /* 边框样式 */
+  background-color: #fff; /* 标题背景颜色 */
+  // box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+}
+.svg-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 .footer {
   position: absolute;
   width: 100%;
-  height: 50%;
-  //top: 0;
+  height: 30%;
   left: 0;
   bottom: 0;
-  background: #cf1322;
+  border-radius: 5px;
+  //background: #1890ff;
+  background: rgb(66, 141, 231);
 }
 .bubbles {
   position: relative;
@@ -22,7 +42,8 @@
   // top: 0;
   left: 0;
   bottom: 0;
-  background: deepskyblue;
+  filter: url(#blob);
+  background: inherit;
 }
 .bubble {
   position: absolute;

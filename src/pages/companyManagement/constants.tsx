@@ -1,73 +1,66 @@
+import type { ProColumns } from '@ant-design/pro-components';
 export type ColumnType = {
-  userId: string;
-  companyId: string;
-  companyName: string;
+  companyId?: string;
   name: string;
-  sex: number;
-  phone: string;
-  state: string;
-  role: number;
+  creditCode?: string;
+  phone?: string;
+  postCode?: string;
+  email?: string;
+  legalRepresentative?: string;
+  validTime?: string;
+  industryTypeId?: string;
+  industryTypeName?: string[];
+  registeredCapital?: number;
+  registeredTime?: string;
+  registeredAddress?: string;
+  registerStatus?: string;
+  website?: string;
+  provinceId?: number;
+  cityId?: string;
+  cityName: string;
+  districtId?: number;
+  districtName?: string;
+  address?: string;
+  longitude?: number;
+  latitude?: number;
+};
+type Record = {
+  companyId?: string;
+  name: string;
+  creditCode?: string;
+  phone?: string;
+  postCode?: string;
+  email?: string;
+  legalRepresentative?: string;
+  validTime?: string;
+  industryTypeId?: string;
+  industryTypeName?: string[];
+  registeredCapital?: number;
+  registeredTime?: string;
+  registeredAddress?: string;
+  registerStatus?: string;
+  website?: string;
+  provinceId?: number;
+  cityId?: number;
+  cityName: string;
+  districtId?: number;
+  districtName?: string;
+  address?: string;
+  longitude?: number;
+  latitude?: number;
+};
+export type SearchCompanyType = {
+  records: Record[];
+  total: number;
+  size: number;
+  current: number;
+  orders?: any[];
+  searchCount: boolean;
+  pages: number;
 };
 export const dataTest = [
   {
-    userId: '1',
     companyId: '1',
-    companyName: '拿到手弗兰克',
-    name: '京东方看',
-    sex: 0,
-    phone: '18779373851',
-    state: '2',
-    role: 1,
-  },
-  {
-    userId: '2',
-    companyId: '2',
-    companyName: '拿到手弗兰克',
-    name: '京东方看',
-    sex: 0,
-    phone: '18779373852',
-    state: '1',
-    role: 1,
-  },
-  {
-    userId: '3',
-    companyId: '3',
-    companyName: '拿到手弗兰克',
-    name: '京东方看',
-    sex: 1,
-    phone: '18779373852',
-    state: '0',
-    role: 1,
-  },
-
-  {
-    userId: '4',
-    companyId: '4',
-    companyName: '拿到手弗兰克',
-    name: '京东方看',
-    sex: 0,
-    phone: '18779373851',
-    state: '2',
-    role: 1,
-  },
-  {
-    userId: '5',
-    companyId: '5',
-    companyName: '拿到手弗兰克',
-    name: '京东方看',
-    sex: 0,
-    phone: '18779373852',
-    state: '1',
-    role: 1,
-  },
-  {
-    userId: '6',
-    companyId: '6',
-    companyName: '拿到手弗兰克',
-    name: '京东方看',
-    sex: 1,
-    phone: '18779373852',
-    state: '0',
-    role: 1,
+    name: '拿到手弗兰克',
   },
 ];

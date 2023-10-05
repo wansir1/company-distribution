@@ -1,6 +1,21 @@
 //列表属性类型
+import {
+  requestDeleteHighTech,
+  requestHighTech,
+  requestUpdateHighTech,
+} from '@/services/admin';
+import {
+  requestDeleteHighTechSuper,
+  requestHighTechSuper,
+  requestUpdateHighTechSuper,
+} from '@/services/superAdmin';
+import { ApiFunctions } from '@/pages/dataCenter/constants';
+
 export type ColumnType = {
   highTechId?: string;
+  companyName?: string;
+  startTime?: string;
+  endTime?: string;
   license: string;
   accreditationAgency: string;
   accreditationDate: string;
@@ -18,6 +33,7 @@ export type SearchHighTechType = {
 
 export type Records = {
   highTechId?: string;
+  companyName?: string;
   license: string;
   accreditationAgency: string;
   accreditationDate: string;
@@ -33,3 +49,17 @@ export const dataTest = [
     companyId: 2222,
   },
 ];
+export const getHighTech: ApiFunctions = {
+  2: requestHighTech,
+  3: requestHighTechSuper,
+};
+
+export const updateHighTech: ApiFunctions = {
+  2: requestUpdateHighTech,
+  3: requestUpdateHighTechSuper,
+};
+
+export const deleteHighTech: ApiFunctions = {
+  2: requestDeleteHighTech,
+  3: requestDeleteHighTechSuper,
+};

@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { history } from 'umi';
 import { convertToArray, ColumnType } from './constants';
 import { UserInfo } from '@/pages/centralAdministration';
-import { requestUpdateQualification } from '@/services/search';
+import { requestUpdateQualification } from '@/services/admin';
 interface ParamType {
   userInfo: UserInfo;
 }

@@ -5,6 +5,7 @@ import {
   DatabaseFilled,
   IdcardFilled,
   TabletFilled,
+  SlidersOutlined,
   PieChartOutlined,
   MoneyCollectOutlined,
   SketchOutlined,
@@ -81,6 +82,11 @@ export const defaultProps = (role: number) => {
           icon: <GlobalOutlined rev={undefined} />,
           component: './Welcome',
         },
+        // {
+        //   path: 'industry-type',
+        //   name: '产业类型',
+        //   icon: <SlidersOutlined rev={undefined} />,
+        // },
       ],
     },
   ];
@@ -88,7 +94,7 @@ export const defaultProps = (role: number) => {
     const addRoute = {
       path: 'industry-type',
       name: '产业类型',
-      icon: <GlobalOutlined rev={undefined} />,
+      icon: <SlidersOutlined rev={undefined} />,
       component: './Welcome',
     };
     routes[3].routes?.push(addRoute);

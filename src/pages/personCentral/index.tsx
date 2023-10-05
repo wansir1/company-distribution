@@ -82,6 +82,7 @@ const PersonCentral: React.FC<PropsType> = (props) => {
               });
               if ('code' in data) {
                 message.error('保存失败');
+                console.log(data, 'data');
               } else {
                 message.success('保存成功');
               }

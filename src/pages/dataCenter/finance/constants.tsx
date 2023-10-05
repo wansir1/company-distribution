@@ -1,8 +1,22 @@
 //公司列表属性类型
 import { number } from 'echarts';
+import { ApiFunctions } from '@/pages/dataCenter/constants';
+import {
+  requestDeleteFinance,
+  requestFinance,
+  requestUpdateFinance,
+} from '@/services/admin';
+import {
+  requestDeleteFinanceSuper,
+  requestFinanceSuper,
+  requestUpdateFinanceSuper,
+} from '@/services/superAdmin';
 
 export type ColumnType = {
   financeId?: string;
+  companyName?: string;
+  startTime?: string;
+  endTime?: string;
   date: string;
   amount: number;
   companyId?: string;
@@ -19,6 +33,7 @@ export type SearchFinanceType = {
 
 export type Records = {
   financeId?: string;
+  companyName?: string;
   date: string;
   amount: number;
   companyId?: string;
@@ -37,3 +52,17 @@ export const dataTest = [
 export function convertToArray(str: string): string[] {
   return str.includes(',') ? str.split(',') : [str];
 }
+export const getFinance: ApiFunctions = {
+  2: requestFinance,
+  3: requestFinanceSuper,
+};
+
+export const updateFinance: ApiFunctions = {
+  2: requestUpdateFinance,
+  3: requestUpdateFinanceSuper,
+};
+
+export const deleteFinance: ApiFunctions = {
+  2: requestDeleteFinance,
+  3: requestDeleteFinanceSuper,
+};

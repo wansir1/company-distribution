@@ -27,10 +27,11 @@ export function convertToArray(str: string): string[] {
 }
 
 export const PAGE_SIZE = 5; // 一页展示数量
-
+//设置表格列 根据role
 export const columns = (
   role: number,
 ): ProColumns<ColumnType & { indexNum: number }>[] => {
+  //判断角色是否超级管理员 是的话多加列
   let obj: ProColumns<ColumnType & { indexNum: number }>[] =
     role === 3
       ? [

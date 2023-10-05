@@ -19,5 +19,9 @@ export const GrowthRate: React.FC<{
     }
   };
   const option = data ? getGrowthRateOption(data, componentNumber) : {};
-  return <Chart option={option} chartRef={chartRef} styles={styles} />;
+  return (
+    <>
+      <Chart option={option} chartRef={chartRef} styles={styles} />
+    </>
+  );
 };

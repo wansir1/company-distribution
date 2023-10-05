@@ -32,6 +32,7 @@ export const getSymbolValue = (valueArr: number[]): number[] => {
   // 2将每个数值减去最小值，得到差值（diff）。
   // 3计算缩放因子（scale factor）：scale = (desiredMax - desiredMin) / (max - min)，其中desiredMax是期望的最大值，desiredMin是期望的最小值。
   // 4将每个差值乘以缩放因子，然后加上desiredMin，得到转换后的数值。
+  // 已测试对数、指数缩放、平方根缩放、线性缩放效果都不太好，通过缩放因子融合指数缩放和线性缩放
   const MIN_SCALE = 0.005;
   const desiredMax = 100;
   const desiredMin = 5;
@@ -51,7 +52,7 @@ export const getSymbolValue = (valueArr: number[]): number[] => {
         })
       : valueArr.map((item) => {
           const diff = item - min;
-          const scaledNum = diff * scale + desiredMin;
+          const scaledNum = diff * scale + desiredMin; // 线性缩放
           return Math.round(scaledNum);
         });
   return result;

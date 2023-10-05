@@ -29,10 +29,12 @@ const Investment: React.FC = () => {
       <ProCard.TabPane key="tab1" tab="信息管理">
         <ProTable<ColumnType & { indexNum: number }>
           scroll={{ x: 'max-content' }}
+          //根据权限给表格列
           columns={columns(userInfo.loginRole)}
           actionRef={actionRef}
           cardBordered
           request={async (params = {}, sort, filter) => {
+            //根据role决定传参
             let apiParams =
               userInfo.loginRole === 2
                 ? {

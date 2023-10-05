@@ -1,3 +1,15 @@
+import { ApiFunctions } from '@/pages/dataCenter/constants';
+import {
+  requestDeleteUser,
+  requestUpdateUser,
+  requestUser,
+} from '@/services/admin';
+import {
+  requestDeleteUserSuper,
+  requestUpdateUserSuper,
+  requestUserSuper,
+} from '@/services/superAdmin';
+
 export type ColumnType = {
   userId?: string;
   companyId: string;
@@ -6,7 +18,7 @@ export type ColumnType = {
   sex: number;
   phone: string;
   state: string;
-  role: number;
+  role?: number;
 };
 export type SearchUserType = {
   records: Records[];
@@ -25,8 +37,8 @@ export type Records = {
   name: string;
   sex: number;
   phone: string;
-  state: string;
-  role: number;
+  state: number;
+  role?: number;
 };
 
 export const dataTest = [
@@ -50,47 +62,6 @@ export const dataTest = [
     state: '1',
     role: 1,
   },
-  {
-    userId: '3',
-    companyId: '3',
-    companyName: '拿到手弗兰克',
-    name: '京东方看',
-    sex: 1,
-    phone: '18779373852',
-    state: '0',
-    role: 1,
-  },
-
-  {
-    userId: '4',
-    companyId: '4',
-    companyName: '拿到手弗兰克',
-    name: '京东方看',
-    sex: 0,
-    phone: '18779373851',
-    state: '2',
-    role: 1,
-  },
-  {
-    userId: '5',
-    companyId: '5',
-    companyName: '拿到手弗兰克',
-    name: '京东方看',
-    sex: 0,
-    phone: '18779373852',
-    state: '1',
-    role: 1,
-  },
-  {
-    userId: '6',
-    companyId: '6',
-    companyName: '拿到手弗兰克',
-    name: '京东方看',
-    sex: 1,
-    phone: '18779373852',
-    state: '0',
-    role: 1,
-  },
 ];
 
 export const roleColor = (role: number) => {
@@ -101,4 +72,19 @@ export const roleColor = (role: number) => {
   } else {
     return { role: '超级管理员', color: 'red' };
   }
+};
+
+export const getUser: ApiFunctions = {
+  2: requestUser,
+  3: requestUserSuper,
+};
+
+export const updateUser: ApiFunctions = {
+  2: requestUpdateUser,
+  3: requestUpdateUserSuper,
+};
+
+export const deleteUser: ApiFunctions = {
+  2: requestDeleteUser,
+  3: requestDeleteUserSuper,
 };

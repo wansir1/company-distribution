@@ -3,161 +3,196 @@ import { ProTable, ProCard } from '@ant-design/pro-components';
 import { Space, Tag, message } from 'antd';
 import React, { useContext, useRef } from 'react';
 import { AdminInfoContext } from '@/pages/centralAdministration';
-import { dataTest, ColumnType, SearchUserType, roleColor } from './constants';
+import {
+  dataTest,
+  ColumnType,
+  SearchUserType,
+  roleColor,
+  getUser,
+  updateUser,
+  deleteUser,
+} from './constants';
 import styles from './index.less';
 import {
   requestDeleteUser,
   requestUpdateUser,
   requestUser,
-} from '@/services/search';
+} from '@/services/admin';
 import { history } from '@@/core/history';
+import { getCompanyList } from '@/pages/dataCenter/constants';
 
 const PAGE_SIZE = 5;
-const columns: ProColumns<ColumnType & { indexNum: number }>[] = [
-  {
-    title: '序号',
-    dataIndex: 'index',
-    search: false,
-    editable: false,
-    width: 48,
-    render: (_, record) => {
-      const bgColor =
-        record.indexNum % PAGE_SIZE > 3 || record.indexNum % PAGE_SIZE === 0
-          ? { backgroundColor: '#979797' }
-          : {};
-      return (
-        <div className={styles.index} style={bgColor}>
-          {record.indexNum}
-        </div>
-      );
+const columns = (
+  role: number,
+): ProColumns<ColumnType & { indexNum: number }>[] => {
+  //判断角色是否超级管理员 是的话多加列
+  let obj: ProColumns<ColumnType & { indexNum: number }>[] =
+    role === 3
+      ? [
+          {
+            title: '公司名',
+            dataIndex: 'companyId',
+            ellipsis: true,
+            hideInTable: true,
+            valueType: 'select',
+            request: getCompanyList,
+            fieldProps: {
+              showSearch: true,
+              fieldNames: {
+                label: 'name',
+                value: 'companyId',
+              },
+              optionFilterProp: 'name',
+            },
+          },
+        ]
+      : [];
+  return [
+    {
+      title: '序号',
+      dataIndex: 'index',
+      search: false,
+      editable: false,
+      width: 48,
+      render: (_, record) => {
+        const bgColor =
+          record.indexNum % PAGE_SIZE > 3 || record.indexNum % PAGE_SIZE === 0
+            ? { backgroundColor: '#979797' }
+            : {};
+        return (
+          <div className={styles.index} style={bgColor}>
+            {record.indexNum}
+          </div>
+        );
+      },
     },
-  },
-  {
-    title: '所属公司',
-    dataIndex: 'companyName',
-    // copyable: true,
-    search: false,
-    editable: false,
-    ellipsis: true,
-    tip: '公司名过长会自动收缩',
-  },
-  {
-    title: '昵称',
-    dataIndex: 'name',
-    // copyable: true,
-    ellipsis: true,
-    tip: '昵称过长会自动收缩',
-  },
-  {
-    title: '手机号',
-    dataIndex: 'phone',
-    ellipsis: true,
-    editable: false,
-    formItemProps: {
-      rules: [
-        {
-          required: true,
-          message: '此项为必填项',
+    ...obj,
+    {
+      title: '所属公司',
+      dataIndex: 'companyName',
+      // copyable: true,
+      search: false,
+      editable: false,
+      ellipsis: true,
+      tip: '公司名过长会自动收缩',
+    },
+    {
+      title: '昵称',
+      dataIndex: 'name',
+      // copyable: true,
+      ellipsis: true,
+      tip: '昵称过长会自动收缩',
+    },
+    {
+      title: '手机号',
+      dataIndex: 'phone',
+      ellipsis: true,
+      editable: false,
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '此项为必填项',
+          },
+        ],
+      },
+    },
+    {
+      disable: true,
+      title: '状态',
+      dataIndex: 'state',
+      filters: true,
+      onFilter: true,
+      ellipsis: true,
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '此项为必填项',
+          },
+        ],
+      },
+      valueType: 'select',
+      valueEnum: {
+        0: {
+          text: '未通过',
+          status: 'Error',
         },
+        1: {
+          text: '审核中',
+          status: 'Processing',
+          // disabled: true,
+        },
+        2: {
+          text: '通过审核',
+          status: 'Success',
+        },
+      },
+    },
+    {
+      disable: true,
+      title: '性别',
+      dataIndex: 'sex',
+      search: false,
+      valueType: 'select',
+      valueEnum: new Map([
+        [0, '男'],
+        [1, '女'],
+      ]),
+      render: (_, record) => (
+        <Space>
+          <Tag color={record.sex ? 'success' : 'error'}>
+            {record.sex === 0 ? '男' : record.sex ? '女' : '--'}
+          </Tag>
+        </Space>
+      ),
+    },
+    {
+      title: '角色',
+      dataIndex: 'role',
+      // copyable: true,
+      ellipsis: true,
+      editable: false,
+      search: false,
+      render: (_, record) => (
+        <Space>
+          <Tag color={roleColor(record.role!).color}>
+            {roleColor(record.role!).role}
+          </Tag>
+        </Space>
+      ),
+    },
+    {
+      title: '操作',
+      valueType: 'option',
+      key: 'option',
+      render: (text, record, _, action) => [
+        <a
+          key="editable"
+          onClick={() => {
+            action?.startEditable?.(record.indexNum);
+          }}
+        >
+          编辑
+        </a>,
       ],
     },
-  },
-  {
-    disable: true,
-    title: '状态',
-    dataIndex: 'state',
-    filters: true,
-    onFilter: true,
-    ellipsis: true,
-    formItemProps: {
-      rules: [
-        {
-          required: true,
-          message: '此项为必填项',
-        },
-      ],
-    },
-    valueType: 'select',
-    valueEnum: {
-      0: {
-        text: '未通过',
-        status: 'Error',
-      },
-      1: {
-        text: '审核中',
-        status: 'Processing',
-        // disabled: true,
-      },
-      2: {
-        text: '通过审核',
-        status: 'Success',
-      },
-    },
-  },
-  {
-    disable: true,
-    title: '性别',
-    dataIndex: 'sex',
-    search: false,
-    valueType: 'select',
-    valueEnum: new Map([
-      [0, '男'],
-      [1, '女'],
-    ]),
-    render: (_, record) => (
-      <Space>
-        <Tag color={record.sex ? 'success' : 'error'}>
-          {record.sex === 0 ? '男' : record.sex ? '女' : '--'}
-        </Tag>
-      </Space>
-    ),
-  },
-  {
-    title: '角色',
-    dataIndex: 'role',
-    // copyable: true,
-    ellipsis: true,
-    editable: false,
-    search: false,
-    render: (_, record) => (
-      <Space>
-        <Tag color={roleColor(record.role).color}>
-          {roleColor(record.role).role}
-        </Tag>
-      </Space>
-    ),
-  },
-  {
-    title: '操作',
-    valueType: 'option',
-    key: 'option',
-    render: (text, record, _, action) => [
-      <a
-        key="editable"
-        onClick={() => {
-          action?.startEditable?.(record.indexNum);
-        }}
-      >
-        编辑
-      </a>,
-    ],
-  },
-];
-
+  ];
+};
 export default () => {
   const actionRef = useRef<ActionType>();
   const { userInfo } = useContext(AdminInfoContext);
   if (!userInfo) return <></>;
   return (
     <ProTable<ColumnType & { indexNum: number }>
-      columns={columns}
+      columns={columns(userInfo.loginRole)}
       actionRef={actionRef}
       cardBordered
       request={async (params = {}, sort, filter) => {
         try {
           console.log(params.state, 'params.state');
           //调用接口并传参
-          const res: SearchUserType = await requestUser({
+          const res: SearchUserType = await getUser[userInfo.loginRole]({
             companyId: userInfo?.loginRole == 2 ? userInfo?.companyId : '',
             name: params.name,
             phone: params.phone,
@@ -192,8 +227,9 @@ export default () => {
       editable={{
         type: 'multiple',
         onSave: async (key, row, originRow) => {
+          row.role = Number(row.role);
           try {
-            const data = await requestUpdateUser(row);
+            const data = await updateUser[userInfo.loginRole](row);
             if (typeof data === 'object' && 'code' in data) {
               message.error('保存失败');
             } else {
@@ -208,7 +244,11 @@ export default () => {
         onDelete: async (key, row) => {
           try {
             console.log(key, row, 'keyRow');
-            const data = await requestDeleteUser(row.userId!);
+            row.role = Number(row.role);
+            const data = await deleteUser[userInfo.loginRole]({
+              userId: row.userId,
+              role: row.role,
+            });
             if (typeof data === 'object' && 'code' in data) {
               message.error('删除失败');
             } else {
@@ -223,7 +263,7 @@ export default () => {
         },
       }}
       columnsState={{
-        persistenceKey: 'pro-table-singe-demos',
+        persistenceKey: 'userManagement',
         persistenceType: 'localStorage',
         onChange(value) {
           console.log('value: ', value);

@@ -7,87 +7,141 @@ import {
   dataTest,
   ColumnType,
   SearchFinanceType,
+  getFinance,
+  updateFinance,
+  deleteFinance,
 } from './constants';
 import Editable from './Editable';
 import styles from './index.less';
 import { AdminInfoContext } from '@/pages/centralAdministration';
-import {
-  requestDeleteFinance,
-  requestFinance,
-  requestUpdateFinance,
-} from '@/services/search';
+
 import { history } from 'umi';
+import { getCompanyList } from '@/pages/dataCenter/constants';
 
 const PAGE_SIZE = 5;
 
-const columns: ProColumns<ColumnType & { indexNum: number }>[] = [
-  {
-    title: '序号',
-    dataIndex: 'indexNum',
-    editable: false,
-    width: 48,
-    render: (_, record) => {
-      const bgColor =
-        record.indexNum % PAGE_SIZE > 3 || record.indexNum % PAGE_SIZE === 0
-          ? { backgroundColor: '#979797' }
-          : {};
-      return (
-        <div className={styles.index} style={bgColor}>
-          {record.indexNum}
-        </div>
-      );
+const columns = (
+  role: number,
+): ProColumns<ColumnType & { indexNum: number }>[] => {
+  //判断角色是否超级管理员 是的话多加列
+  let obj: ProColumns<ColumnType & { indexNum: number }>[] =
+    role === 3
+      ? [
+          {
+            title: '公司名',
+            dataIndex: 'companyId',
+            ellipsis: true,
+            hideInTable: true,
+            valueType: 'select',
+            request: getCompanyList,
+            fieldProps: {
+              showSearch: true,
+              fieldNames: {
+                label: 'name',
+                value: 'companyId',
+              },
+              // allowClear: true,
+              optionFilterProp: 'name',
+            },
+          },
+          {
+            title: '起始日期',
+            dataIndex: 'startTime',
+            valueType: 'date',
+            ellipsis: true,
+            hideInTable: true,
+            tip: '查询某个日期之后的融资信息',
+          },
+          {
+            title: '结束日期',
+            dataIndex: 'endTime',
+            valueType: 'date',
+            ellipsis: true,
+            hideInTable: true,
+            tip: '查询某个日期之前的融资信息',
+          },
+          {
+            title: '公司名称',
+            dataIndex: 'companyName',
+            search: false,
+            //   fixed: 'left',
+            editable: false,
+            ellipsis: true,
+          },
+        ]
+      : [];
+  return [
+    {
+      title: '序号',
+      dataIndex: 'indexNum',
+      search: false,
+      editable: false,
+      width: 48,
+      render: (_, record) => {
+        const bgColor =
+          record.indexNum % PAGE_SIZE > 3 || record.indexNum % PAGE_SIZE === 0
+            ? { backgroundColor: '#979797' }
+            : {};
+        return (
+          <div className={styles.index} style={bgColor}>
+            {record.indexNum}
+          </div>
+        );
+      },
     },
-  },
-  {
-    title: '融资金额（万）',
-    dataIndex: 'amount',
-    ellipsis: true,
-    formItemProps: {
-      rules: [
-        {
-          required: true,
-          message: '此项为必填项',
-        },
-        {
-          pattern: /^(?:0|[1-9]\d*)$/,
-          message: '请输入大于等于0的数字',
-        },
+    ...obj,
+    {
+      title: '融资金额（万）',
+      dataIndex: 'amount',
+      search: false,
+      ellipsis: true,
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '此项为必填项',
+          },
+          {
+            pattern: /^(?:0|[1-9]\d*)$/,
+            message: '请输入大于等于0的数字',
+          },
+        ],
+      },
+    },
+    {
+      title: '融资日期',
+      dataIndex: 'date',
+      valueType: 'date',
+      search: false,
+      sorter: true,
+      ellipsis: true,
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '此项为必填项',
+          },
+        ],
+      },
+    },
+
+    {
+      title: '操作',
+      valueType: 'option',
+      key: 'option',
+      render: (text, record, _, action) => [
+        <a
+          key="editable"
+          onClick={() => {
+            action?.startEditable?.(record.financeId!.toString());
+          }}
+        >
+          编辑
+        </a>,
       ],
     },
-  },
-  {
-    title: '融资日期',
-    dataIndex: 'date',
-    valueType: 'date',
-    sorter: true,
-    ellipsis: true,
-    formItemProps: {
-      rules: [
-        {
-          required: true,
-          message: '此项为必填项',
-        },
-      ],
-    },
-  },
-
-  {
-    title: '操作',
-    valueType: 'option',
-    key: 'option',
-    render: (text, record, _, action) => [
-      <a
-        key="editable"
-        onClick={() => {
-          action?.startEditable?.(record.financeId!.toString());
-        }}
-      >
-        编辑
-      </a>,
-    ],
-  },
-];
-
+  ];
+};
 export default () => {
   const actionRef = useRef<ActionType>();
   const { userInfo } = useContext(AdminInfoContext);
@@ -100,38 +154,52 @@ export default () => {
     <ProCard tabs={{ type: 'card', onChange: onChangeTabs }}>
       <ProCard.TabPane key="tab1" tab="信息管理">
         <ProTable<ColumnType & { indexNum: number }>
-          columns={columns}
+          columns={columns(userInfo.loginRole)}
           actionRef={actionRef}
           cardBordered
           request={async (params = {}, sort, filter) => {
+            let apiParams =
+              userInfo.loginRole === 2
+                ? {
+                    current: params.current!,
+                    size: params.pageSize!,
+                    companyId: userInfo?.companyId,
+                  }
+                : {
+                    current: params.current!,
+                    size: params.pageSize!,
+                    companyId: params.companyId,
+                    startTime: params.startTime,
+                    endTime: params.endTime,
+                  };
             try {
-              //调用接口并传参
-              const res: SearchFinanceType = await requestFinance({
-                current: params.current!,
-                size: params.pageSize!,
-                companyId: userInfo?.companyId,
-              });
+              const res: SearchFinanceType = await getFinance[
+                userInfo.loginRole
+              ](apiParams);
               console.log(res, 'res');
-              console.log(res.records, 'resredc');
+              console.log(
+                typeof userInfo?.companyId,
+                userInfo?.companyId,
+                'cid',
+                res,
+                typeof res.records[0].companyId,
+              );
               if (typeof res === 'object' && 'code' in res) {
                 message.error('token失效请重新登录');
                 localStorage.clear();
                 history.push(`/home`);
               }
-              //处理数据格式
-              const data = res.records?.map((data, index) => ({
+              const data = res.records.map((data, index) => ({
                 ...data,
+                // ratio: parseFloat((data.ratio * 100).toFixed(2)), 有数字额外处理
                 indexNum: index + 1 + (params.current! - 1) * PAGE_SIZE,
               }));
-              console.log(data, 'data');
-              //返回
+
               return { data, success: true, total: res.total };
             } catch (e) {
               console.log(e);
-              return { data: [], success: true };
             }
-
-            //console.log(sort, filter, params, 'params');
+            return { data: [], success: true };
           }}
           editable={{
             type: 'multiple',
@@ -139,9 +207,15 @@ export default () => {
               console.log(key, row, originRow);
 
               row.amount = Number(row.amount);
-
+              console.log(
+                typeof userInfo?.companyId,
+                userInfo?.companyId,
+                'cid',
+                row,
+              );
               try {
-                const data = await requestUpdateFinance(row);
+                const data = await updateFinance[userInfo.loginRole](row);
+                console.log(data, 'savadata');
                 if (typeof data === 'object' && 'code' in data) {
                   message.error('保存失败');
                 } else {
@@ -156,7 +230,9 @@ export default () => {
             onDelete: async (key, row) => {
               try {
                 console.log(key, row, 'keyRow');
-                const data = await requestDeleteFinance(key.toString());
+                const data = await deleteFinance[userInfo.loginRole](
+                  key.toString(),
+                );
                 if (typeof data === 'object' && 'code' in data) {
                   message.error('删除失败');
                 } else {
@@ -165,20 +241,26 @@ export default () => {
                 actionRef.current?.reloadAndRest &&
                   actionRef.current?.reloadAndRest();
               } catch (e) {
-                message.error('添加失败');
+                message.error('删除失败');
                 console.log(e);
               }
             },
           }}
           columnsState={{
-            persistenceKey: 'pro-table-singe-demos',
+            persistenceKey: 'finance',
             persistenceType: 'localStorage',
             onChange(value) {
               console.log('value: ', value);
             },
           }}
           rowKey="financeId"
-          search={false}
+          search={
+            userInfo.loginRole === 3
+              ? {
+                  labelWidth: 'auto',
+                }
+              : false
+          }
           options={{
             setting: {
               listsHeight: 400,
@@ -192,9 +274,11 @@ export default () => {
           headerTitle="融资信息表格"
         />
       </ProCard.TabPane>
-      <ProCard.TabPane key="tab2" tab="信息添加">
-        <Editable userInfo={userInfo} />
-      </ProCard.TabPane>
+      {userInfo.loginRole === 2 && (
+        <ProCard.TabPane key="tab2" tab="信息添加">
+          <Editable userInfo={userInfo} />
+        </ProCard.TabPane>
+      )}
     </ProCard>
   );
 };

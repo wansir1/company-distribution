@@ -102,13 +102,13 @@ const Layouts = (props: any) => {
       <Layout className={style.appLayout}>
         <Header>
           <div className={style.logo}>
-            {/* <img className={style.logoIcon} src={logo} alt="" /> */}
-            <div
+            <img className={style.logoIcon} src={logo} alt="" />
+            {/* <div
               className={style.logoIcon}
               style={{ fontSize: '20px', marginLeft: '30px' }}
             >
-              产业链数据可视化系统
-            </div>
+              北斗产业分析系统
+            </div> */}
           </div>
           <div className={style.user}>
             <Dropdown

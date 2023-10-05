@@ -1,42 +1,55 @@
-import type { ActionType, ProColumns } from '@ant-design/pro-components';
-import {
-  ProTable,
-  ProFormSelect,
-  ProFormInstance,
+import type {
+  ActionType,
+  ProColumns,
+  Search,
 } from '@ant-design/pro-components';
-import { Space, Tag } from 'antd';
-import { useRef, useState } from 'react';
-import { dataTest, ColumnType } from './constants';
+import { ProTable, ProCard, ProFormSelect } from '@ant-design/pro-components';
+import { message, Space, Tag } from 'antd';
+import { useContext, useRef, useState } from 'react';
+import { dataTest, ColumnType, SearchCompanyType } from './constants';
 import styles from './index.less';
-export const waitTimePromise = async (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
-
-export const waitTime = async (time: number = 100) => {
-  await waitTimePromise(time);
-};
-
+import AddForm from './addForm';
+import { AdminInfoContext } from '@/pages/centralAdministration';
+import { history } from 'umi';
+import {
+  requestCompanyInfoSuper,
+  requestDeleteCompanyInfoSuper,
+  requestUpdateCompanyInfoSuper,
+} from '@/services/superAdmin';
+import { getCompanyList } from '@/pages/dataCenter/constants';
+import {
+  getCity,
+  getDistrict,
+  getIndustryType,
+  getProvince,
+} from '@/pages/companyCentral/constants';
+import industryType from '@/pages/dataCenter/industryType';
+import { FormLabelAlign } from 'antd/lib/form/interface';
 const PAGE_SIZE = 5;
 
 export default () => {
+  const { userInfo } = useContext(AdminInfoContext);
   const actionRef = useRef<ActionType>();
-  const [stateValue, setStateValue] = useState<string>('Unaltered');
-
-  const handleStateChange = (value: any) => {
-    setStateValue('');
+  const [provinceState, setProvinceState] = useState('unaltered');
+  const [cityState, setCityState] = useState('unaltered');
+  const [provinceValue, setProvinceValue] = useState('');
+  const [cityValue, setCityValue] = useState('');
+  const handleProvinceChange = () => {
+    setProvinceState('');
   };
-
+  const handleCityChange = () => {
+    setCityState('');
+  };
+  const onChangeTabs = (activeKey: string) => {
+    activeKey === 'tab1' ? actionRef.current?.reload() : null;
+  };
   const columns: ProColumns<ColumnType & { indexNum: number }>[] = [
     {
       title: '序号',
       dataIndex: 'index',
+      fixed: 'left',
       search: false,
       editable: false,
-      valueType: 'indexBorder',
       width: 48,
       render: (_, record) => {
         const bgColor =
@@ -50,281 +63,350 @@ export default () => {
         );
       },
     },
+    //查询栏
     {
-      title: '所属公司',
-      dataIndex: 'companyName',
-      // copyable: true,
-      search: false,
-      editable: false,
+      title: '公司名',
+      dataIndex: 'companyId',
       ellipsis: true,
-      tip: '公司名过长会自动收缩',
-    },
-    {
-      title: '昵称',
-      dataIndex: 'name',
-      // copyable: true,
-      ellipsis: true,
-      tip: '昵称过长会自动收缩',
-    },
-    {
-      title: '手机号',
-      dataIndex: 'phone',
-      ellipsis: true,
-      editable: false,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '此项为必填项',
-          },
-        ],
-      },
-    },
-    {
-      disable: true,
-      title: '状态',
-      dataIndex: 'state',
-      search: false,
-      filters: true,
-      onFilter: true,
-      ellipsis: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '此项为必填项',
-          },
-        ],
-      },
+      hideInTable: true,
       valueType: 'select',
-      valueEnum: {
-        0: {
-          text: '未通过',
-          status: 'Error',
-        },
-        1: {
-          text: '审核中',
-          status: 'Processing',
-          // disabled: true,
-        },
-        2: {
-          text: '通过审核',
-          status: 'Success',
-        },
-      },
+      request: getCompanyList,
       fieldProps: {
-        onChange: handleStateChange,
-        onSelect: handleStateChange,
+        showSearch: true,
+        fieldNames: {
+          label: 'name',
+          value: 'companyId',
+        },
+        optionFilterProp: 'name',
       },
     },
     {
-      disable: true,
-      title: '状态',
-      dataIndex: 'state',
+      title: '产业类型',
+      dataIndex: 'industryTypeId',
       ellipsis: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '此项为必填项',
-          },
-        ],
-      },
+      hideInTable: true,
       valueType: 'select',
-      valueEnum: {
-        0: {
-          text: '未通过',
-          status: 'Error',
+      request: getIndustryType,
+      fieldProps: {
+        showSearch: true,
+        mode: 'multiple',
+        fieldNames: {
+          label: 'name',
+          value: 'typeId',
         },
-        1: {
-          text: '审核中',
-          status: 'Processing',
-          // disabled: true,
-        },
-        2: {
-          text: '通过审核',
-          status: 'Success',
-        },
+        optionFilterProp: 'name',
       },
     },
+    //查询栏//查询栏//查询栏
+
     {
-      disable: true,
-      title: '性别',
-      dataIndex: 'sex',
+      title: '企业名称',
+      dataIndex: 'name',
+      fixed: 'left',
+      search: false,
+      ellipsis: true,
+      tip: '企业名过长会自动收缩',
+    },
+    {
+      title: '产业类型',
+      dataIndex: 'industryTypeId',
+      ellipsis: true,
       search: false,
       valueType: 'select',
-      //   request: async (params) => {
-      //     console.log(params,'params')
-      //     let num = [
-      //       [
-      //         { sex: '男1', value: 0 },
-      //         { value: 1, sex: '女1' },
-      //       ],
-      //       [
-      //         { sex: '男2', value: 0 },
-      //         { value: 1, sex: '女2' },
-      //       ],
-      //       [],
-      //     ];
-      //     return num[1];
-      //   },
-      //   fieldProps: {
-      //     showSearch: true,
-      //     fieldNames: {
-      //       label: 'sex',
-      //       value: 'value',
-      //     },
-      //   },
-      // valueEnum: new Map([
-      //   [0, '男'],
-      //   [1, '女'],
-      // ]),
+      request: getIndustryType,
+      fieldProps: {
+        showSearch: true,
+        mode: 'multiple',
+        fieldNames: {
+          label: 'name',
+          value: 'typeId',
+        },
+        optionFilterProp: 'name',
+      },
+      render: (_, record) => (
+        <Space style={{ flexWrap: 'wrap' }}>
+          {Array.isArray(record.industryTypeName) &&
+            record.industryTypeName.map((item) => (
+              <Tag color={'blue'}>{item}</Tag>
+            ))}
+        </Space>
+      ),
+    },
+    {
+      title: '省',
+      dataIndex: 'provinceId',
+      search: false,
+      valueType: 'select',
+      ellipsis: true,
+      request: getProvince,
+      fieldProps: {
+        showSearch: true,
+        fieldNames: {
+          label: 'provinceName',
+          value: 'provinceId',
+        },
+        optionFilterProp: 'provinceName',
+        onChange: handleProvinceChange,
+        onSelect: handleProvinceChange,
+      },
+    },
+    {
+      title: '省',
+      dataIndex: 'provinceId',
+      // search: true,
+      hideInTable: true,
+      valueType: 'select',
+      ellipsis: true,
+      request: getProvince,
+      fieldProps: {
+        showSearch: true,
+        fieldNames: {
+          label: 'provinceName',
+          value: 'provinceId',
+        },
+        onChange: (value: string) => setProvinceValue(value),
+        onSelect: (value: string) => setProvinceValue(value),
+        optionFilterProp: 'provinceName',
+      },
+    },
+
+    {
+      title: '市',
+      dataIndex: 'cityId',
+      search: false,
+      valueType: 'select',
+      ellipsis: true,
       renderFormItem: (item, { type, defaultRender, ...rest }, form) => {
-        console.log(rest, type, 'state', item);
+        //console.log(rest, type, 'state', item);
         return (
           <div style={{ paddingTop: '24px' }}>
             <ProFormSelect
               {...rest}
-              params={{ id: rest.record?.state }}
-              request={async () => {
-                let num = [
-                  [
-                    { sex: '男1', value: 0 },
-                    { value: 1, sex: '女1' },
-                  ],
-                  [
-                    { sex: '男2', value: 0 },
-                    { value: 1, sex: '女2' },
-                  ],
-                  [],
-                ];
-                return num[Number(rest.record?.state)];
-              }}
+              params={{ id: rest.record?.provinceId }}
+              request={async () =>
+                rest.record?.provinceId
+                  ? getCity(rest.record?.provinceId!.toString())
+                  : []
+              }
               fieldProps={{
                 showSearch: true,
-                style: { background: 'red' },
                 fieldNames: {
-                  label: 'sex',
-                  value: 'value',
+                  label: 'cityName',
+                  value: 'cityId',
                 },
-                value: stateValue ? rest.record?.sex : '',
+                value: provinceState ? rest.record?.cityId : '',
                 onChange: () => {
-                  setStateValue('unaltered');
+                  setProvinceState('unaltered');
+                  handleCityChange();
+                },
+                onSelect: () => {
+                  handleCityChange();
                 },
               }}
             />
           </div>
         );
       },
-      render: (_, record) => (
-        <Space>
-          <Tag color={record.sex ? 'success' : 'error'}>
-            {record.sex === 0 ? '男' : record.sex ? '女2' : '--'}
-          </Tag>
-        </Space>
-      ),
+      render: (dom, record) => {
+        //console.log(dom,'dom',record);
+        return record.cityName;
+      },
     },
-    // {
-    //   disable: true,
-    //   title: '性别',
-    //   dataIndex: 'sex',
-    //   search: false,
-    //   valueType: 'select',
-    //   request: async () => {
-    //     let num = [
-    //       [
-    //         { sex: '男1', value: 0 },
-    //         { value: 1, sex: '女1' },
-    //       ],
-    //       [
-    //         { sex: '男2', value: 0 },
-    //         { value: 1, sex: '女2' },
-    //       ],
-    //       [],
-    //     ];
-    //     return num[1];
-    //   },
-    //   fieldProps: {
-    //     showSearch: true,
-    //     fieldNames: {
-    //       label: 'sex',
-    //       value: 'value',
-    //     },
-    //     //   value: stateValue? rest.record?.sex : '',
-    //     onChange: () => {
-    //       setStateValue('unaltered');
-    //     },
-    //   },
-    //   // valueEnum: new Map([
-    //   //   [0, '男'],
-    //   //   [1, '女'],
-    //   // ]),
-    //   //   renderFormItem: (item, { type, defaultRender, ...rest }, form) => {
-    //   //     console.log(rest, type, 'state', item);
-    //   //     return (
-    //   //       <ProFormSelect
-    //   //         {...rest}
-    //   //         params={{ id: rest.record?.state }}
-    //   //         request={async () => {
-    //   //           let num = [
-    //   //             [
-    //   //               { sex: '男1', value: 0 },
-    //   //               { value: 1, sex: '女1' },
-    //   //             ],
-    //   //             [
-    //   //               { sex: '男2', value: 0 },
-    //   //               { value: 1, sex: '女2' },
-    //   //             ],
-    //   //             [],
-    //   //           ];
-    //   //           return num[Number(rest.record?.state)];
-    //   //         }}
-    //   //         fieldProps={{
-    //   //           showSearch: true,
-    //   //           fieldNames: {
-    //   //             label: 'sex',
-    //   //             value: 'value',
-    //   //           },
-    //   //           value: stateValue? rest.record?.sex : '',
-    //   //           onChange: () => {
-    //   //             setStateValue('unaltered');
-    //   //           }
-    //   //         }}
-    //   //       />
-    //   //     );
-    //   //   },
-    //   //   render: (_, record) => (
-    //   //     <Space>
-    //   //       <Tag color={record.sex ? 'success' : 'error'}>
-    //   //         {record.sex === 0 ? '男' : record.sex ? '女' : '--'}
-    //   //       </Tag>
-    //   //     </Space>
-    //   //   ),
-    // },
     {
-      title: '角色',
-      dataIndex: 'role',
-      // copyable: true,
+      title: '市',
+      dataIndex: 'cityId',
+      //search: false,
+      hideInTable: true,
+      valueType: 'select',
       ellipsis: true,
-      editable: false,
-      search: false,
-      render: (_, record) => (
-        <Space>
-          <Tag color={record.role === 1 ? 'lime' : 'purple'}>
-            {record.role === 1 ? '普通用户' : '普通管理员'}
-          </Tag>
-        </Space>
-      ),
+      params: { provinceValue },
+      request: async (params) => {
+        console.log(params, 'cityParams', params.provinceValue);
+        return params.provinceValue ? getCity(params.provinceValue) : [];
+      },
+      fieldProps: {
+        showSearch: true,
+        fieldNames: {
+          label: 'cityName',
+          value: 'cityId',
+        },
+        onChange: (value: string) => setCityValue(value),
+        onSelect: (value: string) => setCityValue(value),
+      },
     },
+    {
+      title: '县',
+      dataIndex: 'districtId',
+      search: false,
+      //request:getDistrict,
+      valueType: 'select',
+      ellipsis: true,
+      renderFormItem: (item, { type, defaultRender, ...rest }, form) => {
+        //console.log(rest, type, 'state', item);
+        return (
+          <div style={{ paddingTop: '24px' }}>
+            <ProFormSelect
+              {...rest}
+              params={{ id: rest.record?.cityId }}
+              request={async () =>
+                rest.record?.cityId
+                  ? getDistrict(rest.record?.cityId!.toString())
+                  : []
+              }
+              fieldProps={{
+                showSearch: true,
+                fieldNames: {
+                  label: 'districtName',
+                  value: 'districtId',
+                },
+                value: cityState ? rest.record?.districtId : '',
+                onChange: () => {
+                  setCityState('unaltered');
+                },
+              }}
+            />
+          </div>
+        );
+      },
+      render: (dom, record) => {
+        //console.log(dom,'dom',record);
+        return record.districtName;
+      },
+    },
+    {
+      title: '县',
+      dataIndex: 'districtId',
+      //search: false,
+      hideInTable: true,
+      //request:getDistrict,
+      params: { cityValue },
+      request: async (params) => {
+        console.log(params, 'cityParams', params.cityValue);
+        return params.cityValue ? getDistrict(params.cityValue) : [];
+      },
+      valueType: 'select',
+      ellipsis: true,
+      fieldProps: {
+        showSearch: true,
+        fieldNames: {
+          label: 'districtName',
+          value: 'districtId',
+        },
+      },
+    },
+    {
+      title: '详细地址',
+      dataIndex: 'address',
+      search: false,
+
+      ellipsis: true,
+    },
+    {
+      title: '经度',
+      dataIndex: 'longitude',
+      search: false,
+
+      ellipsis: true,
+    },
+    {
+      title: '纬度',
+      dataIndex: 'latitude',
+      search: false,
+
+      ellipsis: true,
+    },
+    {
+      title: '法人',
+      dataIndex: 'legalRepresentative',
+      search: false,
+
+      ellipsis: true,
+    },
+    {
+      title: '统一社会信用代码',
+      dataIndex: 'creditCode',
+      search: false,
+
+      ellipsis: true,
+    },
+    {
+      title: '登记状态',
+      dataIndex: 'registerStatus',
+      search: false,
+
+      ellipsis: true,
+    },
+    {
+      title: '单位电话',
+      dataIndex: 'phone',
+      search: false,
+
+      ellipsis: true,
+    },
+    {
+      title: '邮政编码',
+      dataIndex: 'postCode',
+      search: false,
+
+      ellipsis: true,
+    },
+    {
+      title: '电子邮箱',
+      dataIndex: 'email',
+      search: false,
+
+      ellipsis: true,
+    },
+    {
+      title: '公司网址',
+      dataIndex: 'website',
+      search: false,
+
+      ellipsis: true,
+    },
+    {
+      title: '注册地址',
+      dataIndex: 'registeredAddress',
+      search: false,
+
+      ellipsis: true,
+    },
+    {
+      title: '注册资本',
+      dataIndex: 'registeredCapital',
+      search: false,
+
+      ellipsis: true,
+    },
+    {
+      title: '注册日期',
+      dataIndex: 'registeredTime',
+      valueType: 'date',
+      search: false,
+
+      ellipsis: true,
+    },
+    {
+      title: '经营日期',
+      dataIndex: 'validTime',
+      valueType: 'date',
+      search: false,
+
+      ellipsis: true,
+    },
+
     {
       title: '操作',
       valueType: 'option',
+      width: 175,
+      fixed: 'right',
       key: 'option',
       render: (text, record, _, action) => [
         <a
           key="editable"
           onClick={() => {
-            action?.startEditable?.(record.userId);
+            //console.log(record,"record1");
+            action?.startEditable?.(record.companyId!.toString());
           }}
         >
           编辑
@@ -332,56 +414,121 @@ export default () => {
       ],
     },
   ];
+
+  if (!userInfo) return;
   return (
-    <ProTable<ColumnType & { indexNum: number }>
-      columns={columns}
-      actionRef={actionRef}
-      cardBordered
-      request={async (params = {}, sort, filter) => {
-        await waitTime(2000);
-        const data2 = dataTest.map((data, index) => ({
-          ...data,
-          indexNum: index + 1,
-        }));
-        console.log(sort, filter, params, data2, 'params');
-        return { data: data2, success: true, total: 30 };
-      }}
-      editable={{
-        type: 'multiple',
-        onSave: async (key, row, originRow) => {
-          console.log(key, row, originRow, 'jj');
-          setStateValue('unaltered');
-          actionRef.current?.reload();
-        },
-        onDelete: async () => {
-          setStateValue('unaltered');
-        },
-        onCancel: async () => {
-          setStateValue('unaltered');
-        },
-      }}
-      columnsState={{
-        persistenceKey: 'pro-table-singe-demos',
-        persistenceType: 'localStorage',
-        onChange(value) {
-          console.log('value: ', value);
-        },
-      }}
-      rowKey="userId"
-      search={{
-        labelWidth: 'auto',
-      }}
-      options={{
-        setting: {
-          listsHeight: 400,
-        },
-      }}
-      pagination={{
-        pageSize: PAGE_SIZE,
-        onChange: (page) => console.log(page),
-      }}
-      dateFormatter="string"
-      headerTitle="用户审核表格"
-    />
+    <ProCard tabs={{ type: 'card', onChange: onChangeTabs }}>
+      <ProCard.TabPane key="tab1" tab="企业信息管理">
+        <ProTable<ColumnType & { indexNum: number }>
+          columns={columns}
+          scroll={{ x: 'max-content' }}
+          actionRef={actionRef}
+          cardBordered
+          request={async (params = {}, sort, filter) => {
+            //console.log(params.industryTypeId,"params.industryTypeId")
+            try {
+              //调用接口并传参
+              const res: SearchCompanyType = await requestCompanyInfoSuper({
+                current: params.current!,
+                size: params.pageSize!,
+                companyId: params.companyId,
+                companyName: params.name,
+                provinceId: params.provinceId,
+                cityId: params.cityId,
+                //industryTypeId?
+                type: params.industryTypeId,
+                //变量名 接口文档与apipost不同
+                districtId: params.districtId,
+              });
+              console.log(res, 'res');
+              if (typeof res === 'object' && 'code' in res) {
+                message.error('token失效请重新登录');
+                localStorage.clear();
+                history.push(`/home`);
+              }
+              //处理数据格式
+              const data = res.records?.map((data, index) => ({
+                ...data,
+                industryTypeId: JSON.parse(data.industryTypeId!)?.map(String),
+                cityId: data.cityId?.toString(),
+                indexNum: index + 1 + (params.current! - 1) * PAGE_SIZE,
+              }));
+              console.log(data, 'data');
+              //返回
+              return { data, success: true, total: res.total };
+            } catch (e) {
+              console.log(e);
+              return { data: [], success: true };
+            }
+          }}
+          editable={{
+            type: 'multiple',
+            onSave: async (key, row, originRow) => {
+              console.log(key, row, originRow, 'jj');
+              row.registeredCapital = Number(row.registeredCapital);
+              // row.industryTypeId = JSON.parse(row.industryTypeId!).map(String);
+              try {
+                const data = await requestUpdateCompanyInfoSuper(row);
+                if (typeof data === 'object' && 'code' in data) {
+                  message.error('保存失败');
+                } else {
+                  message.success('保存成功');
+                }
+                actionRef.current?.reload();
+              } catch (e) {
+                message.error('添加失败');
+                console.log(e);
+              }
+
+              actionRef.current?.reload();
+            },
+            onDelete: async (key, row) => {
+              try {
+                console.log(key, row, 'keyRow');
+                const data = await requestDeleteCompanyInfoSuper(
+                  row.companyId!,
+                );
+                if (typeof data === 'object' && 'code' in data) {
+                  message.error('删除失败');
+                } else {
+                  message.success('删除成功');
+                }
+                actionRef.current?.reloadAndRest &&
+                  actionRef.current?.reloadAndRest();
+              } catch (e) {
+                message.error('添加失败');
+                console.log(e);
+              }
+            },
+          }}
+          columnsState={{
+            persistenceKey: 'companyManagement',
+            persistenceType: 'localStorage',
+            onChange(value) {
+              console.log('value: ', value);
+            },
+          }}
+          rowKey="companyId"
+          search={{
+            labelWidth: 'auto',
+            // collapsed: false,
+          }}
+          options={{
+            setting: {
+              listsHeight: 400,
+            },
+          }}
+          pagination={{
+            pageSize: PAGE_SIZE,
+            onChange: (page) => console.log(page),
+          }}
+          dateFormatter="string"
+          headerTitle="企业管理表格"
+        />
+      </ProCard.TabPane>
+      <ProCard.TabPane key="tab2" tab="添加企业">
+        <AddForm />
+      </ProCard.TabPane>
+    </ProCard>
   );
 };

@@ -1,8 +1,22 @@
 //公司列表属性类型
 import { number } from 'echarts';
+import { ApiFunctions } from '@/pages/dataCenter/constants';
+import {
+  requestDeleteQualification,
+  requestQualification,
+  requestUpdateQualification,
+} from '@/services/admin';
+import {
+  requestDeleteQualificationSuper,
+  requestQualificationSuper,
+  requestUpdateQualificationSuper,
+} from '@/services/superAdmin';
 
 export type ColumnType = {
   qualificationCertificateId?: string;
+  companyName?: string;
+  startTime?: string;
+  endTime?: string;
   name: string;
   type: string;
   number: string;
@@ -36,6 +50,8 @@ export type SearchQualificationType = {
 
 export type Records = {
   qualificationCertificateId?: string;
+  companyName?: string;
+
   name: string;
   type: string;
   number: string;
@@ -48,3 +64,17 @@ export type Records = {
 export function convertToArray(str: string): string[] {
   return str.includes(',') ? str.split(',') : [str];
 }
+export const getQualification: ApiFunctions = {
+  2: requestQualification,
+  3: requestQualificationSuper,
+};
+
+export const updateQualification: ApiFunctions = {
+  2: requestUpdateQualification,
+  3: requestUpdateQualificationSuper,
+};
+
+export const deleteQualification: ApiFunctions = {
+  2: requestDeleteQualification,
+  3: requestDeleteQualificationSuper,
+};

@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { ColumnType } from './constants';
 import { history } from 'umi';
 import { UserInfo } from '@/pages/centralAdministration';
-import { requestUpdateHighTech } from '@/services/search';
+import { requestUpdateHighTech } from '@/services/admin';
 interface ParamType {
   userInfo: UserInfo;
 }

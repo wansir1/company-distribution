@@ -17,11 +17,17 @@ const ModalBox: React.FC<PropsType> = ({ children, visible, onCancel }) => {
   const chartRef = useRef<ReactECharts>(null);
   useEffect(() => {
     if (visible) {
+      // 弹出模态框
+      // 先把模态框的 display 取消 none
       setModalHidden(!visible);
+      // 使用 setTimeout 先让 React 渲染已经修改的状态
+      // 如果不使用 setTimeout，模态框动画会无效
       setTimeout(() => {
         setAnimation(visible);
       }, 0);
     } else {
+      // 关闭模态框
+      // 先进行动画
       setAnimation(visible);
       setTimeout(() => {
         setModalHidden(!visible);

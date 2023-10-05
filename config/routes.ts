@@ -140,8 +140,13 @@ export default [
             component: '@/pages/dataCenter/industryType',
           },
           {
+            path: 'welcome',
+            name: '欢迎页',
+            component: '@/pages/dataCenter/welcome',
+          },
+          {
             path: '*',
-            redirect: 'investment',
+            redirect: 'welcome',
           },
         ],
       },

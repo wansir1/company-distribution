@@ -1,6 +1,21 @@
 //列表属性类型
+import { ApiFunctions } from '@/pages/dataCenter/constants';
+import {
+  requestDeleteSoftwareWriting,
+  requestSoftwareWriting,
+  requestUpdateSoftwareWriting,
+} from '@/services/admin';
+import {
+  requestDeleteSoftwareWritingSuper,
+  requestSoftwareWritingSuper,
+  requestUpdateSoftwareWritingSuper,
+} from '@/services/superAdmin';
+
 export type ColumnType = {
   softwareWritingId?: string;
+  companyName?: string;
+  startTime?: string;
+  endTime?: string;
   name: string;
   registrationNumber: string;
   versionNumber: string;
@@ -19,6 +34,7 @@ export type SearchSoftwareWritingType = {
 
 export type Records = {
   softwareWritingId?: string;
+  companyName?: string;
   name: string;
   registrationNumber: string;
   versionNumber: string;
@@ -40,3 +56,17 @@ export const dataTest = [
 export function convertToArray(str: string): string[] {
   return str.includes(',') ? str.split(',') : [str];
 }
+export const getSoftwareWriting: ApiFunctions = {
+  2: requestSoftwareWriting,
+  3: requestSoftwareWritingSuper,
+};
+
+export const updateSoftwareWriting: ApiFunctions = {
+  2: requestUpdateSoftwareWriting,
+  3: requestUpdateSoftwareWritingSuper,
+};
+
+export const deleteSoftwareWriting: ApiFunctions = {
+  2: requestDeleteSoftwareWriting,
+  3: requestDeleteSoftwareWritingSuper,
+};

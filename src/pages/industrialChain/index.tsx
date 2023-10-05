@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { Link, history } from 'umi';
-import { Spin } from 'antd';
+import { Radio, Space, Spin, Select, DatePicker } from 'antd';
+import type { RadioChangeEvent } from 'antd';
+import type { DatePickerProps } from 'antd';
 import { requestIndustryType } from '@/services/search';
 import { TypeListType } from '../companySearch/selectSearch';
 import {
@@ -17,6 +18,7 @@ const IndustrialChain: React.FC = (props) => {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false);
   const [modalSelect, setModalSelect] = useState<number | null>(null);
+  const [growthType, setGrowthType] = useState('1');
   const pointEvent = { pointerEvents: 'none' };
   useEffect(() => {
     getTypeList();
@@ -52,8 +54,12 @@ const IndustrialChain: React.FC = (props) => {
     32: <MapDistribution componentNumber={2} />,
   };
   const handleClick = (num: number) => {
+    //组件放大点击事件
     setVisible(true);
     setModalSelect(num);
+  };
+  const onChange: DatePickerProps['onChange'] = (date, dateString) => {
+    console.log(date, dateString);
   };
   return (
     <Fragment>
@@ -66,6 +72,38 @@ const IndustrialChain: React.FC = (props) => {
 
             <div className={styles.textBox}>
               <div className={styles.text}>多维度产业分析</div>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignSelf: 'flex-start',
+                  marginBottom: '5px',
+                }}
+              >
+                <b>增长率：</b>
+                <Radio.Group
+                  value={growthType}
+                  size="small"
+                  onChange={({ target: { value } }: RadioChangeEvent) =>
+                    setGrowthType(value)
+                  }
+                >
+                  <Radio.Button value="1">季度增长率</Radio.Button>
+                  <Radio.Button value="2">月增长率</Radio.Button>
+                </Radio.Group>
+                {/* <Select
+                  value={'4'}
+                  onChange={(e: any) => null}
+                  options={[
+                    { label: '一季度', value: '4' },
+                    { label: '二季度', value: '7' },
+                    { label: '三季度', value: '10' },
+                    { label: '四季度', value: '1' },
+                  ]}
+                  size="small"
+                /> */}
+                <DatePicker onChange={onChange} picker="month" size="small" />
+              </div>
               <img
                 src={planet}
                 style={{ height: '17vh', borderRadius: '50%' }}
