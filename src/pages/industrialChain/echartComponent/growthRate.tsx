@@ -1,24 +1,28 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Chart from '@/components/Echart';
 import { getGrowthRateOption, ChartRefType } from './constant';
+import { GrowthRateVO } from '@/services/search';
 export const GrowthRate: React.FC<{
   componentNumber?: number;
   chartRef?: React.RefObject<ChartRefType>;
   styles?: { [key: string]: string };
+  growthRateV?: GrowthRateVO;
+  growthType?: string;
 }> = (props) => {
-  const [data, setData] = useState<number>();
-  const { componentNumber = 1, chartRef, styles = {} } = props;
+  const [data, setData] = useState<GrowthRateVO>();
+  const {
+    componentNumber = 1,
+    chartRef,
+    styles = {},
+    growthType = '1',
+    growthRateV,
+  } = props;
   useEffect(() => {
-    getData();
-  }, []);
-  const getData = async () => {
-    try {
-      setData(1);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  const option = data ? getGrowthRateOption(data, componentNumber) : {};
+    growthRateV && setData(growthRateV);
+  }, [growthRateV]);
+  const option = data
+    ? getGrowthRateOption(data, componentNumber, growthType)
+    : {};
   return (
     <>
       <Chart option={option} chartRef={chartRef} styles={styles} />

@@ -80,7 +80,7 @@ const PersonCentral: React.FC<PropsType> = (props) => {
                 userId: userInfo?.userId.toString(),
                 companyId: userInfo?.companyId,
               });
-              if ('code' in data) {
+              if ('code' in data && data.code != 200) {
                 message.error('保存失败');
                 console.log(data, 'data');
               } else {

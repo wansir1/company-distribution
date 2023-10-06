@@ -7,17 +7,37 @@ import {
   getEnterpriseOption,
   ChartRefType,
 } from './constant';
-import { requestAllRelationships } from '@/services/search';
+import { requestAllRelationships, PatentStatisticsVO } from '@/services/search';
 
 export const EnterpriseNumber: React.FC<{
   componentNumber?: number;
   chartRef?: React.RefObject<ChartRefType>;
   styles?: { [key: string]: string };
+  patentStatisticsV?: PatentStatisticsVO;
 }> = (props) => {
   const [data, setData] = useState<EnterpriseDataType>();
-  const { componentNumber = 1, chartRef, styles = {} } = props;
+  const {
+    componentNumber = 1,
+    chartRef,
+    styles = {},
+    patentStatisticsV,
+  } = props;
   useEffect(() => {
-    getRelationData();
+    if (componentNumber == 1) {
+      getRelationData();
+    } else if (patentStatisticsV) {
+      let category = patentStatisticsV.category
+        .filter((item, index) => {
+          return patentStatisticsV.value[index].value != 0;
+        })
+        .map((item) => {
+          return { name: item };
+        });
+      let values = patentStatisticsV.value.filter((item) => item.value != 0);
+      let total = patentStatisticsV.total;
+      console.log({ total, category, values }, '--');
+      setData({ total, category, values });
+    }
   }, []);
   const getRelationData = async () => {
     try {

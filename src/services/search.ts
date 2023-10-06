@@ -84,6 +84,52 @@ export function requestIndustryData(param: { companyTypeList: string[] }) {
   });
 }
 
+// 产业链分析
+export interface PatentStatisticsVO {
+  total: number;
+  category: string[];
+  value: { name: string; value: number }[];
+}
+
+export interface Categories {
+  category: string[];
+  value: number[];
+}
+
+export interface GrowthRateVO {
+  categories: Categories[];
+}
+
+export interface CompanyData {
+  name: string;
+  value: number;
+}
+
+export interface PatentData {
+  name: string;
+  value: number;
+}
+
+export interface DistributionVO {
+  companyData: CompanyData[];
+  patentData: PatentData[];
+}
+
+export interface ChainDataType {
+  patentStatisticsVO: PatentStatisticsVO;
+  growthRateVO: GrowthRateVO;
+  distributionVO: DistributionVO;
+}
+
+export function requestIndustryChain(param: {
+  year: string;
+  month: string;
+  type: string;
+}) {
+  return requestUtils.post(`/user/industryChain`, {
+    data: param,
+  });
+}
 // 登录
 export interface LoginParam {
   phone: string;

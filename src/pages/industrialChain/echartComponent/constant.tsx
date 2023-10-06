@@ -1,8 +1,7 @@
 import * as echarts from 'echarts';
-import * as turf from '@turf/turf';
 import geoJsonData from '@/assets/datavJson/JiangXi.json';
-import jiangXi from '@/assets/datavJson/JiangXi_exclusive.json';
 import ReactECharts from 'echarts-for-react';
+import { GrowthRateVO, DistributionVO } from '@/services/search';
 type EChartsOption = echarts.EChartsOption;
 
 type ChartRefType = ReactECharts;
@@ -111,19 +110,54 @@ const getEnterpriseOption = (
 };
 // 增长率组件
 const getGrowthRateOption = (
-  data: any,
+  data: GrowthRateVO,
   componentNumber: number,
+  growthType: string,
 ): EChartsOption => {
-  let text = '北斗企业数量季度增长率（%）',
-    subtext = '其中基础产品产业节点企业季度增长率最快，增长率为：0.5%',
+  let maxValue = { value: -100, index: 0 };
+  if (componentNumber == 1) {
+    data.categories[0].value.forEach((item, index) => {
+      if (item > maxValue.value) {
+        maxValue.value = item;
+        maxValue.index = index;
+      }
+    });
+  }
+  let growthTypeText = growthType == '1' ? '季度' : '月度';
+  let text = `北斗企业数量${growthTypeText}增长率（%）`,
+    subtext = `其中${
+      data.categories[0].category[maxValue.index]
+    }产业节点企业${growthTypeText}增长率最快，增长率为：${(
+      maxValue.value * 100
+    ).toFixed(0)}%`,
     color = '#188df0';
   if (componentNumber === 2) {
-    text = '北斗产业专利数季度增长率（%）';
-    subtext = '其中基础产品产业节点专利季度增长率最快，增长率为：0.5%';
+    data.categories[1].value.forEach((item, index) => {
+      if (item > maxValue.value) {
+        maxValue.value = item;
+        maxValue.index = index;
+      }
+    });
+    text = `北斗产业专利数${growthTypeText}增长率（%）`;
+    subtext = `其中${
+      data.categories[1].category[maxValue.index]
+    }产业节点专利${growthTypeText}增长率最快，增长率为：${(
+      maxValue.value * 100
+    ).toFixed(0)}%`;
     color = '#ff3300';
   } else if (componentNumber === 3) {
-    text = '北斗产业融资额数季度增长率（%）';
-    subtext = '其中基础产品产业节点融资额季度增长率最快，增长率为：0.5%';
+    data.categories[2].value.forEach((item, index) => {
+      if (item > maxValue.value) {
+        maxValue.value = item;
+        maxValue.index = index;
+      }
+    });
+    text = `北斗产业融资额数${growthTypeText}增长率（%）`;
+    subtext = `其中${
+      data.categories[1].category[maxValue.index]
+    }产业节点融资额${growthTypeText}增长率最快，增长率为：${(
+      maxValue.value * 100
+    ).toFixed(0)}%`;
     color = '#725e82';
   }
   return {
@@ -166,20 +200,7 @@ const getGrowthRateOption = (
     yAxis: {
       type: 'category',
       axisLabel: { fontSize: 10, interval: 0 },
-      data: [
-        '芯片',
-        '模块',
-        '板卡',
-        '天线',
-        '基础产品',
-        '终端产品',
-        '运维服务',
-        '卫星设计',
-        '卫星制造',
-        '卫星发射',
-        '主控站',
-        '注入站',
-      ],
+      data: data.categories[componentNumber - 1].category,
     },
     series: [
       {
@@ -187,7 +208,9 @@ const getGrowthRateOption = (
         itemStyle: {
           color: color,
         },
-        data: [0.3, 0.12, 0.2, 0.4, 0.4, 0.3, 0.25, 0.38, 0.5, 0.4, 0.14, 0.33],
+        data: data.categories[componentNumber - 1].value.map((item) =>
+          Math.floor(item * 100),
+        ),
       },
     ],
     animationDelay: function (idx) {
@@ -201,14 +224,20 @@ const getGrowthRateOption = (
 
 // 分布
 const geoJson: any = geoJsonData;
-const getMapOption = (data: any, componentNumber: number) => {
+const getMapOption = (data: DistributionVO, componentNumber: number) => {
+  data.companyData.sort((a, b) => b.value - a.value);
+  data.patentData.sort((a, b) => b.value - a.value);
   let text = '北斗企业地理分布',
-    subtext = `其中江西省北斗企业最多的两个市级为：\n南昌市（30），赣州市（23）`,
+    subtext = `其中江西省北斗企业最多的两个市级为：\n${
+      data.companyData[0].name + '（' + data.companyData[0].value + '）'
+    }，${data.companyData[1].name + '（' + data.companyData[1].value + '）'}`,
     color = ['#ffffff', '#e0f3f8', '#abd9e9', '#ffffbf', '#fee090', '#74add1'];
 
   if (componentNumber !== 1) {
     text = '北斗产业专利申请地理分布';
-    subtext = `其中江西省北斗产业专利申请最多的两个市级\n为：南昌市（30），赣州市（23）`;
+    subtext = `其中江西省北斗产业专利申请最多的两个市级\n为：${
+      data.patentData[0].name + '（' + data.patentData[0].value + '）'
+    }，${data.patentData[1].name + '（' + data.patentData[1].value + '）'}`;
     color = [
       '#FFD3C6', // 最浅的朱砂红
       '#FFB5A6',
@@ -243,8 +272,14 @@ const getMapOption = (data: any, componentNumber: number) => {
       splitNumber: 6,
       left: 'left',
       top: 'bottom',
-      min: 0,
-      max: 30,
+      min:
+        componentNumber == 1
+          ? data.companyData[data.companyData.length - 1].value
+          : data.patentData[data.patentData.length - 1].value,
+      max:
+        componentNumber == 1
+          ? data.companyData[0].value
+          : data.patentData[0].value,
       itemWidth: 15,
       itemHeight: 9,
       backgroundColor: '#dcdcdc',
@@ -255,6 +290,9 @@ const getMapOption = (data: any, componentNumber: number) => {
         fontSize: 12,
       },
       // text: ['High', 'Low'],
+      formatter: function (value: any, value2: any) {
+        return Math.ceil(value) + '-' + Math.ceil(value2);
+      },
     },
     toolbox: {
       show: true,
@@ -293,19 +331,7 @@ const getMapOption = (data: any, componentNumber: number) => {
             shadowOffsetY: 1.7,
           },
         },
-        data: [
-          { name: '南昌市', value: 30 },
-          { name: '景德镇市', value: 10 },
-          { name: '萍乡市', value: 1 },
-          { name: '九江市', value: 5 },
-          { name: '新余市', value: 12 },
-          { name: '鹰潭市', value: 8 },
-          { name: '赣州市', value: 23 },
-          { name: '吉安市', value: 10 },
-          { name: '宜春市', value: 17 },
-          { name: '抚州市', value: 11 },
-          { name: '上饶市', value: 15 },
-        ],
+        data: data[componentNumber == 1 ? 'companyData' : 'patentData'],
       },
     ],
   };
