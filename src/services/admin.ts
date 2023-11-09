@@ -282,3 +282,41 @@ export function requestDeleteUser(param: DeleteUserType) {
     data: param,
   });
 }
+
+//预测信息管理
+export type SearchPredictionInfoParam = {
+  companyId: string;
+  name: string;
+  current: number;
+  size: number;
+};
+export function requestPredictionInfo(param: SearchPredictionInfoParam) {
+  return requestUtils.post(`/admin/searchPredictData`, {
+    data: param,
+  });
+}
+type UpdatePredictionInfo = {
+  predictionId?: string;
+  name: string;
+  data1: number[];
+  data2: number[];
+  unit?: string;
+  companyId: string;
+};
+export function requestUpdatePredictionInfo(
+  param: UpdatePredictionInfo & { index?: number },
+) {
+  return requestUtils.post(`/admin/updatePredictData`, {
+    data: param,
+  });
+}
+export function requestSavePredictionInfo(
+  param: UpdatePredictionInfo & { index?: number },
+) {
+  return requestUtils.post(`/admin/savePredictData`, {
+    data: param,
+  });
+}
+export function requestDeletePredictionInfo(param: string) {
+  return requestUtils.post(`/admin/deletePredictData/${param}`);
+}

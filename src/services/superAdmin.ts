@@ -294,13 +294,10 @@ type UpdateCompanyInfoType = {
   provinceId?: number;
   cityId?: string;
   districtId?: number;
-  // province_id?: string;
-  // city_id?: string;
-  // district_id?: string;
   address?: string;
-  //address?: number;
   longitude?: number;
   latitude?: number;
+  trademarks?: number;
 };
 export function requestUpdateCompanyInfoSuper(param: UpdateCompanyInfoType) {
   return requestUtils.post(`/superAdmin/saveOrUpdateCompany`, {
@@ -346,6 +343,24 @@ type DeleteUserType = {
 };
 export function requestDeleteUserSuper(param: DeleteUserType) {
   return requestUtils.post(`/superAdmin/deleteUser`, {
+    data: param,
+  });
+}
+//模型列表
+export type SearchModelParam = {
+  current: number;
+  size: number;
+};
+export function requestModel() {
+  return requestUtils.get(`/superAdmin/getModel`);
+}
+type UpdateModel = {
+  modelId?: string;
+  modelName: string;
+  proportion: number;
+};
+export function requestUpdateModel(param: UpdateModel[]) {
+  return requestUtils.post(`/superAdmin/editProportion`, {
     data: param,
   });
 }

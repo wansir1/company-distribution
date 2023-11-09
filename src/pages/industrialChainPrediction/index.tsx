@@ -1,97 +1,201 @@
-import React, { Fragment, useEffect, useState, useRef } from 'react';
-import { Modal, Button } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Button, Select, Space } from 'antd';
 import styles from './index.less';
-import { ECharts } from 'echarts';
-import ModalPre from './Modal';
-import ReactECharts from 'echarts-for-react';
+import Chart from '@/components/Echart';
 import {
-  EnterpriseNumber,
-  GrowthRate,
-  MapDistribution,
-} from '../industrialChain/echartComponent';
+  predictDataType,
+  predictionInfoType,
+  requestPredictData,
+  requestPredictionInfoList,
+} from '@/pages/industrialChainPrediction/constants';
+import { UserInfo } from '@/pages/centralAdministration';
 
-var option = {
-  xAxis: {
-    type: 'category',
-    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-  },
-  yAxis: {
-    type: 'value',
-  },
-  series: [
-    {
-      data: [150, 230, 224, 218, 135, 147, 260],
-      type: 'line',
-    },
-  ],
-};
+const PREDICT_NUM = 2;
 
 const IndustrialChainPre: React.FC = () => {
-  const [modal2Open, setModal2Open] = useState(false);
-  const [visible, setVisible] = useState(false);
-  const [select, setSelect] = useState<number | null>(null);
-  const chartRef = useRef<ReactECharts>(null);
-  const componentMapping: { [key: number]: React.ReactNode } = {
-    1: (
-      <Fragment>
-        {option && <ReactECharts key={Date.now()} option={option} />}
-      </Fragment>
-    ),
-    2: (
-      <div
-        className={`${styles.test}`}
-        onClick={() => {
-          setVisible(true);
-          setSelect(2);
-        }}
-        style={{ background: 'green' }}
-      >
-        Display a modal dialog at 20px to Top
-      </div>
-    ),
-    // 添加更多的组件标识和对应的子组件
-  };
+  const userInfo: UserInfo =
+    localStorage.getItem('userInfo') &&
+    JSON.parse(localStorage.getItem('userInfo')!);
+  const [preContentList, setPreContentList] = useState<predictionInfoType[]>(
+    [],
+  );
+  const [model, setModel] = useState<number>();
+  const [preContent, setPreContent] = useState<string>('');
+  const [xValue, setXValue] = useState<number[]>([]);
+  const [yValue, setYValue] = useState<number[]>([]);
+  const [yName, setYName] = useState<string>('');
+  const [shouldRenderChart, setShouldRenderChart] = useState<boolean>(false);
+
   useEffect(() => {
-    if (chartRef?.current && modal2Open) {
-      const myChart = chartRef.current.getEchartsInstance();
-      myChart.setOption({
-        series: [
-          {
-            data: [150, 230, 224, 218, 135, 147, 260],
-            type: 'bar',
-          },
-        ],
-      });
+    getPreContentList();
+  }, []);
+  const getPreContentList = async () => {
+    try {
+      const list: predictionInfoType[] = await requestPredictionInfoList(
+        userInfo.companyId,
+      );
+      Array.isArray(list) ? setPreContentList(list) : setPreContentList([]);
+    } catch (e) {
+      console.log(e);
+      setPreContentList([]);
     }
-  }, [modal2Open]);
+  };
+  const option = {
+    xAxis: {
+      type: 'category',
+      data: xValue,
+    },
+    yAxis: {
+      name: yName,
+      type: 'value',
+    },
+    grid: {
+      top: '10%',
+      bottom: '20%',
+      left: '10%',
+      right: '10%',
+    },
+    toolbox: {
+      right: '10%',
+      show: true,
+      feature: {
+        mark: { show: true },
+        dataView: { show: true, readOnly: false },
+        saveAsImage: { show: true },
+      },
+    },
+    tooltip: {
+      show: true,
+      trigger: 'axis',
+      formatter: '{c}',
+    },
+    legend: {
+      top: '1%',
+      data: [
+        {
+          name: '实际值',
+        },
+        {
+          name: '预测值',
+          itemStyle: {
+            color: 'red',
+          },
+          lineStyle: {
+            color: 'red',
+          },
+          symbolSize: 8,
+        },
+      ],
+      selectedMode: false,
+    },
+    visualMap: {
+      show: false,
+      dimension: 0,
+      pieces: [
+        {
+          lte: xValue.length - 3,
+          color: 'blue',
+        },
+        {
+          gt: xValue.length - 3,
+          lte: xValue.length - 1,
+          color: 'red',
+        },
+      ],
+    },
+    series: [
+      {
+        data: yValue,
+        name: '实际值',
+        type: 'line',
+        symbolSize: 8,
+      },
+      {
+        data: null,
+        name: '预测值',
+        type: 'line',
+        symbolSize: 8,
+      },
+    ],
+  };
+  const handleModelChange = (value: number) => {
+    setModel(value);
+    console.log('modelId', value);
+    setShouldRenderChart(false);
+  };
+  const handlePreContentChange = (value: string) => {
+    setPreContent(value);
+    console.log('precontentId', value);
+    setShouldRenderChart(false);
+  };
+
+  const changeChart = async () => {
+    if (model != undefined && preContent != '') {
+      try {
+        const data: predictDataType = await requestPredictData({
+          predictId: preContent,
+          mode: model,
+          predStep: PREDICT_NUM,
+        });
+        console.log(data, 'preDataUnits');
+        Array.isArray(data.predictData1)
+          ? setXValue(data.predictData1)
+          : setXValue([]);
+        const formattedData = data.predictData2.map((number) =>
+          number.toFixed(2),
+        );
+        const handleData = formattedData.map((formattedNumber) =>
+          parseFloat(formattedNumber),
+        );
+        Array.isArray(data.predictData2)
+          ? setYValue(handleData)
+          : setYValue([]);
+        setYName(data.units);
+      } catch (e) {
+        console.log(e);
+        setXValue([]);
+        setYValue([]);
+      }
+      setShouldRenderChart(true);
+    }
+    console.log('model:', model, 'preContent', preContent);
+  };
+
   return (
     <>
-      <div className="modal" style={{ background: 'yellow' }}>
-        <div
-          className={`${styles.test} ${modal2Open ? styles.testEnter : ''}`}
-          onClick={() => {
-            setVisible(true);
-            setSelect(1);
-          }}
-        >
-          <ReactECharts key={Date.now()} option={option} ref={chartRef} />
+      <div className={styles.wrapper}>
+        <div className={styles.box}>
+          <div className={styles.search}>
+            <Space wrap>
+              <span className={styles.title}>模型:</span>
+              <Select
+                value={model}
+                style={{ width: 240 }}
+                onChange={(e: any) => handleModelChange(e)}
+                // defaultValue={0}
+                options={[
+                  { value: 0, label: '灰度模型' },
+                  { value: 1, label: 'lasso' },
+                  { value: 2, label: '灰度-lasso模型' },
+                ]}
+              />
+              &nbsp; <span className={styles.title}>预测内容:</span>
+              <Select
+                value={preContent}
+                style={{ width: 240 }}
+                onChange={handlePreContentChange}
+                options={preContentList}
+                optionFilterProp={'name'}
+                fieldNames={{ label: 'name', value: 'predictId' }}
+              />
+              <Button type="primary" onClick={changeChart}>
+                预测
+              </Button>
+            </Space>
+          </div>
+          {shouldRenderChart && <Chart option={option}></Chart>}{' '}
+          {/* 条件渲染 */}
         </div>
-        <div
-          className={`${styles.test}`}
-          onClick={() => {
-            setVisible(true);
-            setSelect(2);
-          }}
-          style={{ background: 'green', top: '100px' }}
-        >
-          Display a modal dialog at 20px to Top
-        </div>
-        <ModalPre visible={visible} onCancel={() => setVisible(false)}>
-          {select && componentMapping[select]}
-        </ModalPre>
-        <Button type="primary" onClick={() => setModal2Open(!modal2Open)}>
-          Vertically centered modal dialog
-        </Button>
       </div>
     </>
   );

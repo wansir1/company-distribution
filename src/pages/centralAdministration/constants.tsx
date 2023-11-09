@@ -5,7 +5,6 @@ import {
   DatabaseFilled,
   IdcardFilled,
   TabletFilled,
-  SlidersOutlined,
   PieChartOutlined,
   MoneyCollectOutlined,
   SketchOutlined,
@@ -13,6 +12,9 @@ import {
   CopyrightOutlined,
   VerifiedOutlined,
   GlobalOutlined,
+  SlidersOutlined,
+  LineChartOutlined,
+  DeploymentUnitOutlined,
 } from '@ant-design/icons';
 
 export const defaultProps = (role: number) => {
@@ -82,11 +84,12 @@ export const defaultProps = (role: number) => {
           icon: <GlobalOutlined rev={undefined} />,
           component: './Welcome',
         },
-        // {
-        //   path: 'industry-type',
-        //   name: '产业类型',
-        //   icon: <SlidersOutlined rev={undefined} />,
-        // },
+        {
+          path: 'predictionInfo',
+          name: '预测信息',
+          icon: <LineChartOutlined rev={undefined} />,
+          component: './Welcome',
+        },
       ],
     },
   ];
@@ -97,7 +100,15 @@ export const defaultProps = (role: number) => {
       icon: <SlidersOutlined rev={undefined} />,
       component: './Welcome',
     };
+    const addRoute1 = {
+      path: 'model',
+      name: '模型列表',
+      icon: <DeploymentUnitOutlined rev={undefined} />,
+      component: './Welcome',
+    };
+    routes[3].routes?.pop(); //先弹出预测信息 没写超级管理员的
     routes[3].routes?.push(addRoute);
+    routes[3].routes?.push(addRoute1);
     routes.shift();
   }
   return {

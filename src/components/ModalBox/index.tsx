@@ -53,7 +53,6 @@ const ModalBox: React.FC<PropsType> = ({ children, visible, onCancel }) => {
           console.log(chartType, width, basicWidth, option, 'myChart');
           myChart?.setOption(option);
         }
-
         myChart.resize();
       }
     });

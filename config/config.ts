@@ -9,7 +9,8 @@ export default defineConfig({
   hash: true,
   define: {
     'process.env': {
-      BASE_URL: 'http://211.149.128.139:7777',
+      //   BASE_URL: 'http://211.149.128.139:7777',
+      BASE_URL: 'http://localhost:7777',
     },
   },
   cssLoader: {

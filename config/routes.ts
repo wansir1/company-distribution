@@ -140,8 +140,18 @@ export default [
             component: '@/pages/dataCenter/industryType',
           },
           {
+            path: 'model',
+            name: '产业类型',
+            component: '@/pages/dataCenter/model',
+          },
+          {
+            path: 'predictionInfo',
+            name: '预测信息',
+            component: '@/pages/dataCenter/predictionInfo',
+          },
+          {
             path: 'welcome',
-            name: '欢迎页',
+            name: '欢迎',
             component: '@/pages/dataCenter/welcome',
           },
           {
@@ -156,6 +166,6 @@ export default [
   // { path: '/home', component: '@/pages/personCentral' },
   {
     path: '*',
-    redirect: '/administration/person-central',
+    redirect: '/home',
   },
 ];
